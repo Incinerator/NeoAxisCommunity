@@ -1,8 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsAppExample", "Project\Src\WinFormsAppExample\WinFormsAppExample.csproj", "{BA25C321-9257-4566-9E17-3D608AB50C8F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E4C09433-ECC3-404C-A303-E9A93F241B91} = {E4C09433-ECC3-404C-A303-E9A93F241B91}
