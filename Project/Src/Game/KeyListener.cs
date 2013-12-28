@@ -1,5 +1,5 @@
-﻿// Copyright (C) 2006-2010 NeoAxis Group Ltd.
-
+﻿// Based on original source from HellEnt
+// Modified by Incin and Firefly
 using System;
 using Engine;
 using Engine.UISystem;

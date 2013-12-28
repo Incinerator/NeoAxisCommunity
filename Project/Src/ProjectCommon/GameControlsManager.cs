@@ -1,16 +1,14 @@
 // Copyright (C) NeoAxis Group Ltd. This is part of NeoAxis 3D Engine SDK.
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Reflection;
 using Engine;
 using Engine.MathEx;
 using Engine.FileSystem;
 using System.IO;
 
-// I would like to thank Hellent, SodanKerju, Goto10, and Firefly for all there contributions to this source.
+// Thank to Hellent, SodanKerju, Goto10, Incin and Firefly for all there contributions to this source.
 
 // Notes: (JoystickSliders slider, **JoystickSliderAxes axis **, JoystickAxisFilters filter) hasn't been implemented in the enginapp.dll
 // when it becomes available this code should all be just uncommented labeled with //Incin uncomment for 2.0,
