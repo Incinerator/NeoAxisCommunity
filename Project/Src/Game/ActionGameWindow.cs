@@ -298,7 +298,7 @@ namespace Game
 				currentAttachedGuiObject.ControlManager.DoMouseWheel( delta );
 				return true;
 			}
-
+			GameControlsManager.Instance.DoMouseMouseWheel( delta );
 			return base.OnMouseWheel( delta );
 		}
 
@@ -724,7 +724,7 @@ namespace Game
 					//get binded keyboard key or mouse button
 					GameControlsManager.GameControlItem controlItem = GameControlsManager.Instance.
 						GetItemByControlKey( GameControlKeys.Use );
-					if( controlItem != null && controlItem.DefaultKeyboardMouseValues.Length != 0 )
+					if( controlItem != null && controlItem.BindedKeyboardMouseValues.Count != 0 )
 					{
 						GameControlsManager.SystemKeyboardMouseValue value =
 							controlItem.DefaultKeyboardMouseValues[ 0 ];
