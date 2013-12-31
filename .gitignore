@@ -1,0 +1,14 @@
+FreeEdition.suo
+FreeEdition.v12.suo
+obj
+Project/Bin/ChatExample.exe
+Project/Bin/DedicatedServer.exe
+Project/Bin/ExampleAddonCreationMEAddon.dll
+Project/Bin/ExampleAddonCreationREAddon.dll
+Project/Bin/Game.exe
+Project/Bin/ProjectCommon.dll
+Project/Bin/ProjectEntities.dll
+Project/Bin/ProjectEntities.Editor.dll
+Project/Bin/WPFAppExample.exe
+Project/Bin/WinFormsAppExample.exe
+Project/Bin/WinFormsMultiViewAppExample.exe
