@@ -138,6 +138,7 @@
     <Compile Include="ActionGameWindow.cs" />
     <Compile Include="BallGameWindow.cs" />
     <Compile Include="CatapultDemoGameWindow.cs" />
+    <Compile Include="KeyListener.cs" />
     <Compile Include="MultiViewConfigurationWindow.cs" />
     <Compile Include="PathfindingDemoGameWindow.cs" />
     <Compile Include="GUISamples2Window.cs" />

@@ -21,6 +21,13 @@ namespace Game
 	/// </summary>
 	public class OptionsWindow : Control
 	{
+		enum Devices
+		{
+			Keyboard,
+			Xbox360,
+			Joystick
+		}
+
 		static int lastPageIndex;
 
 		Control window;
@@ -94,6 +101,7 @@ namespace Game
 			ComboBox comboBox;
 			ScrollBar scrollBar;
 			CheckBox checkBox;
+			TextBox textBox;
 
 			window = ControlDeclarationManager.Instance.CreateControl( "Gui\\OptionsWindow.gui" );
 			Controls.Add( window );
@@ -583,6 +591,8 @@ namespace Game
 				};
 			}
 
+
+			#region pageControls
 			//pageControls
 			{
 				Control pageControls = tabControl.Controls[ "Controls" ];
@@ -641,13 +651,49 @@ namespace Game
 
 				comboBox.SelectedIndexChange += delegate( ComboBox sender )
 				{
-					UpdateBindedInputControlsTextBox();
+					UpdateBindedInputControlsListBox();
+				};
+
+				scrollBar = (ScrollBar)pageControls.Controls[ "DeadzoneVScroll" ];
+				scrollBar.Value = GameControlsManager.Instance.DeadZone;
+				textBox = (TextBox)pageControls.Controls[ "DeadZoneValue" ];
+				textBox.Text = GameControlsManager.Instance.DeadZone.ToString();
+				scrollBar.ValueChange += delegate( ScrollBar sender )
+				{
+					GameControlsManager.Instance.DeadZone = sender.Value;
+					textBox.Text = sender.Value.ToString();
+				};
+
+				( (Button)pageControls.Controls[ "ControlSave" ] ).Click += delegate( Button sender )
+				{
+					GameControlsManager.Instance.SaveCustomConfig();
+				};
+
+				Control message = window.Controls[ "TabControl/Controls/ListControls/Message" ];
+				ListBox controlsList = pageControls.Controls[ "ListControls" ] as ListBox;
+				controlsList.ItemMouseDoubleClick += delegate( object sender, ListBox.ItemMouseEventArgs e )
+				{
+					message.Text = "Type the new key (ESC to cancel)";
+					message.ColorMultiplier = new ColorValue( 1, 0, 0 );
+					Controls.Add( new KeyListener( sender ) );
+				};
+
+
+				( (Button)pageControls.Controls[ "Default" ] ).Click += delegate( Button sender )
+				{
+					GameControlsManager.Instance.ResetKeyMouseSettings();
+					GameControlsManager.Instance.ResetJoystickSettings();
+					UpdateBindedInputControlsListBox();
 				};
 
 				//Controls
-				UpdateBindedInputControlsTextBox();
-			}
+				//UpdateBindedInputControlsTextBox(); //original
+				UpdateBindedInputControlsListBox(); //End HellEnt
 
+
+
+			}
+			#endregion
 			//pageLanguage
 			{
 				Control pageLanguage = tabControl.Controls[ "Language" ];
@@ -756,77 +802,132 @@ namespace Game
 
 			EngineApp.Instance.VideoMode = size;
 		}
-
-		void UpdateBindedInputControlsTextBox()
+		void UpdateBindedInputControlsListBox()
 		{
 			Control pageControls = window.Controls[ "TabControl" ].Controls[ "Controls" ];
+			ListBox controlsList = pageControls.Controls[ "ListControls" ] as ListBox;
 
-			InputDevice inputDevice = comboBoxInputDevices.SelectedItem as InputDevice;
+			controlsList.Items.Clear();
 
-			string text = "";
-
-			foreach( GameControlsManager.GameControlItem item in
-				GameControlsManager.Instance.Items )
+			var device = Devices.Keyboard;
+			if( comboBoxInputDevices.SelectedIndex != 0 )
 			{
-				string valueStr = "";
-
-				//keys and mouse buttons
-				if( inputDevice == null )
+				if( comboBoxInputDevices.SelectedItem.ToString().ToLower().Contains( "xbox360" ) )
 				{
-					foreach( GameControlsManager.SystemKeyboardMouseValue value in
-						item.DefaultKeyboardMouseValues )
-					{
-						if( valueStr != "" )
-							valueStr += ", ";
-
-						switch( value.Type )
-						{
-						case GameControlsManager.SystemKeyboardMouseValue.Types.Key:
-							valueStr += string.Format( "\"{0}\" key", value.Key );
-							break;
-
-						case GameControlsManager.SystemKeyboardMouseValue.Types.MouseButton:
-							valueStr += string.Format( "\"{0}\" mouse button", value.MouseButton );
-							break;
-						}
-					}
+					device = Devices.Xbox360;
 				}
-
-				//joystick
-				JoystickInputDevice joystickInputDevice = inputDevice as JoystickInputDevice;
-				if( joystickInputDevice != null )
+				else
 				{
-					foreach( GameControlsManager.SystemJoystickValue value in
-						item.DefaultJoystickValues )
-					{
-						if( valueStr != "" )
-							valueStr += ", ";
-
-						switch( value.Type )
-						{
-						case GameControlsManager.SystemJoystickValue.Types.Button:
-							if( joystickInputDevice.GetButtonByName( value.Button ) != null )
-								valueStr += string.Format( "\"{0}\"", value.Button );
-							break;
-
-						case GameControlsManager.SystemJoystickValue.Types.Axis:
-							if( joystickInputDevice.GetAxisByName( value.Axis ) != null )
-								valueStr += string.Format( "axis \"{0} {1}\"", value.Axis, value.AxisFilter );
-							break;
-
-						case GameControlsManager.SystemJoystickValue.Types.POV:
-							if( joystickInputDevice.GetPOVByName( value.POV ) != null )
-								valueStr += string.Format( "\"{0} {1}\"", value.POV, value.POVDirection );
-							break;
-						}
-					}
+					device = Devices.Joystick;
 				}
-
-				if( valueStr != "" )
-					text += string.Format( "{0} - {1}\n", item.ControlKey.ToString(), valueStr );
 			}
 
-			pageControls.Controls[ "Controls" ].Text = text;
+
+
+			foreach( GameControlsManager.GameControlItem item in GameControlsManager.Instance.Items )
+			{
+
+				if( device == Devices.Keyboard )
+				{
+					if( item.BindedKeyboardMouseValues.Count > 0 )
+					{
+						foreach( var key in item.BindedKeyboardMouseValues )
+						{
+							controlsList.Items.Add( key );
+						}
+
+					}
+					else
+					{
+						controlsList.Items.Add( new GameControlsManager.SystemKeyboardMouseValue() { Parent = item, Unbound = true } );
+					}
+				}
+				else
+				{
+					var unbound = true;
+					foreach( var key in item.bindedJoystickValues )
+					{
+						if( device == Devices.Xbox360 )
+						{
+							if( key.Type == GameControlsManager.SystemJoystickValue.Types.Button )
+							{
+								if( key.Button.ToString().ToLower().Contains( "xbox360" ) )
+								{
+									controlsList.Items.Add( key );
+									unbound = false;
+								}
+							}
+							else if( key.Type == GameControlsManager.SystemJoystickValue.Types.Axis )
+							{
+								if( key.Axis.ToString().ToLower().Contains( "xbox360" ) )
+								{
+									controlsList.Items.Add( key );
+									unbound = false;
+								}
+							}
+						}
+						else
+						{
+							if( key.Type == GameControlsManager.SystemJoystickValue.Types.Button )
+							{
+								if( key.Button.ToString().ToLower().Contains( "xbox360" ) )
+								{
+									continue;
+								}
+							}
+							else if( key.Type == GameControlsManager.SystemJoystickValue.Types.Axis )
+							{
+								if( key.Axis.ToString().ToLower().Contains( "xbox360" ) )
+								{
+									continue;
+								}
+							}
+							controlsList.Items.Add( key );
+							unbound = false;
+						}
+
+					}
+					if( unbound )
+					{
+						controlsList.Items.Add( new GameControlsManager.SystemJoystickValue() { Parent = item, Unbound = true } );
+					}
+
+				}
+
+
+			}
+
+
+		}
+
+		protected override void OnControlDetach( Control control )
+		{
+			if( control as KeyListener != null && window.Controls.Count > 0 )
+			{
+				Control message = window.Controls[ "TabControl/Controls/ListControls/Message" ];
+				message.Text = " Double click to change the key";
+				message.ColorMultiplier = new ColorValue( 1, 1, 1 );
+				UpdateBindedInputControlsListBox();
+			}
+
+			base.OnControlDetach( control );
+		}
+
+		protected override bool OnMouseWheel( int delta )
+		{
+			//quick fix until NA Fix mouse wheel to revers render order
+			foreach( var control in Controls )
+			{
+				if( control is KeyListener )
+				{
+					var keyListener = control as KeyListener;
+					if( keyListener.DoMouseWheel( delta ) )
+						return true;
+				}
+			}
+			if( base.OnMouseWheel( delta ) )
+				return true;
+			return false;
 		}
 
 		protected override bool OnKeyDown( KeyEvent e )
@@ -839,6 +940,12 @@ namespace Game
 				return true;
 			}
 			return false;
+		}
+
+		protected override void OnDetach()
+		{
+			GameControlsManager.Instance.SaveCustomConfig();
+			base.OnDetach();
 		}
 
 		void tabControl_SelectedIndexChange( TabControl sender )
