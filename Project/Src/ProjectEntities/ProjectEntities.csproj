@@ -138,6 +138,7 @@
     <Compile Include="BooleanSwitch.cs" />
     <Compile Include="Action Specific\Tank.cs" />
     <Compile Include="ExampleEntityExtendedProperties.cs" />
+    <Compile Include="SelectiveSpawnPoint.cs" />
     <Compile Include="WaterPlaneClipVolume.cs" />
     <Compile Include="DynamicSinusoidSurface.cs" />
     <Compile Include="SimpleMap.cs" />
