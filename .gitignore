@@ -1,4 +1,6 @@
 obj
+LogicSystemCache
+Project/Bin/UserSettings
 thumbs.db
 *.csproj.user
 FreeEdition.suo
