@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CarType_TireTypes.cs" />
-    <Compile Include="Copy of CarType_TireTypes.cs" />
+    <Compile Include="CarType_SteerVsForwardSpeedTableCollectionEditors.cs" />
     <Compile Include="RTSFactionManager_Editor.cs" />
     <Compile Include="Dynamic_Editor.cs" />
     <Compile Include="DecalCreator_Editor.cs" />
