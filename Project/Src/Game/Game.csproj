@@ -29,7 +29,7 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>Game.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Game.xml</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
@@ -42,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>Game.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Game.xml</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>

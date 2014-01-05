@@ -29,7 +29,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>1591</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>ProjectEntities.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\ProjectEntities.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>ProjectEntities.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\ProjectEntities.xml</DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
