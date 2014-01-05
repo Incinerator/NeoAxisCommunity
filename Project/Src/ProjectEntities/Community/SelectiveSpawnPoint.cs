@@ -14,7 +14,7 @@ using Engine.SoundSystem;
 using Engine.Utils;
 using ProjectEntities;
 
-namespace GameEntities
+namespace GameEntities.Community
 {
 	/// <summary>
 	/// Defines the <see cref="SelectiveSpawnPoint"/> entity type.
