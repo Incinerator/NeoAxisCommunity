@@ -1,7 +1,7 @@
 type Elevator
 {
 	class = Elevator
-	physicsModel = "Types\\Dynamic\\Elevator\\Elevator.physics"
+	physicsModel = "Community\\Types\\Dynamic\\Elevator\\Elevator.physics"
 	attachedObjects
 	{
 		mesh
