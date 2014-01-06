@@ -137,6 +137,7 @@
     <Compile Include="Aircraft.cs" />
     <Compile Include="BooleanSwitch.cs" />
     <Compile Include="Action Specific\Tank.cs" />
+    <Compile Include="Elevator.cs" />
     <Compile Include="ExampleEntityExtendedProperties.cs" />
     <Compile Include="SelectiveSpawnPoint.cs" />
     <Compile Include="WaterPlaneClipVolume.cs" />
@@ -215,6 +216,9 @@
       <Name>ProjectCommon</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Community\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

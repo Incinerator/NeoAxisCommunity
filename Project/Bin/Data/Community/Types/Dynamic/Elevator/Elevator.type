@@ -1,0 +1,14 @@
+type Elevator
+{
+	class = Elevator
+	physicsModel = "Community\\Types\\Dynamic\\Elevator\\Elevator.physics"
+	attachedObjects
+	{
+		mesh
+		{
+			meshName = "Base\\Simple Models\\Box.mesh"
+			position = 0 0 0.04834118
+			scale = 5 5 0.1
+		}
+	}
+}
