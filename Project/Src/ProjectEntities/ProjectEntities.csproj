@@ -137,9 +137,9 @@
     <Compile Include="Aircraft.cs" />
     <Compile Include="BooleanSwitch.cs" />
     <Compile Include="Action Specific\Tank.cs" />
-    <Compile Include="Elevator.cs" />
+    <Compile Include="Community\Elevator.cs" />
     <Compile Include="ExampleEntityExtendedProperties.cs" />
-    <Compile Include="SelectiveSpawnPoint.cs" />
+    <Compile Include="Community\SelectiveSpawnPoint.cs" />
     <Compile Include="WaterPlaneClipVolume.cs" />
     <Compile Include="DynamicSinusoidSurface.cs" />
     <Compile Include="SimpleMap.cs" />
