@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleAddonCreationMEAddon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleAddonCreationREAddon", "Components\ExampleAddonCreationREAddon\ExampleAddonCreationREAddon.csproj", "{25FE9321-E673-47B3-9B22-EAB4D59DA90E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugWindow", "Components\DebugWindow\DebugWindow.csproj", "{6CBC6F9C-1FF1-4D86-A2D2-71E81017E01F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{25FE9321-E673-47B3-9B22-EAB4D59DA90E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25FE9321-E673-47B3-9B22-EAB4D59DA90E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25FE9321-E673-47B3-9B22-EAB4D59DA90E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CBC6F9C-1FF1-4D86-A2D2-71E81017E01F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CBC6F9C-1FF1-4D86-A2D2-71E81017E01F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CBC6F9C-1FF1-4D86-A2D2-71E81017E01F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CBC6F9C-1FF1-4D86-A2D2-71E81017E01F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
