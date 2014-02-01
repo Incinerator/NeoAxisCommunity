@@ -437,5 +437,9 @@ namespace ProjectCommon
 			}
 		}
 
+		public override bool IsSupportsStaticBatching()
+		{
+			return false;
+		}
 	}
 }

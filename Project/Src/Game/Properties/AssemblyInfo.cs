@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "NeoAxis Group Ltd." )]
 [assembly: AssemblyProduct( "Game" )]
-[assembly: AssemblyCopyright( "Copyright © 2006-2013 NeoAxis Group Ltd." )]
+[assembly: AssemblyCopyright( "Copyright © 2006-2014 NeoAxis Group Ltd." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion( "2.0.0.0" )]
-[assembly: AssemblyFileVersion( "2.0.0.0" )]
+[assembly: AssemblyVersion( "2.1.0.0" )]
+[assembly: AssemblyFileVersion( "2.1.0.0" )]

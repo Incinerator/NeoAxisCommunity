@@ -1681,6 +1681,26 @@
             Adjusts the height of the orthographic camera type. See property CameraProjectionType for more information.
             </summary>
         </member>
+        <member name="P:Engine.MapSystem.Map.StaticBatchingRenderingEnabled">
+            <summary>
+            Enables static batching optimization for rendering static geometry. Static batching is the special optimization to 
+            reduce amount of draw calls on GPU. Static batching works only for StaticMesh objects.
+            </summary>
+        </member>
+        <member name="P:Engine.MapSystem.Map.StaticBatchingPhysicsEnabledInMapEditor">
+            <summary>
+            Enables static batching optimization for collision detection of static geometry in Map Editor. Static batching 
+            optimization is a unification of the physical bodies into large to reduce amount of bodies on the map. Static 
+            batching works only for StaticMesh objects.
+            </summary>
+        </member>
+        <member name="P:Engine.MapSystem.Map.StaticBatchingPhysicsEnabledInSimulation">
+            <summary>
+            Enables static batching optimization for collision detection of static geometry in simulation (Game.exe). Static 
+            batching optimization is a unification of the physical bodies into large to reduce amount of bodies on the map. 
+            Static batching works only for StaticMesh objects.
+            </summary>
+        </member>
         <member name="P:Engine.MapSystem.Map.SceneGraphSettingsProperties.AmountOfObjectsOutsideOctreeBoundsToRebuld">
             <summary>
             Limit number of objects outside the dimensions of count required to rebuild the graph.
@@ -3362,6 +3382,23 @@
         <member name="P:Engine.MapSystem.StaticMesh.RenderingDistanceForShadows">
             <summary>
             It is the maximum distance between the camera and the object after which the shadows of the objects are no longer rendered. A value of zero means that the visibility of the shadows will not be limited depending on the distance.
+            </summary>
+        </member>
+        <member name="P:Engine.MapSystem.StaticMesh.AllowStaticBatching">
+            <summary>
+            A value indicating that the using of the static batching feature is allowed for this object. Static batching is the 
+            feature to improve rendering and physics performance. 1. Enables static batching optimization for rendering static 
+            geometry. Static batching is a special optimization that reduce the amount of draw calls on GPU. 2. Enables static 
+            batching optimization for collision detection of static geometry. Static batching optimization merges physical bodies 
+            into big tiles in order to reduce the amount of bodies on the map. To enable static batching feature see properties 
+            of Map object: Map.StaticBatchingRenderingEnabled, Map.StaticBatchingPhysicsEnabledInMapEditor, 
+            Map.StaticBatchingPhysicsEnabledInSimulation.
+            </summary>
+        </member>
+        <member name="P:Engine.MapSystem.StaticMesh.AllowGeometryInstancing">
+            <summary>
+            A value indicating that the using Hardware Geometry Instancing feature is allowed for this object. 
+            Hardware Geometry Instancing is the special optimization to reduce amount of draw calls on GPU.
             </summary>
         </member>
         <member name="T:Engine.MapSystem.MapObjectCreateLight">

@@ -7,8 +7,8 @@ windSpeed = 1
 resetYCoordinateForDynamicBodies = False
 destroyObjectsBelowHeight = -500
 ambientLight = 0.5882353 0.5882353 0.5882353
-editorCameraPosition = -19.32853 -18.22585 6.013847
-editorCameraDirection = 0.7020571 -0.2869877
+editorCameraPosition = -20.51348 -10.69698 5.139172
+editorCameraDirection = 5.568235 -0.3778048
 shadowColor = 1 1 1
 shadowFarDistance = 40
 shadowPSSMSplitFactors = 0.2 0.5
@@ -43,6 +43,7 @@ entity
 	forceMaximum = 168000
 	influenceRegionScale = 20 3 3
 	throttle = 0
+	healthFactorAtBeginning = 1
 	position = -12 -12 -0.9952391
 	rotation = 0 -0.7071068 0 0.7071068
 	scale = 20 3 3
@@ -56,6 +57,7 @@ entity
 	forceMaximum = 168000
 	influenceRegionScale = 20 3 3
 	throttle = 0
+	healthFactorAtBeginning = 1
 	position = -12 12 -0.9952391
 	rotation = 0 -0.707106 0 0.707106
 	scale = 20 3 3
@@ -69,6 +71,7 @@ entity
 	forceMaximum = 168000
 	influenceRegionScale = 20 3 3
 	throttle = 0
+	healthFactorAtBeginning = 1
 	position = 12 -12 -0.9952391
 	rotation = 0 -0.707106 0 0.707106
 	scale = 20 3 3
@@ -82,6 +85,7 @@ entity
 	forceMaximum = 168000
 	influenceRegionScale = 20 3 3
 	throttle = 0
+	healthFactorAtBeginning = 1
 	position = 12 12 -0.9952391
 	rotation = 0 -0.707106 0 0.707106
 	scale = 20 3 3
@@ -93,6 +97,7 @@ entity
 	uin = 7
 	classPrompt = WeaponItem
 	respawnTime = 10
+	healthFactorAtBeginning = 1
 	position = -20.71729 -15.40486 0.5777563
 	rotation = 0 0 0.5506705 0.8347227
 }
@@ -103,6 +108,7 @@ entity
 	classPrompt = Terminal
 	subscriptionsToDeletionEvent = 12
 	initialControl = "Gui\\PhysicsDemoTerminal.gui"
+	healthFactorAtBeginning = 1
 	position = -11.59396 -18.7831 2.046814
 	rotation = 0 0 -1 1.216796E-08
 	name = Terminal_0
@@ -308,6 +314,7 @@ entity
 	uin = 32
 	classPrompt = HealthItem
 	respawnTime = 10
+	healthFactorAtBeginning = 1
 	position = -15.48706 -20.68667 0.2532427
 	rotation = 0 0 0.9867585 0.1621963
 }
@@ -317,6 +324,7 @@ entity
 	uin = 33
 	classPrompt = WeaponItem
 	respawnTime = 10
+	healthFactorAtBeginning = 1
 	position = -20.71517 -13.34895 0.4753142
 	rotation = 0 0 0.3813629 0.9244254
 }
@@ -1118,6 +1126,7 @@ entity
 	active = True
 	changeMapName = "Maps\\MainDemo\\Map.map"
 	changeMapSpawnObjectName = Teleporter_Maps
+	healthFactorAtBeginning = 1
 	position = -20 -20 0.5683844
 	rotation = 0 0 0.3826835 0.9238796
 	name = Teleporter_0
@@ -1128,6 +1137,7 @@ entity
 	uin = 102
 	classPrompt = HealthItem
 	respawnTime = 10
+	healthFactorAtBeginning = 1
 	position = -14.07013 -20.68667 0.2532427
 	rotation = 0 0 0.9867585 0.1621963
 }

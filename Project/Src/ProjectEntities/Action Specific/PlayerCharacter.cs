@@ -865,9 +865,11 @@ namespace ProjectEntities
 				AnimationTree tree = armsAttachedMesh.AnimationTree;
 				if( tree != null )
 				{
+					bool onGround = GetElapsedTimeSinceLastGroundContact() < .2f;//IsOnGround();
+
 					bool move = false;
 					float moveSpeed = 0;
-					if( IsOnGround() && GroundRelativeVelocity.ToVec2().LengthSqr() > .1f )
+					if( onGround && GroundRelativeVelocitySmooth.ToVec2().Length() > .05f )
 					{
 						move = true;
 						moveSpeed = GroundRelativeVelocity.ToVec2().Length();

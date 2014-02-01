@@ -51,7 +51,7 @@ control "Gui\\Controls\\DefaultWindow.gui"
 		position = ScaleByResolution -0.4960327 431
 		horizontalAlign = Center
 		size = Screen 0.4912187 0.01999994
-		text = 2013 NeoAxis Group Ltd.
+		text = 2014 NeoAxis Group Ltd.
 	}
 	control Control
 	{

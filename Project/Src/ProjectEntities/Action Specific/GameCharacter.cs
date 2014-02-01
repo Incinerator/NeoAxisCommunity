@@ -56,14 +56,14 @@ namespace ProjectEntities
 				AnimationTree tree = GetFirstAnimationTree();
 				if( tree != null )
 				{
+					bool onGround = GetElapsedTimeSinceLastGroundContact() < .2f;//IsOnGround();
+
 					bool move = false;
 					Degree moveAngle = 0;
 					float moveSpeed = 0;
-
-					if( IsOnGround() && GroundRelativeVelocity.ToVec2().LengthSqr() > .1f )
+					if( onGround && GroundRelativeVelocitySmooth.ToVec2().Length() > .05f )
 					{
 						move = true;
-
 						Vec2 localVec = ( Rotation.GetInverse() * GroundRelativeVelocity ).ToVec2();
 						Radian angle = MathFunctions.ATan( localVec.Y, localVec.X );
 						moveAngle = angle.InDegrees();
@@ -74,7 +74,7 @@ namespace ProjectEntities
 					tree.SetParameterValue( "run", move && IsNeedRun() ? 1 : 0 );
 					tree.SetParameterValue( "moveAngle", moveAngle );
 					tree.SetParameterValue( "moveSpeed", moveSpeed );
-					tree.SetParameterValue( "fly", !IsOnGround() ? 1 : 0 );
+					tree.SetParameterValue( "fly", !onGround ? 1 : 0 );
 				}
 			}
 		}
