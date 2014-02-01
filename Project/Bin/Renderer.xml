@@ -126,6 +126,11 @@
             for a smooth adjustment.
             </remarks>
         </member>
+        <member name="P:Engine.Renderer.ColourFaderAffector2.StateChange">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:Engine.Renderer.ColourInterpolatorAffector">
             <summary>
             This subclass of ParticleAffector allows you to alter the colour of particles.
@@ -781,6 +786,15 @@
             </para>
             </remarks>
         </member>
+        <member name="M:Engine.Renderer.VertexDeclaration.GetElementCount">
+            <summary>Gets element count.</summary>
+        </member>
+        <member name="M:Engine.Renderer.VertexDeclaration.GetElement(System.Int32)">
+            <summary>Gets element by index.</summary>
+        </member>
+        <member name="M:Engine.Renderer.VertexDeclaration.GetElements">
+            <summary>Gets elements in the declaration.</summary>
+        </member>
         <member name="M:Engine.Renderer.VertexDeclaration.Sort">
             <summary>
             Sorts the elements in this list to be compatible with the maximum
@@ -956,9 +970,6 @@
             <summary>Gets the vertex size defined by this declaration for a given source.</summary>
             <param name="source">The source.</param>
             <returns>The vertex size in bytes.</returns>
-        </member>
-        <member name="P:Engine.Renderer.VertexDeclaration.Elements">
-            <summary>Gets elements in the declaration. Don't modify.</summary>
         </member>
         <member name="T:Engine.Renderer.VertexBufferBinding">
             <summary>

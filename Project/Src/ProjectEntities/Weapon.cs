@@ -153,8 +153,10 @@ namespace ProjectEntities
 
 			//it is not known how will be used this sound (2D or 3D?).
 			//Sound will preloaded as 3D only here.
-			PreloadSound( weaponNormalMode.SoundFire, SoundMode.Mode3D );
-			PreloadSound( weaponAlternativeMode.SoundFire, SoundMode.Mode3D );
+			if( weaponNormalMode != null )
+				PreloadSound( weaponNormalMode.SoundFire, SoundMode.Mode3D );
+			if( weaponAlternativeMode != null )
+				PreloadSound( weaponAlternativeMode.SoundFire, SoundMode.Mode3D );
 		}
 	}
 

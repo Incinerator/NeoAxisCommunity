@@ -221,7 +221,7 @@ namespace ProjectEntities
 
 				GameCharacter controlledObj = Owner.ControlledObject;
 
-				if( IsAllowUpdateControlledObject() && controlledObj.IsOnGround() )
+				if( IsAllowUpdateControlledObject() && controlledObj.GetElapsedTimeSinceLastGroundContact() < .3f )//IsOnGround() )
 				{
 					//update path controller
 					Owner.pathController.Update( Entity.TickDelta, controlledObj.Position,
@@ -321,7 +321,7 @@ namespace ProjectEntities
 
 				GameCharacter controlledObj = Owner.ControlledObject;
 
-				if( IsAllowUpdateControlledObject() && controlledObj.IsOnGround() )
+				if( IsAllowUpdateControlledObject() && controlledObj.GetElapsedTimeSinceLastGroundContact() < .3f )//IsOnGround() )
 				{
 					float targetDistance = ( GetTargetPosition() - controlledObj.Position ).Length();
 

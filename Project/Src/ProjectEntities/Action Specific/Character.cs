@@ -45,6 +45,10 @@ namespace ProjectEntities
 		[FieldSerialize]
 		float mass = massDefault;
 
+		const float minSpeedToSleepBodyDefault = .5f;
+		[FieldSerialize]
+		float minSpeedToSleepBody = minSpeedToSleepBodyDefault;
+
 		//walk
 
 		const float walkForwardMaxSpeedDefault = 1.0f;
@@ -176,6 +180,13 @@ namespace ProjectEntities
 		{
 			get { return mass; }
 			set { mass = value; }
+		}
+
+		[DefaultValue( minSpeedToSleepBodyDefault )]
+		public float MinSpeedToSleepBody
+		{
+			get { return minSpeedToSleepBody; }
+			set { minSpeedToSleepBody = value; }
 		}
 
 		//walk
@@ -372,17 +383,20 @@ namespace ProjectEntities
 	{
 		Body mainBody;
 
+		//on ground and flying states
 		[FieldSerialize( FieldSerializeSerializationTypes.World )]
 		float mainBodyGroundDistance = 1000;//from center of body
 		Body groundBody;
+		[FieldSerialize( FieldSerializeSerializationTypes.World )]
+		float onGroundTime;
+		[FieldSerialize( FieldSerializeSerializationTypes.World )]
+		float notOnGroundTime;
+		Vec3 lastTickPosition;
 
 		[FieldSerialize( FieldSerializeSerializationTypes.World )]
 		float jumpInactiveTime;
 		[FieldSerialize( FieldSerializeSerializationTypes.World )]
 		float shouldJumpTime;
-
-		[FieldSerialize( FieldSerializeSerializationTypes.World )]
-		float onGroundTime;
 
 		Vec3 turnToPosition;
 		Radian horizontalDirectionForUpdateRotation;
@@ -397,6 +411,8 @@ namespace ProjectEntities
 
 		Vec3 groundRelativeVelocity;
 		Vec3 server_sentGroundRelativeVelocity;
+		Vec3[] groundRelativeVelocitySmoothArray;
+		Vec3 groundRelativeVelocitySmooth;
 
 		//damageFastChangeSpeed
 		Vec3 damageFastChangeSpeedLastVelocity = new Vec3( float.NaN, float.NaN, float.NaN );
@@ -476,7 +492,13 @@ namespace ProjectEntities
 
 		public bool IsOnGround()
 		{
-			return mainBodyGroundDistance - .1f < Type.DistanceFromPositionToFloor && groundBody != null;
+			const float maxThreshold = .2f;
+			return mainBodyGroundDistance - maxThreshold < Type.DistanceFromPositionToFloor && groundBody != null;
+		}
+
+		public float GetElapsedTimeSinceLastGroundContact()
+		{
+			return notOnGroundTime;
 		}
 
 		protected override void OnSave( TextBlock block )
@@ -573,10 +595,11 @@ namespace ProjectEntities
 		/// <summary>Overridden from <see cref="Engine.EntitySystem.Entity.OnTick()"/>.</summary>
 		protected override void OnTick()
 		{
-			//we call this before OnTick for using old value of MainBody.LinearVelocity
-			CalculateGroundRelativeVelocity();
-
 			base.OnTick();
+
+			//clear groundBody when disposed
+			if( groundBody != null && groundBody.IsDisposed )
+				groundBody = null;
 
 			TickMovement();
 
@@ -588,24 +611,35 @@ namespace ProjectEntities
 				TickJump( false );
 
 			if( IsOnGround() )
+			{
 				onGroundTime += TickDelta;
+				notOnGroundTime = 0;
+			}
 			else
+			{
 				onGroundTime = 0;
+				notOnGroundTime += TickDelta;
+			}
+		
+			CalculateGroundRelativeVelocity();
 
 			if( forceMoveVectorTimer != 0 )
 				forceMoveVectorTimer--;
 
 			if( Type.DamageFastChangeSpeedFactor != 0 )
 				DamageFastChangeSpeedTick();
+
+			lastTickPosition = Position;
 		}
 
 		/// <summary>Overridden from <see cref="Engine.EntitySystem.Entity.Client_OnTick()"/>.</summary>
 		protected override void Client_OnTick()
 		{
-			//we call this before OnTick for using old value of MainBody.LinearVelocity
-			CalculateGroundRelativeVelocity();
-
 			base.Client_OnTick();
+
+			//clear groundBody when disposed
+			if( groundBody != null && groundBody.IsDisposed )
+				groundBody = null;
 
 			Vec3 shouldAddForce;
 			CalculateMainBodyGroundDistanceAndGroundBody( out shouldAddForce );
@@ -614,6 +648,12 @@ namespace ProjectEntities
 				onGroundTime += TickDelta;
 			else
 				onGroundTime = 0;
+			if( !IsOnGround() )
+				notOnGroundTime += TickDelta;
+			else
+				notOnGroundTime = 0;
+			CalculateGroundRelativeVelocity();
+			lastTickPosition = Position;
 		}
 
 		public bool IsNeedRun()
@@ -750,7 +790,7 @@ namespace ProjectEntities
 				maxSpeed *= speedCoefficient;
 				force *= speedCoefficient;
 
-				if( mainBody.LinearVelocity.Length() < maxSpeed )
+				if( GetLinearVelocity().Length() < maxSpeed )
 				{
 					mainBody.AddForce( ForceType.Global, 0, new Vec3( forceVec.X, forceVec.Y, 0 ) *
 						force * TickDelta, Vec3.Zero );
@@ -787,10 +827,6 @@ namespace ProjectEntities
 
 		void TickMovement()
 		{
-			//clear groundBody when disposed
-			if( groundBody != null && groundBody.IsDisposed )
-				groundBody = null;
-
 			//wake up when ground is moving
 			if( mainBody.Sleeping && groundBody != null && !groundBody.Sleeping &&
 				( groundBody.LinearVelocity.LengthSqr() > .3f ||
@@ -861,21 +897,24 @@ namespace ProjectEntities
 				{
 					bool groundStopped = groundBody.Sleeping ||
 						( groundBody.LinearVelocity.LengthSqr() < .3f && groundBody.AngularVelocity.LengthSqr() < .3f );
-					if( groundStopped && mainBody.LinearVelocity.LengthSqr() < 1.0f )
+					if( groundStopped && GetLinearVelocity().Length() < Type.MinSpeedToSleepBody )
 						needSleep = true;
+				}
+
+				//strange fix for PhysX. The character can frezee in fly with zero linear velocity.
+				if( PhysicsWorld.Instance.IsPhysX() )
+				{
+					if( !needSleep && mainBody.LinearVelocity == Vec3.Zero && lastTickPosition == Position )
+					{
+						mainBody.Sleeping = true;
+						needSleep = false;
+					}
 				}
 
 				if( needSleep )
 					allowToSleepTime += TickDelta;
 				else
 					allowToSleepTime = 0;
-
-				////strange fix for PhysX. The character can frezee in fly with zero linear velocity.
-				//if( PhysicsWorld.Instance.IsPhysX() )
-				//{
-				//   if( !needSleep && mainBody.LinearVelocity == Vec3.Zero )
-				//      mainBody.Sleeping = false;
-				//}
 
 				mainBody.Sleeping = allowToSleepTime > TickDelta * 2.5f;
 				//mainBody.Sleeping = needSleep;
@@ -976,7 +1015,6 @@ namespace ProjectEntities
 			if( IsOnGround() && onGroundTime > TickDelta && jumpInactiveTime == 0 && shouldJumpTime != 0 )
 			{
 				Vec3 vel = mainBody.LinearVelocity;
-
 				vel.Z = Type.JumpSpeed;
 				mainBody.LinearVelocity = vel;
 				Position += new Vec3( 0, 0, .05f );
@@ -1028,8 +1066,13 @@ namespace ProjectEntities
 			if( EntitySystemWorld.Instance.IsServer() || EntitySystemWorld.Instance.IsSingle() )
 			{
 				//server or single mode
-				if( IsOnGround() && groundBody.AngularVelocity.LengthSqr() < .3f )
-					groundRelativeVelocity = mainBody.LinearVelocity - groundBody.LinearVelocity;
+
+				if( mainBody != null )
+				{
+					groundRelativeVelocity = GetLinearVelocity();
+					if( groundBody != null && groundBody.AngularVelocity.LengthSqr() < .3f )
+						groundRelativeVelocity -= groundBody.LinearVelocity;
+				}
 				else
 					groundRelativeVelocity = Vec3.Zero;
 
@@ -1050,12 +1093,40 @@ namespace ProjectEntities
 				//groundRelativeVelocity is updated from server, 
 				//because body velocities are not synchronized via network.
 			}
+
+			//groundRelativeVelocityToSmooth
+			if( groundRelativeVelocitySmoothArray == null )
+			{
+				float seconds = .2f;
+				float count = ( seconds / TickDelta ) + .999f;
+				groundRelativeVelocitySmoothArray = new Vec3[ (int)count ];
+			}
+			for( int n = 0; n < groundRelativeVelocitySmoothArray.Length - 1; n++ )
+				groundRelativeVelocitySmoothArray[ n ] = groundRelativeVelocitySmoothArray[ n + 1 ];
+			groundRelativeVelocitySmoothArray[ groundRelativeVelocitySmoothArray.Length - 1 ] = groundRelativeVelocity;
+			groundRelativeVelocitySmooth = Vec3.Zero;
+			for( int n = 0; n < groundRelativeVelocitySmoothArray.Length; n++ )
+				groundRelativeVelocitySmooth += groundRelativeVelocitySmoothArray[ n ];
+			groundRelativeVelocitySmooth /= (float)groundRelativeVelocitySmoothArray.Length;
 		}
 
 		[Browsable( false )]
 		public Vec3 GroundRelativeVelocity
 		{
 			get { return groundRelativeVelocity; }
+		}
+
+		[Browsable( false )]
+		public Vec3 GroundRelativeVelocitySmooth
+		{
+			get { return groundRelativeVelocitySmooth; }
+		}
+
+		public Vec3 GetLinearVelocity()
+		{
+			if( EntitySystemWorld.Instance.Simulation )
+				return ( Position - lastTickPosition ) / TickDelta;
+			return Vec3.Zero;
 		}
 
 		void Server_SendJumpEventToAllClients()

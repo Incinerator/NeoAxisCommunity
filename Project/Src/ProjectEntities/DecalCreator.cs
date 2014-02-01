@@ -371,7 +371,9 @@ namespace ProjectEntities
 
 				//StaticMesh
 				{
-					StaticMesh staticMesh = StaticMesh.GetStaticMeshByBody( body );
+					StaticMesh staticMesh =
+						MapSystemWorld.GetMapObjectByShapeWithStaticBatchingSupport( shape, triangleID ) as StaticMesh;
+					//StaticMesh staticMesh = StaticMesh.GetStaticMeshByBody( body );
 					if( staticMesh != null )
 					{
 						if( staticMesh.AllowDecals == StaticMesh.DecalTypes.OnlySmall && smallDecal ||
