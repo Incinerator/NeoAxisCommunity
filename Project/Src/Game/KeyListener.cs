@@ -256,35 +256,35 @@ namespace Game
 					var evt = e as JoystickSliderChangedEvent;
 					if( evt != null )
 					{
-						//    var currentValue = evt.Axe == JoystickSliderAxes.X
-						//                ? evt.Slider.Value.X
-						//                : evt.Slider.Value.Y;
+						var currentValue = evt.Axis == JoystickSliderAxes.X
+									? evt.Slider.Value.X
+									: evt.Slider.Value.Y;
 
-						//    var filter = JoystickAxisFilters.DEADZONE;
-						//    if (currentValue < -GameControlsManager.DeadZone)
-						//    {
-						//        filter = JoystickAxisFilters.LessZero;
-						//    }
-						//    else if (currentValue > GameControlsManager.DeadZone)
-						//    {
-						//        filter = JoystickAxisFilters.GreaterZero;
-						//    }
+						var filter = JoystickAxisFilters.DEADZONE;
+						if( currentValue < -GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.LessZero;
+						}
+						else if( currentValue > GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.GreaterZero;
+						}
 
-						//    //pass the dead zone
-						//    if (filter != JoystickAxisFilters.DEADZONE)
-						//    {
-						//        _newJoystickValue = new GameControlsManager.SystemJoystickValue(evt.Slider.Name, evt.Axe,filter)
-						//        {
-						//            Parent = controlItem
-						//        };
-						//        GameControlsManager.SystemJoystickValue key;
-						//        if (GameControlsManager.Instance.IsAlreadyBinded(evt.Slider.Name, evt.Axe, out key))
-						//        {
-						//            message = "Slider " + evt.Slider.Name + "(" + evt.Axe + ") is already bound to  " +
-						//                      key.Parent.ControlKey + ". Override ?";
-						//            _conflictJoystickValue = key;
-						//        }
-						//    }
+						//pass the dead zone
+						if( filter != JoystickAxisFilters.DEADZONE )
+						{
+							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Slider.Name, evt.Axis, filter )
+							{
+								Parent = controlItem
+							};
+							GameControlsManager.SystemJoystickValue key;
+							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Slider.Name, evt.Axis, out key ) )
+							{
+								message = "Slider " + evt.Slider.Name + "(" + evt.Axis + ") is already bound to  " +
+										  key.Parent.ControlKey + ". Override ?";
+								_conflictJoystickValue = key;
+							}
+						}
 					}
 				}
 
