@@ -2,6 +2,8 @@ type Girl
 {
 	class = PlayerCharacter
 	radius = 0.3
+	runForwardMaxSpeed = 6
+	runSideMaxSpeed = 6
 	jumpSupport = True
 	jumpSpeed = 4.5
 	soundJump = ".\\Jump.ogg"

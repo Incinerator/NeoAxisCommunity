@@ -4139,5 +4139,18 @@ namespace ProjectCommon
 			return new MapItem[] { diffuse1Map, diffuse2Map, diffuse3Map, diffuse4Map, reflectionMap, emissionMap, specularMap, 
 				translucencyMap, normalMap, heightMap };
 		}
+
+		public override bool IsSupportsStaticBatching()
+		{
+			bool reflectionDynamicCubemap = false;
+			if( ( ReflectionColor != new ColorValue( 0, 0, 0 ) && ReflectionPower != 0 ) || reflectionScaleDynamic )
+			{
+				if( string.IsNullOrEmpty( ReflectionSpecificCubemap ) )
+					reflectionDynamicCubemap = true;
+			}
+			if( blending == MaterialBlendingTypes.Opaque && !reflectionDynamicCubemap )
+				return true;
+			return false;
+		}
 	}
 }

@@ -174,5 +174,10 @@ namespace ProjectCommon
 
 			base.OnClearBaseMaterial();
 		}
+
+		public override bool IsSupportsStaticBatching()
+		{
+			return false;
+		}
 	}
 }

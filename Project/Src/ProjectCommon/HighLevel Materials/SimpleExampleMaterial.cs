@@ -318,5 +318,10 @@ namespace ProjectCommon
 				return path;
 			return RelativePathUtils.ConvertToFullPath( Path.GetDirectoryName( FileName ), path );
 		}
+
+		public override bool IsSupportsStaticBatching()
+		{
+			return true;
+		}
 	}
 }

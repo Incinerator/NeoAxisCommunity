@@ -1496,7 +1496,7 @@ namespace ProjectCommon
 							byte* sourcePointer = (byte*)buffer.Lock( HardwareBuffer.LockOptions.ReadOnly );
 							sourcePointer += vertexData.VertexStart * vertexSize;
 
-							foreach( VertexElement element in vertexData.VertexDeclaration.Elements )
+							foreach( VertexElement element in vertexData.VertexDeclaration.GetElements() )
 							{
 								if( element.Source == source )
 								{
