@@ -50,6 +50,10 @@ namespace Game
 
 		ScreenControlManager controlManager;
 
+		#region Community Dev Tools
+		DebugWindow window;
+		#endregion
+
 		//
 
 		static float gamma = 1;
@@ -627,7 +631,33 @@ namespace Game
 				MakeScreenshot();
 				return true;
 			}
-
+			#region Community dev tools
+			//Live Debug Window
+			if( e.Key == EKeys.PageUp && !EngineApp.Instance.FullScreen )
+			{
+				//the order of if's is important
+				
+				if( window == null )//create
+				{
+					window = new DebugWindow();
+					window.Show();
+					window.SaveEntityType();
+					EngineApp.Instance.MouseRelativeMode = window.Visible;
+				}
+				else if( window != null && window.Visible )
+				{
+					window.Visible = false;
+					window.Hide();
+					EngineApp.Instance.MouseRelativeMode = window.Visible;
+				}
+				else //if( window != null && !window.Visible )
+				{
+					window.Visible = true;
+					window.Activate();
+					EngineApp.Instance.MouseRelativeMode = window.Visible;
+				}
+			}
+			#endregion
 			return base.OnKeyDown( e );
 		}
 

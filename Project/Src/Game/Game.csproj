@@ -122,6 +122,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="UISystem, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Bin\UISystem.dll</HintPath>
@@ -190,6 +191,10 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Components\DebugWindow\DebugWindow.csproj">
+      <Project>{6CBC6F9C-1FF1-4D86-A2D2-71E81017E01F}</Project>
+      <Name>DebugWindow</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectCommon\ProjectCommon.csproj">
       <Project>{E4C09433-ECC3-404C-A303-E9A93F241B91}</Project>
       <Name>ProjectCommon</Name>
