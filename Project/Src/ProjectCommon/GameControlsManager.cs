@@ -86,8 +86,7 @@ namespace ProjectCommon
 			value = new GameControlsManager.SystemJoystickValue( pov, direction );
 		}
 
-		//public DefaultJoystickValueAttribute(JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter) //Incin change for 2.0
-		public DefaultJoystickValueAttribute(JoystickSliders slider, JoystickAxes axis, JoystickAxisFilters filter)
+		public DefaultJoystickValueAttribute(JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter)
 		{
 			value = new GameControlsManager.SystemJoystickValue(slider, axis,filter);
 		}
@@ -389,8 +388,7 @@ namespace ProjectCommon
 			JoystickPOVs pov;
 			JoystickPOVDirections povDirection;
 			JoystickSliders slider;
-			//JoystickSliderAxes sliderAxis; //Incin change for 2.0
-			JoystickAxes sliderAxis; //temporary until 2.0 
+			JoystickSliderAxes sliderAxis;
 			private GameControlItem _parent;
 
 			public GameControlItem Parent
@@ -436,8 +434,7 @@ namespace ProjectCommon
 				this.povDirection = povDirection;
 			}
 
-			//public SystemJoystickValue(JoystickSliders slider, JoystickSliderAxes axe,JoystickAxisFilters filter)//Incin change for 2.0
-			public SystemJoystickValue(JoystickSliders slider, JoystickAxes axe,JoystickAxisFilters filter)
+			public SystemJoystickValue(JoystickSliders slider, JoystickSliderAxes axe,JoystickAxisFilters filter)
 			{
 				type = Types.Slider;
 				this.slider = slider;
@@ -481,8 +478,7 @@ namespace ProjectCommon
 				get { return slider; }
 			}
 
-			//public JoystickSliderAxes SliderAxis //Incin change for 2.0
-			public JoystickAxes SliderAxis
+			public JoystickSliderAxes SliderAxis
 			{
 				get { return sliderAxis; }
 			}
@@ -559,8 +555,7 @@ namespace ProjectCommon
                 {
                     var slideraxis = block.GetAttribute("sliderAxis");
                     if (!string.IsNullOrEmpty(slideraxis))
-                        //value.sliderAxis = (JoystickSliderAxes)Enum.Parse(typeof(JoystickSliderAxes), slideraxis); // Incin -- uncomment for 2.0 support when available
-                        value.sliderAxis = (JoystickAxes)Enum.Parse(typeof(JoystickAxes), slideraxis);
+                       value.sliderAxis = (JoystickSliderAxes)Enum.Parse(typeof(JoystickSliderAxes), slideraxis); 
 
                 }
                 return value;
@@ -1094,84 +1089,82 @@ namespace ProjectCommon
 			}
 
 			//JoystickSliderChangedEvent
-			//Incin -- This code portion isn't implemented in the 2.0 source -- still needs evt.Axe to uncomment..
-			// Hopefully Ivan will have time to get around to it soon.
 			{
 				JoystickSliderChangedEvent evt = e as JoystickSliderChangedEvent;
 				if( evt != null )
 				{
 					bool handled = false;
-					//foreach (GameControlItem item in items)
-					//{
+					foreach( GameControlItem item in items )
+					{
 
-					//    if (item.BindedJoystickValues.Count > 0)
-					//    {
-					//        foreach (SystemJoystickValue value in item.BindedJoystickValues)
-					//        {
-					//            if (value.Type == SystemJoystickValue.Types.Slider &&
-					//                value.Slider == evt.Slider.Name && value.SliderAxis==evt.Axe)
-					//            {
-					//                var currentValue = evt.Axe == JoystickSliderAxes.X
-					//                    ? evt.Slider.Value.X
-					//                    : evt.Slider.Value.Y;
+						if( item.BindedJoystickValues.Count > 0 )
+						{
+							foreach( SystemJoystickValue value in item.BindedJoystickValues )
+							{
+								if( value.Type == SystemJoystickValue.Types.Slider &&
+									value.Slider == evt.Slider.Name && value.SliderAxis == evt.Axis )
+								{
+									var currentValue = evt.Axis == JoystickSliderAxes.X
+										? evt.Slider.Value.X
+										: evt.Slider.Value.Y;
 
-					//                float strength = 0f;
+									float strength = 0f;
 
-					//                switch (value.AxisFilter)
-					//                {
-					//                    case JoystickAxisFilters.LessZero:
-					//                        if (currentValue < -DeadZone)
-					//                            strength = -currentValue;
-					//                        break;
+									switch( value.AxisFilter )
+									{
+									case JoystickAxisFilters.LessZero:
+										if( currentValue < -DeadZone )
+											strength = -currentValue;
+										break;
 
-					//                    case JoystickAxisFilters.GreaterZero:
-					//                        if (currentValue > DeadZone)
-					//                            strength = currentValue;
-					//                        break;
+									case JoystickAxisFilters.GreaterZero:
+										if( currentValue > DeadZone )
+											strength = currentValue;
+										break;
 
-					//                    case JoystickAxisFilters.OnlyGreaterZero:    //ignore negative values for foot pedals
-					//                        if (currentValue >= 0)
-					//                            strength = currentValue;
-					//                        break;
-					//                    case JoystickAxisFilters.OnlyLessZero:    //ignore positive values for foot pedals
-					//                        if (currentValue <= 0)
-					//                            strength = -currentValue;
-					//                        break;
-					//                }
+									case JoystickAxisFilters.OnlyGreaterZero:    //ignore negative values for foot pedals
+										if( currentValue >= 0 )
+											strength = currentValue;
+										break;
+									case JoystickAxisFilters.OnlyLessZero:    //ignore positive values for foot pedals
+										if( currentValue <= 0 )
+											strength = -currentValue;
+										break;
+									}
 
-					//                if (strength != 0)
-					//                {
-					//                    if (GameControlsEvent != null)
-					//                    {
-					//                        GameControlsEvent(new GameControlsKeyDownEventData(
-					//                            item.ControlKey, strength));
-					//                    }
-					//                }
-					//                else
-					//                {
-					//                    if (GameControlsEvent != null)
-					//                    {
-					//                        GameControlsEvent(new GameControlsKeyUpEventData(
-					//                            item.ControlKey));
-					//                    }
-					//                }
-					//                if (currentValue > DeadZone)
-					//                {
-					//                    if (GameControlsEvent != null)
-					//                    {
-					//                        GameControlsEvent(new GameControlsKeyDownEventData(item.ControlKey, currentValue));
-					//                    }
-					//                }
-					//                else
-					//                {
-					//                    GameControlsEvent(new GameControlsKeyUpEventData(
-					//                            item.ControlKey));
-					//                }
-					//                handled = true;
-					//            }
-					//        }
-					//    }
-					//}
+									if( strength != 0 )
+									{
+										if( GameControlsEvent != null )
+										{
+											GameControlsEvent( new GameControlsKeyDownEventData(
+												item.ControlKey, strength ) );
+										}
+									}
+									else
+									{
+										if( GameControlsEvent != null )
+										{
+											GameControlsEvent( new GameControlsKeyUpEventData(
+												item.ControlKey ) );
+										}
+									}
+									if( currentValue > DeadZone )
+									{
+										if( GameControlsEvent != null )
+										{
+											GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, currentValue ) );
+										}
+									}
+									else
+									{
+										GameControlsEvent( new GameControlsKeyUpEventData(
+												item.ControlKey ) );
+									}
+									handled = true;
+								}
+							}
+						}
+					}
 					return handled;
 				}
 			}
@@ -1501,8 +1494,7 @@ namespace ProjectCommon
 			return false;
 		}
 
-		//public bool IsAlreadyBinded(JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue keyValue) //Incin change for 2.0 
-		public bool IsAlreadyBinded(JoystickSliders slider, JoystickAxes axis, out SystemJoystickValue keyValue)
+		public bool IsAlreadyBinded(JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue keyValue)
 		{
 			keyValue = null;
 			foreach (GameControlItem item in Items)
