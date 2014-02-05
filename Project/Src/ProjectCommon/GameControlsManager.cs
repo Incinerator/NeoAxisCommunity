@@ -789,22 +789,15 @@ namespace ProjectCommon
 		public bool DoKeyDown( KeyEvent e )
 		{
 			bool handled = false;
-			//!!!!!slowly
-			foreach( GameControlItem item in items )
+
+			GameControlsManager.SystemKeyboardMouseValue key;
+			if( GameControlsManager.Instance.IsAlreadyBinded( e.Key, out key ) )
 			{
-				if( item.BindedKeyboardMouseValues.Count > 0 )
-				{
-					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
-					{
-						if( value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == e.Key )
-						{
-							if( GameControlsEvent != null )
-								GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, 1 ) );
-							handled = true;
-						}
-					}
-				}
+				if( GameControlsEvent != null )
+					GameControlsEvent( new GameControlsKeyDownEventData( key.Parent.ControlKey, 1 ) );
+				handled = true;
 			}
+
 			return handled;
 		}
 
@@ -816,23 +809,15 @@ namespace ProjectCommon
 		public bool DoKeyUp( KeyEvent e )
 		{
 			bool handled = false;
-			//!!!!!slowly
-			foreach( GameControlItem item in items )
-			{
-				if( item.BindedKeyboardMouseValues.Count > 0 )
-				{
-					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
-					{
-						if( value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == e.Key )
-						{
-							if( GameControlsEvent != null )
-								GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
-							handled = true;
-						}
-					}
-				}
 
+			GameControlsManager.SystemKeyboardMouseValue key;
+			if( GameControlsManager.Instance.IsAlreadyBinded( e.Key, out key ) )
+			{
+				if( GameControlsEvent != null )
+					GameControlsEvent( new GameControlsKeyUpEventData( key.Parent.ControlKey, 1 ) );
+				handled = true;
 			}
+
 			return handled;
 		}
 
@@ -844,23 +829,15 @@ namespace ProjectCommon
 		public bool DoMouseDown( EMouseButtons button )
 		{
 			bool handled = false;
-			//!!!!!slowly
-			foreach( GameControlItem item in items )
+
+			GameControlsManager.SystemKeyboardMouseValue key;
+			if( GameControlsManager.Instance.IsAlreadyBinded( button, out key ) )
 			{
-				if( item.BindedKeyboardMouseValues.Count > 0 )
-				{
-					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
-					{
-						if( value.Type == SystemKeyboardMouseValue.Types.MouseButton &&
-							value.MouseButton == button )
-						{
-							if( GameControlsEvent != null )
-								GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, 1 ) );
-							handled = true;
-						}
-					}
-				}
+				if( GameControlsEvent != null )
+					GameControlsEvent( new GameControlsKeyDownEventData( key.Parent.ControlKey, 1 ) );
+				handled = true;
 			}
+
 			return handled;
 		}
 
@@ -872,23 +849,15 @@ namespace ProjectCommon
 		public bool DoMouseUp( EMouseButtons button )
 		{
 			bool handled = false;
-			//!!!!!slowly
-			foreach( GameControlItem item in items )
+
+			GameControlsManager.SystemKeyboardMouseValue key;
+			if( GameControlsManager.Instance.IsAlreadyBinded( button, out key ) )
 			{
-				if( item.BindedKeyboardMouseValues.Count > 0 )
-				{
-					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
-					{
-						if( value.Type == SystemKeyboardMouseValue.Types.MouseButton &&
-							value.MouseButton == button )
-						{
-							if( GameControlsEvent != null )
-								GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
-							handled = true;
-						}
-					}
-				}
+				if( GameControlsEvent != null )
+					GameControlsEvent( new GameControlsKeyUpEventData( key.Parent.ControlKey, 1 ) );
+				handled = true;
 			}
+
 			return handled;
 		}
 
@@ -912,28 +881,19 @@ namespace ProjectCommon
 			var scrollDirection = delta > 0 ? MouseScroll.ScrollUp : MouseScroll.ScrollDown;
 
 			bool handled = false;
-			foreach( GameControlItem item in items )
+			GameControlsManager.SystemKeyboardMouseValue key;
+			if( GameControlsManager.Instance.IsAlreadyBinded( scrollDirection, out key ) )
 			{
-				if( item.BindedKeyboardMouseValues.Count > 0 )
+				if( GameControlsEvent != null )
 				{
-					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
-					{
-						if( value.Type == SystemKeyboardMouseValue.Types.MouseScrollDirection &&
-							value.ScrollDirection == scrollDirection )
-						{
-							if( GameControlsEvent != null )
-							{
-								GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, delta ) );
-								GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey ) );
-							}
-							handled = true;
-						}
-					}
+					GameControlsEvent( new GameControlsKeyDownEventData( key.Parent.ControlKey, delta ) );
+					GameControlsEvent( new GameControlsKeyUpEventData( key.Parent.ControlKey ) );
 				}
-
+				handled = true;
 			}
 			return handled;
 		}
+
 		/// <summary>
 		/// Sends the Event on Joystick Input changed.
 		/// </summary>
@@ -946,28 +906,17 @@ namespace ProjectCommon
 				if( evt != null )
 				{
 					bool handled = false;
-					//!!!!!slowly
-					foreach( GameControlItem item in items )
+
+					GameControlsManager.SystemJoystickValue key;
+					if( GameControlsManager.Instance.IsAlreadyBinded( evt.Button.Name, out key ) )
 					{
-
-						if( item.BindedJoystickValues.Count > 0 )
+						if( GameControlsEvent != null )
 						{
-							foreach( SystemJoystickValue value in item.BindedJoystickValues )
-							{
-								if( value.Type == SystemJoystickValue.Types.Button &&
-									value.Button == evt.Button.Name )
-								{
-									if( GameControlsEvent != null )
-									{
-										GameControlsEvent( new GameControlsKeyDownEventData(
-											item.ControlKey, 1 ) );
-									}
-									handled = true;
-								}
-							}
-
+							GameControlsEvent( new GameControlsKeyDownEventData( key.Parent.ControlKey, 1 ) );
 						}
+						handled = true;
 					}
+
 					return handled;
 				}
 			}
@@ -978,24 +927,15 @@ namespace ProjectCommon
 				if( evt != null )
 				{
 					bool handled = false;
-					//!!!!!slowly
-					foreach( GameControlItem item in items )
-					{
 
-						if( item.BindedJoystickValues.Count > 0 )
-						{
-							foreach( SystemJoystickValue value in item.BindedJoystickValues )
-							{
-								if( value.Type == SystemJoystickValue.Types.Button &&
-									value.Button == evt.Button.Name )
-								{
-									if( GameControlsEvent != null )
-										GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
-									handled = true;
-								}
-							}
-						}
+					GameControlsManager.SystemJoystickValue key;
+					if( GameControlsManager.Instance.IsAlreadyBinded( evt.Button.Name, out key ) )
+					{
+						if( GameControlsEvent != null )
+							GameControlsEvent( new GameControlsKeyUpEventData( key.Parent.ControlKey, 1 ) );
+						handled = true;
 					}
+
 					return handled;
 				}
 			}
