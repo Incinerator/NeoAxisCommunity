@@ -10,12 +10,12 @@ using System.IO;
 
 // Thank to Hellent, SodanKerju, Goto10, Incin and Firefly for all there contributions to this source.
 
-// Notes: (JoystickSliders slider, **JoystickSliderAxes axis **, JoystickAxisFilters filter) hasn't been implemented in the enginapp.dll
-// when it becomes available this code should all be just uncommented labeled with //Incin uncomment for 2.0,
-// so at this time slider controls are not implemented yet. There is code in this file and the keylistener.cs file
 
 namespace ProjectCommon
 {
+	/// <summary>
+	/// Define the Attribut to set default control for an action 
+	/// </summary>
 	[AttributeUsageAttribute( AttributeTargets.Field, AllowMultiple = true )]
 	public class DefaultKeyboardMouseValueAttribute : Attribute
 	{
@@ -33,10 +33,10 @@ namespace ProjectCommon
 			value = new GameControlsManager.SystemKeyboardMouseValue( mouseButton );
 		}
 
-        public DefaultKeyboardMouseValueAttribute(MouseScroll mouseScrollDirection)
-        {
-            value = new GameControlsManager.SystemKeyboardMouseValue(mouseScrollDirection);
-        }
+		public DefaultKeyboardMouseValueAttribute( MouseScroll mouseScrollDirection )
+		{
+			value = new GameControlsManager.SystemKeyboardMouseValue( mouseScrollDirection );
+		}
 
 		public GameControlsManager.SystemKeyboardMouseValue Value
 		{
@@ -56,14 +56,16 @@ namespace ProjectCommon
 		DEADZONE,
 	}
 
-    public enum MouseScroll
-    { 
-        ScrollUp,
-        ScrollDown,
-    }
+	public enum MouseScroll
+	{
+		ScrollUp,
+		ScrollDown,
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
-
+	/// <summary>
+	/// Define the Attribut to set default control for an action 
+	/// </summary>
 	[AttributeUsageAttribute( AttributeTargets.Field, AllowMultiple = true )]
 	public class DefaultJoystickValueAttribute : Attribute
 	{
@@ -86,9 +88,9 @@ namespace ProjectCommon
 			value = new GameControlsManager.SystemJoystickValue( pov, direction );
 		}
 
-		public DefaultJoystickValueAttribute(JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter)
+		public DefaultJoystickValueAttribute( JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter )
 		{
-			value = new GameControlsManager.SystemJoystickValue(slider, axis,filter);
+			value = new GameControlsManager.SystemJoystickValue( slider, axis, filter );
 		}
 
 		public GameControlsManager.SystemJoystickValue Value
@@ -123,15 +125,17 @@ namespace ProjectCommon
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
-
+	/// <summary>
+	/// Define the data Sent on Key Down  Event
+	/// </summary>
 	public class GameControlsKeyDownEventData : GameControlsKeyEventData
 	{
 		float strength;
-        
-        public GameControlsKeyDownEventData(GameControlKeys controlKey)
-            : base(controlKey)
-        {
-        }
+
+		public GameControlsKeyDownEventData( GameControlKeys controlKey )
+			: base( controlKey )
+		{
+		}
 
 		public GameControlsKeyDownEventData( GameControlKeys controlKey, float strength )
 			: base( controlKey )
@@ -146,30 +150,34 @@ namespace ProjectCommon
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
-
+	/// <summary>
+	/// Define the data Sent on Key Up  Event
+	/// </summary>
 	public class GameControlsKeyUpEventData : GameControlsKeyEventData
 	{
-        float strength;
+		float strength;
 
-        public GameControlsKeyUpEventData(GameControlKeys controlKey)
-            : base(controlKey)
-        {
-        }
+		public GameControlsKeyUpEventData( GameControlKeys controlKey )
+			: base( controlKey )
+		{
+		}
 
 		public GameControlsKeyUpEventData( GameControlKeys controlKey, float strength )
 			: base( controlKey )
 		{
-            this.strength = strength;
+			this.strength = strength;
 		}
 
-        public float Strength
-        {
-            get { return strength; }
-        }
+		public float Strength
+		{
+			get { return strength; }
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
-
+	/// <summary>
+	/// Define the data Sent on Mouse Move Event 
+	/// </summary>
 	public class GameControlsMouseMoveEventData : GameControlsEventData
 	{
 		Vec2 mouseOffset;
@@ -214,7 +222,9 @@ namespace ProjectCommon
 	public sealed class GameControlsManager
 	{
 		static GameControlsManager instance;
+		//Path where custom config is saved
 		public static string keyconfig = "user:Configs/Game_Controls.config";
+
 		GameControlItem[] items;
 		Dictionary<GameControlKeys, GameControlItem> itemsControlKeysDictionary;
 
@@ -239,19 +249,22 @@ namespace ProjectCommon
 
 		}
 
+		/// <summary>
+		/// Represents Keyboard or Mouse Input Value, used to bind with GameControlKey
+		/// </summary>
 		public class SystemKeyboardMouseValue : SystemControlValue
 		{
 			public enum Types
 			{
 				Key,
 				MouseButton,
-                MouseScrollDirection,
+				MouseScrollDirection,
 			}
 
 			Types type;
 			EKeys key;
 			EMouseButtons mouseButton;
-            MouseScroll scrollDirection;
+			MouseScroll scrollDirection;
 			private GameControlItem _parent;
 			public GameControlItem Parent
 			{
@@ -260,17 +273,17 @@ namespace ProjectCommon
 			}
 
 			public bool Unbound;
-			
-            public SystemKeyboardMouseValue()
+
+			public SystemKeyboardMouseValue()
 			{
 			}
 
-			public SystemKeyboardMouseValue(SystemKeyboardMouseValue source)
+			public SystemKeyboardMouseValue( SystemKeyboardMouseValue source )
 			{
 				type = source.Type;
 				key = source.Key;
 				mouseButton = source.MouseButton;
-                scrollDirection = source.scrollDirection;
+				scrollDirection = source.scrollDirection;
 				_parent = source.Parent;
 			}
 
@@ -286,11 +299,11 @@ namespace ProjectCommon
 				this.mouseButton = mouseButton;
 			}
 
-            public SystemKeyboardMouseValue(MouseScroll mouseScrollDirection)
-            {
-                type = Types.MouseScrollDirection;
-                this.scrollDirection = mouseScrollDirection;
-            }
+			public SystemKeyboardMouseValue( MouseScroll mouseScrollDirection )
+			{
+				type = Types.MouseScrollDirection;
+				this.scrollDirection = mouseScrollDirection;
+			}
 
 			public Types Type
 			{
@@ -307,70 +320,72 @@ namespace ProjectCommon
 				get { return mouseButton; }
 			}
 
-            public MouseScroll ScrollDirection
-            {
-                get { return scrollDirection; }
-            }
+			public MouseScroll ScrollDirection
+			{
+				get { return scrollDirection; }
+			}
 
 			public override string ToString()
 			{
-				if (Unbound)
-					return string.Format("{0} - Unbound", Parent.ControlKey);
-                if (type == Types.Key)
-                    return string.Format("{0} - Key {1}", Parent.ControlKey, key);
-                else if (type == Types.MouseScrollDirection)
-                    return string.Format("{0} - Scroll {1}", Parent.ControlKey, scrollDirection);
-                else
-                    return string.Format("{0} - Mouse {1} button", Parent.ControlKey, mouseButton);
+				if( Unbound )
+					return string.Format( "{0} - Unbound", Parent.ControlKey );
+				if( type == Types.Key )
+					return string.Format( "{0} - Key {1}", Parent.ControlKey, key );
+				else if( type == Types.MouseScrollDirection )
+					return string.Format( "{0} - Scroll {1}", Parent.ControlKey, scrollDirection );
+				else
+					return string.Format( "{0} - Mouse {1} button", Parent.ControlKey, mouseButton );
 			}
 
-            public static void Save(SystemKeyboardMouseValue item, TextBlock block)
-            {
+			public static void Save( SystemKeyboardMouseValue item, TextBlock block )
+			{
 
-                block.SetAttribute("type", item.Type.ToString());
-                switch (item.Type)
-                {
-                    case Types.Key:
-                        block.SetAttribute("key", item.Key.ToString());
-                        break;
-                    case Types.MouseButton:
-                        block.SetAttribute("button", item.MouseButton.ToString());
-                        break;
-                    case Types.MouseScrollDirection:
-                        block.SetAttribute("scroll", item.scrollDirection.ToString());
-                        break;
-                }
-            }
+				block.SetAttribute( "type", item.Type.ToString() );
+				switch( item.Type )
+				{
+				case Types.Key:
+					block.SetAttribute( "key", item.Key.ToString() );
+					break;
+				case Types.MouseButton:
+					block.SetAttribute( "button", item.MouseButton.ToString() );
+					break;
+				case Types.MouseScrollDirection:
+					block.SetAttribute( "scroll", item.scrollDirection.ToString() );
+					break;
+				}
+			}
 
-            public static SystemKeyboardMouseValue Load(TextBlock block)
-            {
-                var value = new SystemKeyboardMouseValue();
+			public static SystemKeyboardMouseValue Load( TextBlock block )
+			{
+				var value = new SystemKeyboardMouseValue();
 
-                var type = block.GetAttribute("type");
-                if (!string.IsNullOrEmpty(type))
-                    value.type = (Types)Enum.Parse(typeof(Types), type);
+				var type = block.GetAttribute( "type" );
+				if( !string.IsNullOrEmpty( type ) )
+					value.type = (Types)Enum.Parse( typeof( Types ), type );
 
-                var key = block.GetAttribute("key");
-                if (!string.IsNullOrEmpty(key))
-                    value.key = (EKeys)Enum.Parse(typeof(EKeys), key);
+				var key = block.GetAttribute( "key" );
+				if( !string.IsNullOrEmpty( key ) )
+					value.key = (EKeys)Enum.Parse( typeof( EKeys ), key );
 
-                var button = block.GetAttribute("button");
-                if (!string.IsNullOrEmpty(button))
-                    value.mouseButton = (EMouseButtons)Enum.Parse(typeof(EMouseButtons), button);
+				var button = block.GetAttribute( "button" );
+				if( !string.IsNullOrEmpty( button ) )
+					value.mouseButton = (EMouseButtons)Enum.Parse( typeof( EMouseButtons ), button );
 
-                var scroll = block.GetAttribute("scroll");
-                if (!string.IsNullOrEmpty(scroll))
-                    value.scrollDirection = (MouseScroll)Enum.Parse(typeof(MouseScroll), scroll);
+				var scroll = block.GetAttribute( "scroll" );
+				if( !string.IsNullOrEmpty( scroll ) )
+					value.scrollDirection = (MouseScroll)Enum.Parse( typeof( MouseScroll ), scroll );
 
-                return value;
-            }
+				return value;
+			}
 
 		}
 
 		///////////////////////////////////////////
 
 
-
+		/// <summary>
+		/// Represents Joystick Input Value Item, used to bind with GameControlKey
+		/// </summary>
 		public class SystemJoystickValue : SystemControlValue
 		{
 			public enum Types
@@ -409,7 +424,7 @@ namespace ProjectCommon
 				this.button = button;
 			}
 
-			public SystemJoystickValue(SystemJoystickValue source)
+			public SystemJoystickValue( SystemJoystickValue source )
 			{
 				type = source.Type;
 				button = source.Button;
@@ -434,7 +449,7 @@ namespace ProjectCommon
 				this.povDirection = povDirection;
 			}
 
-			public SystemJoystickValue(JoystickSliders slider, JoystickSliderAxes axe,JoystickAxisFilters filter)
+			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe, JoystickAxisFilters filter )
 			{
 				type = Types.Slider;
 				this.slider = slider;
@@ -483,102 +498,105 @@ namespace ProjectCommon
 				get { return sliderAxis; }
 			}
 
-            public static void Save(SystemJoystickValue item, TextBlock block)
-            {
-                block.SetAttribute("type", item.Type.ToString());
-                switch (item.Type)
-                {
-                    case Types.Button:
-                        block.SetAttribute("button", item.Button.ToString());
-                        break;
-                    case Types.Axis:
-                        block.SetAttribute("axis", item.Axis.ToString());
-                        block.SetAttribute("axisfilter", item.AxisFilter.ToString());
-                        break;
-                    case Types.POV:
-                        block.SetAttribute("POV", item.POV.ToString());
-                        block.SetAttribute("POVDirection", item.POVDirection.ToString());
-                        break;
-                    case Types.Slider:
-                        block.SetAttribute("slider", item.Slider.ToString());
-                        block.SetAttribute("sliderAxis", item.SliderAxis.ToString());
-                        break;
-                }
-            }
+			public static void Save( SystemJoystickValue item, TextBlock block )
+			{
+				block.SetAttribute( "type", item.Type.ToString() );
+				switch( item.Type )
+				{
+				case Types.Button:
+					block.SetAttribute( "button", item.Button.ToString() );
+					break;
+				case Types.Axis:
+					block.SetAttribute( "axis", item.Axis.ToString() );
+					block.SetAttribute( "axisfilter", item.AxisFilter.ToString() );
+					break;
+				case Types.POV:
+					block.SetAttribute( "POV", item.POV.ToString() );
+					block.SetAttribute( "POVDirection", item.POVDirection.ToString() );
+					break;
+				case Types.Slider:
+					block.SetAttribute( "slider", item.Slider.ToString() );
+					block.SetAttribute( "sliderAxis", item.SliderAxis.ToString() );
+					break;
+				}
+			}
 
-            public static SystemJoystickValue Load(TextBlock block)
-            {
-                var value = new SystemJoystickValue();
+			public static SystemJoystickValue Load( TextBlock block )
+			{
+				var value = new SystemJoystickValue();
 
-                {
-                    var type = block.GetAttribute("type");
-                    if (!string.IsNullOrEmpty(type))
-                        value.type = (Types)Enum.Parse(typeof(Types), type);
-                }
+				{
+					var type = block.GetAttribute( "type" );
+					if( !string.IsNullOrEmpty( type ) )
+						value.type = (Types)Enum.Parse( typeof( Types ), type );
+				}
 
-                {
-                    var button = block.GetAttribute("button");
-                    if (!string.IsNullOrEmpty(button))
-                        value.button = (JoystickButtons)Enum.Parse(typeof(JoystickButtons), button);
+				{
+					var button = block.GetAttribute( "button" );
+					if( !string.IsNullOrEmpty( button ) )
+						value.button = (JoystickButtons)Enum.Parse( typeof( JoystickButtons ), button );
 
-                }
-                {
-                    var axis = block.GetAttribute("axis");
-                    if (!string.IsNullOrEmpty(axis))
-                        value.axis = (JoystickAxes)Enum.Parse(typeof(JoystickAxes), axis);
+				}
+				{
+					var axis = block.GetAttribute( "axis" );
+					if( !string.IsNullOrEmpty( axis ) )
+						value.axis = (JoystickAxes)Enum.Parse( typeof( JoystickAxes ), axis );
 
-                }
-                {
-                    var axisfilter = block.GetAttribute("axisfilter");
-                    if (!string.IsNullOrEmpty(axisfilter))
-                        value.axisFilter = (JoystickAxisFilters)Enum.Parse(typeof(JoystickAxisFilters), axisfilter);
+				}
+				{
+					var axisfilter = block.GetAttribute( "axisfilter" );
+					if( !string.IsNullOrEmpty( axisfilter ) )
+						value.axisFilter = (JoystickAxisFilters)Enum.Parse( typeof( JoystickAxisFilters ), axisfilter );
 
-                }
-                {
-                    var pov = block.GetAttribute("POV");
-                    if (!string.IsNullOrEmpty(pov))
-                        value.pov = (JoystickPOVs)Enum.Parse(typeof(JoystickPOVs), pov);
+				}
+				{
+					var pov = block.GetAttribute( "POV" );
+					if( !string.IsNullOrEmpty( pov ) )
+						value.pov = (JoystickPOVs)Enum.Parse( typeof( JoystickPOVs ), pov );
 
-                }
-                {
-                    var povdirection = block.GetAttribute("POVDirection");
-                    if (!string.IsNullOrEmpty(povdirection))
-                        value.povDirection = (JoystickPOVDirections)Enum.Parse(typeof(JoystickPOVDirections), povdirection);
+				}
+				{
+					var povdirection = block.GetAttribute( "POVDirection" );
+					if( !string.IsNullOrEmpty( povdirection ) )
+						value.povDirection = (JoystickPOVDirections)Enum.Parse( typeof( JoystickPOVDirections ), povdirection );
 
-                }
-                {
-                    var slider = block.GetAttribute("slider");
-                    if (!string.IsNullOrEmpty(slider))
-                        value.slider = (JoystickSliders)Enum.Parse(typeof(JoystickSliders), slider);
+				}
+				{
+					var slider = block.GetAttribute( "slider" );
+					if( !string.IsNullOrEmpty( slider ) )
+						value.slider = (JoystickSliders)Enum.Parse( typeof( JoystickSliders ), slider );
 
-                }
-                {
-                    var slideraxis = block.GetAttribute("sliderAxis");
-                    if (!string.IsNullOrEmpty(slideraxis))
-                       value.sliderAxis = (JoystickSliderAxes)Enum.Parse(typeof(JoystickSliderAxes), slideraxis); 
+				}
+				{
+					var slideraxis = block.GetAttribute( "sliderAxis" );
+					if( !string.IsNullOrEmpty( slideraxis ) )
+						value.sliderAxis = (JoystickSliderAxes)Enum.Parse( typeof( JoystickSliderAxes ), slideraxis );
 
-                }
-                return value;
-            }
+				}
+				return value;
+			}
 
 			public override string ToString()
 			{
-				if (Unbound)
-					return string.Format("{0} - Unbound", Parent.ControlKey);
-				if (type == Types.Axis)
-					return string.Format("{0} - Axis: {1}({2})", Parent.ControlKey, Axis, AxisFilter);
-				if (type == Types.Button)
-					return string.Format("{0} - Button: {1}", Parent.ControlKey, Button);
-				if (type == Types.POV)
-					return string.Format("{0} - POV: {1}({2})", Parent.ControlKey, POV, POVDirection);
-				if (type == Types.Slider)
-					return string.Format("{0} - Slider: {1}({2})", Parent.ControlKey, Slider, SliderAxis);
+				if( Unbound )
+					return string.Format( "{0} - Unbound", Parent.ControlKey );
+				if( type == Types.Axis )
+					return string.Format( "{0} - Axis: {1}({2})", Parent.ControlKey, Axis, AxisFilter );
+				if( type == Types.Button )
+					return string.Format( "{0} - Button: {1}", Parent.ControlKey, Button );
+				if( type == Types.POV )
+					return string.Format( "{0} - POV: {1}({2})", Parent.ControlKey, POV, POVDirection );
+				if( type == Types.Slider )
+					return string.Format( "{0} - Slider: {1}({2})", Parent.ControlKey, Slider, SliderAxis );
 				return "Error";
 			}
 		}
 
 		///////////////////////////////////////////
 
+		/// <summary>
+		/// Represents the binding between different input devices and a GameControlKey
+		/// </summary>
 		public class GameControlItem
 		{
 			GameControlKeys controlKey;
@@ -599,27 +617,27 @@ namespace ProjectCommon
 
 				//defaultKeyboardMouseValue
 				{
-					FieldInfo field = typeof(GameControlKeys).GetField(Enum.GetName(typeof(GameControlKeys), controlKey));
-					DefaultKeyboardMouseValueAttribute[] attributes = (DefaultKeyboardMouseValueAttribute[])Attribute.GetCustomAttributes(field, typeof(DefaultKeyboardMouseValueAttribute));
+					FieldInfo field = typeof( GameControlKeys ).GetField( Enum.GetName( typeof( GameControlKeys ), controlKey ) );
+					DefaultKeyboardMouseValueAttribute[] attributes = (DefaultKeyboardMouseValueAttribute[])Attribute.GetCustomAttributes( field, typeof( DefaultKeyboardMouseValueAttribute ) );
 
 					defaultKeyboardMouseValues = new SystemKeyboardMouseValue[ attributes.Length ];
 					for( int n = 0; n < attributes.Length; n++ )
 					{
 						defaultKeyboardMouseValues[ n ] = attributes[ n ].Value;
-						defaultKeyboardMouseValues[n].Parent = this;
+						defaultKeyboardMouseValues[ n ].Parent = this;
 					}
 				}
 
 				//defaultJoystickValue
 				{
-					FieldInfo field = typeof(GameControlKeys).GetField(Enum.GetName(typeof(GameControlKeys), controlKey));
-					DefaultJoystickValueAttribute[] attributes = (DefaultJoystickValueAttribute[])Attribute.GetCustomAttributes(field, typeof(DefaultJoystickValueAttribute));
+					FieldInfo field = typeof( GameControlKeys ).GetField( Enum.GetName( typeof( GameControlKeys ), controlKey ) );
+					DefaultJoystickValueAttribute[] attributes = (DefaultJoystickValueAttribute[])Attribute.GetCustomAttributes( field, typeof( DefaultJoystickValueAttribute ) );
 
 					defaultJoystickValues = new SystemJoystickValue[ attributes.Length ];
 					for( int n = 0; n < attributes.Length; n++ )
 					{
 						defaultJoystickValues[ n ] = attributes[ n ].Value;
-						defaultJoystickValues[n].Parent = this;
+						defaultJoystickValues[ n ].Parent = this;
 					}
 				}
 			}
@@ -658,10 +676,10 @@ namespace ProjectCommon
 
 			public override string ToString()
 			{
-				if (bindedKeyboardMouseValues.Count > 0)
-					return controlKey.ToString() + " - " + bindedKeyboardMouseValues[0].ToString();
-				else if (defaultKeyboardMouseValues.Length > 0)
-					return controlKey.ToString() + " - " + defaultKeyboardMouseValues[0].ToString();
+				if( bindedKeyboardMouseValues.Count > 0 )
+					return controlKey.ToString() + " - " + bindedKeyboardMouseValues[ 0 ].ToString();
+				else if( defaultKeyboardMouseValues.Length > 0 )
+					return controlKey.ToString() + " - " + defaultKeyboardMouseValues[ 0 ].ToString();
 
 				return controlKey.ToString() + " - Unbound";
 			}
@@ -734,8 +752,8 @@ namespace ProjectCommon
 					items[ n ] = new GameControlItem( controlKey );
 				}
 
-				string customControlsFile = VirtualFileSystem.GetRealPathByVirtual(keyconfig);
-				if (VirtualFile.Exists(customControlsFile))
+				string customControlsFile = VirtualFileSystem.GetRealPathByVirtual( keyconfig );
+				if( VirtualFile.Exists( customControlsFile ) )
 				{
 					LoadCustomConfig();
 				}
@@ -753,7 +771,7 @@ namespace ProjectCommon
 				foreach( GameControlItem item in items )
 				{
 					itemsControlKeysDictionary.Add( item.ControlKey, item );
-			    }
+				}
 			}
 
 			return true;
@@ -774,18 +792,18 @@ namespace ProjectCommon
 			//!!!!!slowly
 			foreach( GameControlItem item in items )
 			{
-				if (item.BindedKeyboardMouseValues.Count > 0)
+				if( item.BindedKeyboardMouseValues.Count > 0 )
 				{
-					foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-				    {
-					    if( value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == e.Key )
-					    {
-						    if( GameControlsEvent != null )
-							    GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, 1 ) );
-						    handled = true;
-					    }
-				    }
-			    }
+					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
+					{
+						if( value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == e.Key )
+						{
+							if( GameControlsEvent != null )
+								GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, 1 ) );
+							handled = true;
+						}
+					}
+				}
 			}
 			return handled;
 		}
@@ -801,18 +819,18 @@ namespace ProjectCommon
 			//!!!!!slowly
 			foreach( GameControlItem item in items )
 			{
-				if (item.BindedKeyboardMouseValues.Count > 0)
+				if( item.BindedKeyboardMouseValues.Count > 0 )
 				{
-					foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-				    {
-					    if( value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == e.Key )
-					    {
-						    if( GameControlsEvent != null )
-							    GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
-						    handled = true;
-					    }
-				    }
-			    }
+					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
+					{
+						if( value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == e.Key )
+						{
+							if( GameControlsEvent != null )
+								GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
+							handled = true;
+						}
+					}
+				}
 
 			}
 			return handled;
@@ -829,19 +847,19 @@ namespace ProjectCommon
 			//!!!!!slowly
 			foreach( GameControlItem item in items )
 			{
-				if (item.BindedKeyboardMouseValues.Count > 0)
+				if( item.BindedKeyboardMouseValues.Count > 0 )
 				{
-					foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-				    {
-					    if( value.Type == SystemKeyboardMouseValue.Types.MouseButton &&
-						    value.MouseButton == button )
-					    {
-						    if( GameControlsEvent != null )
-							    GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, 1 ) );
-						    handled = true;
-					    }
-				    }
-			    }
+					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
+					{
+						if( value.Type == SystemKeyboardMouseValue.Types.MouseButton &&
+							value.MouseButton == button )
+						{
+							if( GameControlsEvent != null )
+								GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, 1 ) );
+							handled = true;
+						}
+					}
+				}
 			}
 			return handled;
 		}
@@ -857,25 +875,25 @@ namespace ProjectCommon
 			//!!!!!slowly
 			foreach( GameControlItem item in items )
 			{
-				if (item.BindedKeyboardMouseValues.Count > 0)
+				if( item.BindedKeyboardMouseValues.Count > 0 )
 				{
-					foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-				    {
-					    if( value.Type == SystemKeyboardMouseValue.Types.MouseButton &&
-						    value.MouseButton == button )
-					    {
-						if( GameControlsEvent != null )
-							GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
-						handled = true;
-					    }
-				    }
-			    }
-			} 
+					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
+					{
+						if( value.Type == SystemKeyboardMouseValue.Types.MouseButton &&
+							value.MouseButton == button )
+						{
+							if( GameControlsEvent != null )
+								GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
+							handled = true;
+						}
+					}
+				}
+			}
 			return handled;
 		}
 
 		/// <summary>
-		/// Sends the notice on cursor moved.
+		/// Sends the Event on cursor moved.
 		/// </summary>
 		/// <param name="mouseOffset">Current mouse position.</param>
 		public void DoMouseMoveRelative( Vec2 mouseOffset )
@@ -883,40 +901,44 @@ namespace ProjectCommon
 			if( GameControlsEvent != null )
 				GameControlsEvent( new GameControlsMouseMoveEventData( mouseOffset ) );
 		}
-		
-        
-        public bool DoMouseMouseWheel(int delta)
-        {
 
-            var scrollDirection = delta > 0 ? MouseScroll.ScrollUp : MouseScroll.ScrollDown;
+		/// <summary>
+		/// Sends the Event on mouse scroll.
+		/// </summary>
+		/// /// <param name="delta">Scroll offset</param>
+		public bool DoMouseMouseWheel( int delta )
+		{
 
-            bool handled = false;
-            foreach (GameControlItem item in items)
-            {
-                if (item.BindedKeyboardMouseValues.Count > 0)
-                {
-                    foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-                    {
-                        if (value.Type == SystemKeyboardMouseValue.Types.MouseScrollDirection &&
-                            value.ScrollDirection == scrollDirection)
-                        {
-                            if (GameControlsEvent != null)
-                            {
-                                GameControlsEvent(new GameControlsKeyDownEventData(item.ControlKey,delta));
-                                GameControlsEvent(new GameControlsKeyUpEventData(item.ControlKey));
-                            }
-                            handled = true;
-                        }
-                    }
-                }
+			var scrollDirection = delta > 0 ? MouseScroll.ScrollUp : MouseScroll.ScrollDown;
 
-            }
-            return handled;
-        }
+			bool handled = false;
+			foreach( GameControlItem item in items )
+			{
+				if( item.BindedKeyboardMouseValues.Count > 0 )
+				{
+					foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
+					{
+						if( value.Type == SystemKeyboardMouseValue.Types.MouseScrollDirection &&
+							value.ScrollDirection == scrollDirection )
+						{
+							if( GameControlsEvent != null )
+							{
+								GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, delta ) );
+								GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey ) );
+							}
+							handled = true;
+						}
+					}
+				}
 
-		
-		
-        public bool DoJoystickEvent( JoystickInputEvent e )
+			}
+			return handled;
+		}
+		/// <summary>
+		/// Sends the Event on Joystick Input changed.
+		/// </summary>
+		/// <param name="e">New state of the changed input</param>
+		public bool DoJoystickEvent( JoystickInputEvent e )
 		{
 			//JoystickButtonDownEvent
 			{
@@ -928,21 +950,21 @@ namespace ProjectCommon
 					foreach( GameControlItem item in items )
 					{
 
-						if (item.BindedJoystickValues.Count > 0)
+						if( item.BindedJoystickValues.Count > 0 )
 						{
-							foreach (SystemJoystickValue value in item.BindedJoystickValues)
-						    {
-							    if( value.Type == SystemJoystickValue.Types.Button &&
-								    value.Button == evt.Button.Name )
-							    {
-								    if( GameControlsEvent != null )
-								    {
-									    GameControlsEvent( new GameControlsKeyDownEventData(
-										    item.ControlKey, 1 ) );
-								    }
-								    handled = true;
-							    }
-						    }
+							foreach( SystemJoystickValue value in item.BindedJoystickValues )
+							{
+								if( value.Type == SystemJoystickValue.Types.Button &&
+									value.Button == evt.Button.Name )
+								{
+									if( GameControlsEvent != null )
+									{
+										GameControlsEvent( new GameControlsKeyDownEventData(
+											item.ControlKey, 1 ) );
+									}
+									handled = true;
+								}
+							}
 
 						}
 					}
@@ -960,19 +982,19 @@ namespace ProjectCommon
 					foreach( GameControlItem item in items )
 					{
 
-						if (item.BindedJoystickValues.Count > 0)
+						if( item.BindedJoystickValues.Count > 0 )
 						{
-							foreach (SystemJoystickValue value in item.BindedJoystickValues)
-						    {
-							    if( value.Type == SystemJoystickValue.Types.Button &&
-								    value.Button == evt.Button.Name )
-							    {
-								    if( GameControlsEvent != null )
-									    GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
-								    handled = true;
-							    }
-						    }
-					    }
+							foreach( SystemJoystickValue value in item.BindedJoystickValues )
+							{
+								if( value.Type == SystemJoystickValue.Types.Button &&
+									value.Button == evt.Button.Name )
+								{
+									if( GameControlsEvent != null )
+										GameControlsEvent( new GameControlsKeyUpEventData( item.ControlKey, 1 ) );
+									handled = true;
+								}
+							}
+						}
 					}
 					return handled;
 				}
@@ -988,59 +1010,59 @@ namespace ProjectCommon
 					foreach( GameControlItem item in items )
 					{
 
-						if (item.BindedJoystickValues.Count > 0)
+						if( item.BindedJoystickValues.Count > 0 )
 						{
-							foreach (SystemJoystickValue value in item.BindedJoystickValues)
-						    {
-							    if( value.Type == SystemJoystickValue.Types.Axis &&
-								    value.Axis == evt.Axis.Name )
-							    {
-							        float strength = 0f;
+							foreach( SystemJoystickValue value in item.BindedJoystickValues )
+							{
+								if( value.Type == SystemJoystickValue.Types.Axis &&
+									value.Axis == evt.Axis.Name )
+								{
+									float strength = 0f;
 
-								    switch( value.AxisFilter )
-								    {
-								    case JoystickAxisFilters.LessZero:
-										if (evt.Axis.Value < -DeadZone)
-										    strength = -evt.Axis.Value;
-									    break;
+									switch( value.AxisFilter )
+									{
+									case JoystickAxisFilters.LessZero:
+										if( evt.Axis.Value < -DeadZone )
+											strength = -evt.Axis.Value;
+										break;
 
-								    case JoystickAxisFilters.GreaterZero:
-											    if (evt.Axis.Value > DeadZone)
-										    strength = evt.Axis.Value;
+									case JoystickAxisFilters.GreaterZero:
+										if( evt.Axis.Value > DeadZone )
+											strength = evt.Axis.Value;
 
-											    break;
+										break;
 
 									case JoystickAxisFilters.OnlyGreaterZero:    //ignore negative values
-										    if (evt.Axis.Value >= DeadZone)
-												    strength = evt.Axis.Value;
-											    break;
-										    case JoystickAxisFilters.OnlyLessZero:    //ignore positive values
-											    if (evt.Axis.Value <= -DeadZone)
-												    strength = -evt.Axis.Value;
-									        break;
-								    }
+										if( evt.Axis.Value >= DeadZone )
+											strength = evt.Axis.Value;
+										break;
+									case JoystickAxisFilters.OnlyLessZero:    //ignore positive values
+										if( evt.Axis.Value <= -DeadZone )
+											strength = -evt.Axis.Value;
+										break;
+									}
 
-								    if( strength != 0 )
-								    {
-									    if( GameControlsEvent != null )
-									    {
-										    GameControlsEvent( new GameControlsKeyDownEventData(
-											    item.ControlKey, strength ) );
-									    }
-								    }
-								    else
-								    {
-									    if( GameControlsEvent != null )
-									    {
-										    GameControlsEvent( new GameControlsKeyUpEventData(
-											    item.ControlKey , 1 ) );
-									    }
-								    }
+									if( strength != 0 )
+									{
+										if( GameControlsEvent != null )
+										{
+											GameControlsEvent( new GameControlsKeyDownEventData(
+												item.ControlKey, strength ) );
+										}
+									}
+									else
+									{
+										if( GameControlsEvent != null )
+										{
+											GameControlsEvent( new GameControlsKeyUpEventData(
+												item.ControlKey, 1 ) );
+										}
+									}
 
-								    handled = true;
-							    }
-						    }
-					    }
+									handled = true;
+								}
+							}
+						}
 					}
 
 					return handled;
@@ -1056,33 +1078,33 @@ namespace ProjectCommon
 					//!!!!!slowly
 					foreach( GameControlItem item in items )
 					{
-						if (item.BindedJoystickValues.Count > 0)
+						if( item.BindedJoystickValues.Count > 0 )
 						{
-							foreach (SystemJoystickValue value in item.BindedJoystickValues)
-						{
-							if( value.Type == SystemJoystickValue.Types.POV &&
-								value.POV == evt.POV.Name )
+							foreach( SystemJoystickValue value in item.BindedJoystickValues )
 							{
-								if( ( value.POVDirection & evt.POV.Value ) != 0 )
+								if( value.Type == SystemJoystickValue.Types.POV &&
+									value.POV == evt.POV.Name )
 								{
-									if( GameControlsEvent != null )
+									if( ( value.POVDirection & evt.POV.Value ) != 0 )
 									{
-										GameControlsEvent( new GameControlsKeyDownEventData(
-											item.ControlKey, 1 ) );
+										if( GameControlsEvent != null )
+										{
+											GameControlsEvent( new GameControlsKeyDownEventData(
+												item.ControlKey, 1 ) );
+										}
 									}
-								}
-								else
-								{
-									if( GameControlsEvent != null )
+									else
 									{
-										GameControlsEvent( new GameControlsKeyUpEventData(
-											item.ControlKey, 1 ) );
+										if( GameControlsEvent != null )
+										{
+											GameControlsEvent( new GameControlsKeyUpEventData(
+												item.ControlKey, 1 ) );
+										}
 									}
+									handled = true;
 								}
-								handled = true;
 							}
 						}
-					}
 					}
 					return handled;
 				}
@@ -1178,6 +1200,9 @@ namespace ProjectCommon
 				GameControlsEvent( new GameControlsTickEventData( delta ) );
 		}
 
+		/// <summary>
+		/// Virtually unpress all ControlKeys 
+		/// </summary>
 		public void DoKeyUpAll()
 		{
 			foreach( GameControlItem item in items )
@@ -1190,11 +1215,11 @@ namespace ProjectCommon
 			}
 		}
 
-        public float DeadZone
-        {
-            set { Deadzone = value; }
-            get { return Deadzone; }
-        }
+		public float DeadZone
+		{
+			set { Deadzone = value; }
+			get { return Deadzone; }
+		}
 
 		public Vec2 MouseSensitivity
 		{
@@ -1230,423 +1255,314 @@ namespace ProjectCommon
 			return item;
 		}
 
-		public bool IsDefaultControlKey(GameControlItem item, EKeys key)
-		{
-			if (item == null)
-				return false;
-
-			foreach (SystemKeyboardMouseValue value in item.DefaultKeyboardMouseValues)
-				if (value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == key)
-					return true;
-
-			return false;
-		}
-
-		public bool IsDefaultControlKey(GameControlKeys controlKey, EKeys key)
-		{
-			return IsDefaultControlKey(GetItemByControlKey(controlKey), key);
-		}
-
-		public bool IsDefaultControlKey(GameControlItem item, EMouseButtons button)
-		{
-			if (item == null)
-				return false;
-
-			foreach (SystemKeyboardMouseValue value in item.DefaultKeyboardMouseValues)
-				if (value.Type == SystemKeyboardMouseValue.Types.MouseButton && value.MouseButton == button)
-					return true;
-
-			return false;
-		}
-
-		public bool IsDefaultControlKey(GameControlKeys controlKey, EMouseButtons button)
-		{
-			return IsDefaultControlKey(GetItemByControlKey(controlKey), button);
-		}
-
-		public bool IsDefaultControlKey(GameControlItem item, JoystickInputEvent e)
-		{
-			if (item == null)
-				return false;
-
-			foreach (SystemJoystickValue value in item.DefaultJoystickValues)
-			{
-				JoystickButtonEvent bEvt = e as JoystickButtonEvent;
-				if (bEvt != null)
-				{
-					if (value.Type == SystemJoystickValue.Types.Button &&
-						value.Button == bEvt.Button.Name)
-						return true;
-				}
-
-				JoystickAxisChangedEvent acEvt = e as JoystickAxisChangedEvent;
-				if (acEvt != null)
-				{
-					if (value.Type == SystemJoystickValue.Types.Axis &&
-						value.Axis == acEvt.Axis.Name)
-					{
-						if (value.AxisFilter == JoystickAxisFilters.GreaterZero &&
-							acEvt.Axis.Value > 0)
-							return true;
-
-						if (value.AxisFilter == JoystickAxisFilters.LessZero &&
-							acEvt.Axis.Value < 0)
-							return true;
-
-						if (value.AxisFilter == JoystickAxisFilters.OnlyGreaterZero &&
-							acEvt.Axis.Value > 0)
-							return true;
-
-						if (value.AxisFilter == JoystickAxisFilters.OnlyLessZero &&
-							acEvt.Axis.Value < 0)
-							return true;
-					}
-	            }
-
-				JoystickPOVChangedEvent pcEvt = e as JoystickPOVChangedEvent;
-				if (pcEvt != null)
-				{
-					if (value.Type == SystemJoystickValue.Types.POV &&
-						value.POV == pcEvt.POV.Name && value.POVDirection == pcEvt.POV.Value)
-						return true;
-				}
-			}
-
-			return false;
-		}
-
-		public bool IsDefaultControlKey(GameControlKeys controlKey, JoystickInputEvent e)
-		{
-			return IsDefaultControlKey(GetItemByControlKey(controlKey), e);
-		}
-
-		public bool IsControlKey(GameControlItem item, EKeys key)
-		{
-			if (item == null)
-				return false;
-
-			if (item.BindedKeyboardMouseValues.Count > 0)
-			{
-				foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-					if (value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == key)
-						return true;
-			}
-
-			return IsDefaultControlKey(item, key);
-		}
-
-		public bool IsControlKey(GameControlKeys controlKey, EKeys key)
-		{
-			return IsControlKey(GetItemByControlKey(controlKey), key);
-		}
-
-		public bool IsControlKey(GameControlItem item, EMouseButtons button)
-		{
-			if (item == null)
-				return false;
-
-			if (item.BindedKeyboardMouseValues.Count > 0)
-			{
-				foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-					if (value.Type == SystemKeyboardMouseValue.Types.MouseButton && value.MouseButton == button)
-						return true;
-			}
-
-			return IsDefaultControlKey(item, button);
-		}
-
-		public bool IsControlKey(GameControlKeys controlKey, EMouseButtons button)
-		{
-			return IsControlKey(GetItemByControlKey(controlKey), button);
-		}
-
-		public bool IsControlKey(GameControlItem item, JoystickInputEvent e)
-		{
-			return IsDefaultControlKey(item, e);
-        }
-
-		public bool IsControlKey(GameControlKeys controlKey, JoystickInputEvent e)
-		{
-			return IsControlKey(GetItemByControlKey(controlKey), e);
-		}
-
-		public bool IsAlreadyBinded(EKeys key, out SystemKeyboardMouseValue control)
+		/// <summary>
+		/// Check if the Given Input is Binded. Return the currently binded control to the input
+		/// </summary>
+		public bool IsAlreadyBinded( EKeys key, out SystemKeyboardMouseValue control )
 		{
 			control = null;
-			foreach (GameControlItem item in Items)
+			foreach( GameControlItem item in Items )
 			{
-				if (item.BindedKeyboardMouseValues.Count > 0)
+				if( item.BindedKeyboardMouseValues.Count <= 0 )
+					continue;
+
+				foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
 				{
-					foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-						if (value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == key)
-						{
-							control = value;
-							return true;
-						}
+					if( value.Type == SystemKeyboardMouseValue.Types.Key && value.Key == key )
+					{
+						control = value;
+						return true;
+					}
 				}
 			}
 
 			return false;
 		}
-
-		public bool IsAlreadyBinded(EMouseButtons button, out SystemKeyboardMouseValue control)
+		/// <summary>
+		/// Check if the Given Input is Binded. Return the currently binded control to the input
+		/// </summary>
+		public bool IsAlreadyBinded( EMouseButtons button, out SystemKeyboardMouseValue control )
 		{
 			control = null;
-			foreach (GameControlItem item in Items)
+			foreach( GameControlItem item in Items )
 			{
-				if (item.BindedKeyboardMouseValues.Count > 0)
-				{
-					foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-					{
+				if( item.BindedKeyboardMouseValues.Count <= 0 )
+					continue;
 
-						if (value.Type == SystemKeyboardMouseValue.Types.MouseButton &&
-							value.MouseButton == button)
-						{
-							control = value;
-							return true;
-						}
+				foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
+				{
+
+					if( value.Type == SystemKeyboardMouseValue.Types.MouseButton &&
+						value.MouseButton == button )
+					{
+						control = value;
+						return true;
 					}
 				}
 			}
 			return false;
 		}
-        
-        public bool IsAlreadyBinded(MouseScroll scrollDirection, out SystemKeyboardMouseValue control)
-        {
-            control = null;
-            foreach (GameControlItem item in Items)
-            {
-                if (item.BindedKeyboardMouseValues.Count > 0)
-                {
-                    foreach (SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues)
-                    {
-
-                        if (value.Type == SystemKeyboardMouseValue.Types.MouseScrollDirection &&
-                            value.ScrollDirection == scrollDirection)
-                        {
-                            control = value;
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-		public bool IsAlreadyBinded(JoystickButtons button, out SystemJoystickValue keyValue)
+		/// <summary>
+		/// Check if the Given Input is Binded. Return the currently binded control to the input
+		/// </summary>
+		public bool IsAlreadyBinded( MouseScroll scrollDirection, out SystemKeyboardMouseValue control )
 		{
-			keyValue = null;
-			foreach (GameControlItem item in Items)
+			control = null;
+			foreach( GameControlItem item in Items )
 			{
-				if (item.BindedJoystickValues.Count > 0)
+				if( item.BindedKeyboardMouseValues.Count <= 0 )
+					continue;
+
+				foreach( SystemKeyboardMouseValue value in item.BindedKeyboardMouseValues )
 				{
-					foreach (SystemJoystickValue value in item.BindedJoystickValues)
+
+					if( value.Type == SystemKeyboardMouseValue.Types.MouseScrollDirection &&
+						value.ScrollDirection == scrollDirection )
 					{
-						if (value.Type == SystemJoystickValue.Types.Button && value.Button == button)
-						{
-							keyValue = value;
-							return true;
-						}
+						control = value;
+						return true;
 					}
 				}
 			}
 			return false;
 		}
-
-		public bool IsAlreadyBinded(JoystickAxes axis, JoystickAxisFilters filters, out SystemJoystickValue keyValue)
+		/// <summary>
+		/// Check if the Given Input is Binded. Return the currently binded control to the input
+		/// </summary>
+		public bool IsAlreadyBinded( JoystickButtons button, out SystemJoystickValue control )
 		{
-			keyValue = null;
-			foreach (GameControlItem item in Items)
+			control = null;
+			foreach( GameControlItem item in Items )
 			{
-				if (item.BindedJoystickValues.Count > 0)
+				if( item.BindedJoystickValues.Count <= 0 )
+					continue;
+				foreach( SystemJoystickValue value in item.BindedJoystickValues )
 				{
-					foreach (SystemJoystickValue value in item.BindedJoystickValues)
+					if( value.Type == SystemJoystickValue.Types.Button && value.Button == button )
 					{
-						if (value.Type == SystemJoystickValue.Types.Axis && value.Axis == axis &&
-							value.AxisFilter == filters)
-						{
-							keyValue = value;
-							return true;
-						}
+						control = value;
+						return true;
 					}
 				}
+
 			}
 			return false;
 		}
-
-		public bool IsAlreadyBinded(JoystickPOVs pov, JoystickPOVDirections dir, out SystemJoystickValue keyValue)
+		/// <summary>
+		/// Check if the Given Input is Binded. Return the currently binded control to the input
+		/// </summary>
+		public bool IsAlreadyBinded( JoystickAxes axis, JoystickAxisFilters filters, out SystemJoystickValue control )
 		{
-			keyValue = null;
-			foreach (GameControlItem item in Items)
+			control = null;
+			foreach( GameControlItem item in Items )
 			{
-				if (item.BindedJoystickValues.Count > 0)
+				if( item.BindedJoystickValues.Count <= 0 )
+					continue;
+				foreach( SystemJoystickValue value in item.BindedJoystickValues )
 				{
-					foreach (SystemJoystickValue value in item.BindedJoystickValues)
+					if( value.Type == SystemJoystickValue.Types.Axis && value.Axis == axis &&
+						value.AxisFilter == filters )
 					{
-						if (value.Type == SystemJoystickValue.Types.POV && value.POV == pov && value.POVDirection == dir)
-						{
-							keyValue = value;
-							return true;
-						}
+						control = value;
+						return true;
 					}
 				}
 			}
 			return false;
 		}
-
-		public bool IsAlreadyBinded(JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue keyValue)
+		/// <summary>
+		/// Check if the Given Input is Binded. Return the currently binded control to the input
+		/// </summary>
+		public bool IsAlreadyBinded( JoystickPOVs pov, JoystickPOVDirections dir, out SystemJoystickValue control )
 		{
-			keyValue = null;
-			foreach (GameControlItem item in Items)
+			control = null;
+			foreach( GameControlItem item in Items )
 			{
-				if (item.BindedJoystickValues.Count > 0)
+				if( item.BindedJoystickValues.Count <= 0 )
+					continue;
+				foreach( SystemJoystickValue value in item.BindedJoystickValues )
 				{
-					foreach (SystemJoystickValue value in item.BindedJoystickValues)
+					if( value.Type == SystemJoystickValue.Types.POV && value.POV == pov && value.POVDirection == dir )
 					{
-						if (value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis)
-						{
-							keyValue = value;
-							return true;
-						}
+						control = value;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		/// <summary>
+		/// Check if the Given Input is Binded. Return the currently binded control to the input
+		/// </summary>
+		public bool IsAlreadyBinded( JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue control )
+		{
+			control = null;
+			foreach( GameControlItem item in Items )
+			{
+				if( item.BindedJoystickValues.Count <= 0 )
+					continue;
+				foreach( SystemJoystickValue value in item.BindedJoystickValues )
+				{
+					if( value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis )
+					{
+						control = value;
+						return true;
 					}
 				}
 			}
 			return false;
 		}
 
+		/// <summary>
+		/// Set All Keyboard and Mouse Binded inouts to the default, defined inside GameControlKeys.cs
+		/// </summary>
 		public void ResetKeyMouseSettings()
 		{
-			foreach (GameControlItem item in Items)
+			foreach( GameControlItem item in Items )
 			{
 				item.BindedKeyboardMouseValues.Clear();
 
-				foreach (var defaultKeyboardMouseValue in item.DefaultKeyboardMouseValues)
+				foreach( var defaultKeyboardMouseValue in item.DefaultKeyboardMouseValues )
 				{
-					item.BindedKeyboardMouseValues.Add(new SystemKeyboardMouseValue(defaultKeyboardMouseValue));
+					item.BindedKeyboardMouseValues.Add( new SystemKeyboardMouseValue( defaultKeyboardMouseValue ) );
 				}
 			}
 		}
-		
-        public void ResetJoystickSettings()
+		/// <summary>
+		/// Set Joystick Binded inputs to the default, defined inside GameControlKeys.cs
+		/// </summary>
+		public void ResetJoystickSettings()
 		{
-			foreach (GameControlItem item in Items)
+			foreach( GameControlItem item in Items )
 			{
 				item.BindedJoystickValues.Clear();
 
-				foreach (var defaultJoysticValue in item.DefaultJoystickValues)
+				foreach( var defaultJoysticValue in item.DefaultJoystickValues )
 				{
-					item.BindedJoystickValues.Add(new SystemJoystickValue(defaultJoysticValue));
+					item.BindedJoystickValues.Add( new SystemJoystickValue( defaultJoysticValue ) );
 				}
 			}
 		}
-
+		/// <summary>
+		/// Save all binded control to file
+		/// </summary>
 		public void SaveCustomConfig()
 		{
 			var block = new TextBlock();
-			var controlBloc = block.AddChild("Controls");
-           
-            //var deadzone = controlBloc.AddChild("DeadZone");
-            var keyBlockDz = DeadZone.ToString();
-            block.SetAttribute("DeadZone", keyBlockDz);
+			var controlBloc = block.AddChild( "Controls" );
 
-			foreach (GameControlItem item in Items)
+			var keyBlockDz = DeadZone.ToString();
+			block.SetAttribute( "DeadZone", keyBlockDz );
+
+			//save binded Controls to block
+			foreach( GameControlItem item in Items )
 			{
-				var currentKeyBlock = controlBloc.AddChild(item.ControlKey.ToString());
+				var currentKeyBlock = controlBloc.AddChild( item.ControlKey.ToString() );
+
 				//keybord Setting
-				if (item.BindedKeyboardMouseValues.Count > 0)
+				if( item.BindedKeyboardMouseValues.Count > 0 )
 				{
-					var keyboardBlock = currentKeyBlock.AddChild("Keybord");
-					foreach (var keyboardvalue in item.BindedKeyboardMouseValues)
+					var keyboardBlock = currentKeyBlock.AddChild( "Keybord" );
+					foreach( var keyboardvalue in item.BindedKeyboardMouseValues )
 					{
-						var keyBlock = keyboardBlock.AddChild("Item");
-						SystemKeyboardMouseValue.Save(keyboardvalue, keyBlock);
+						var keyBlock = keyboardBlock.AddChild( "Item" );
+						SystemKeyboardMouseValue.Save( keyboardvalue, keyBlock );
 					}
 				}
+
 				//Joystick setting
-				if (item.BindedJoystickValues.Count > 0)
+				if( item.BindedJoystickValues.Count > 0 )
 				{
-					var joystickBlock = currentKeyBlock.AddChild("Joystick");
-					foreach (var joystickvalue in item.BindedJoystickValues)
+					var joystickBlock = currentKeyBlock.AddChild( "Joystick" );
+					foreach( var joystickvalue in item.BindedJoystickValues )
 					{
-						var keyBlock = joystickBlock.AddChild("Item");
-						SystemJoystickValue.Save(joystickvalue, keyBlock);
+						var keyBlock = joystickBlock.AddChild( "Item" );
+						SystemJoystickValue.Save( joystickvalue, keyBlock );
 					}
 				}
-        
 			}
 
-			string fileName = VirtualFileSystem.GetRealPathByVirtual(keyconfig);
+			//save the block with all binded control to file
+			string fileName = VirtualFileSystem.GetRealPathByVirtual( keyconfig );
 			try
 			{
-				string directoryName = Path.GetDirectoryName(fileName);
-				if (directoryName != "" && !Directory.Exists(directoryName))
-					Directory.CreateDirectory(directoryName);
-				using (StreamWriter writer = new StreamWriter(fileName))
+				string directoryName = Path.GetDirectoryName( fileName );
+				if( directoryName != "" && !Directory.Exists( directoryName ) )
+					Directory.CreateDirectory( directoryName );
+				using( StreamWriter writer = new StreamWriter( fileName ) )
 				{
-                         writer.Write(block.DumpToString());
- 				}
+					writer.Write( block.DumpToString() );
+				}
 			}
 			catch
 			{
-				Log.Fatal(string.Format("Saving file failed \"{0}\".", fileName));
+				Log.Fatal( string.Format( "Saving file failed \"{0}\".", fileName ) );
 				return;
 			}
 		}
 
+		/// <summary>
+		/// Load all binded control from file
+		/// </summary>
 		public void LoadCustomConfig()
 		{
 			string error;
-			string customFilename = VirtualFileSystem.GetRealPathByVirtual(keyconfig);
-			TextBlock customblock = TextBlockUtils.LoadFromRealFile(customFilename, out error);
-			if (error != null)
-				Log.Fatal(string.Format("Loading file failed \"{0}\"  // {1}.", error, customFilename));
+			string customFilename = VirtualFileSystem.GetRealPathByVirtual( keyconfig );
+			TextBlock customblock = TextBlockUtils.LoadFromRealFile( customFilename, out error );
+			if( error != null )
+				Log.Fatal( string.Format( "Loading file failed \"{0}\"  // {1}.", error, customFilename ) );
 
 
-			var controlBloc = customblock.FindChild("Controls");
-			if (controlBloc == null)
+			var controlBloc = customblock.FindChild( "Controls" );
+			//if no controls in file, set to default values
+			if( controlBloc == null )
 			{
 				ResetKeyMouseSettings();
 				ResetJoystickSettings();
 				return;
 			}
-			foreach (GameControlItem item in Items)
+
+			//load each GameControlKeys binded value One By One
+			foreach( GameControlItem item in Items )
 			{
 
 				//item.BindedKeyboardMouseValues.Clear();
 				//item.bindedJoystickValues.Clear();
-				var currentKeyBlock = controlBloc.FindChild(item.ControlKey.ToString());
-				if (currentKeyBlock == null)
+				var currentKeyBlock = controlBloc.FindChild( item.ControlKey.ToString() );
+				if( currentKeyBlock == null )
 					continue;
+
 				//keybord Setting
-				var keybordBlock = currentKeyBlock.FindChild("Keybord");
-				if (keybordBlock != null && keybordBlock.Children.Count > 0)
+				var keybordBlock = currentKeyBlock.FindChild( "Keybord" );
+				if( keybordBlock != null && keybordBlock.Children.Count > 0 )
 				{
-					foreach (var keyBlocklock in keybordBlock.Children)
+					foreach( var keyBlocklock in keybordBlock.Children )
 					{
-						var keyboardvalue = SystemKeyboardMouseValue.Load(keyBlocklock);
+						var keyboardvalue = SystemKeyboardMouseValue.Load( keyBlocklock );
 						keyboardvalue.Parent = item;
-						item.BindedKeyboardMouseValues.Add(keyboardvalue);
-					}
-				}
-				//Joystick setting
-				var joystickBlock = currentKeyBlock.FindChild("Joystick");
-				if (joystickBlock != null && joystickBlock.Children.Count > 0)
-				{
-					foreach (var keyBlocklock in joystickBlock.Children)
-					{
-						var joystickvalue = SystemJoystickValue.Load(keyBlocklock);
-						joystickvalue.Parent = item;
-						item.BindedJoystickValues.Add(joystickvalue);
+						item.BindedKeyboardMouseValues.Add( keyboardvalue );
 					}
 				}
 
-                var deadzone = currentKeyBlock.FindChild("DeadZone");
-                if (deadzone != null)
-                {
-                    string dz = deadzone.GetAttribute("DeadZone");
-                    float dzz = float.Parse(dz);
-                    DeadZone = dzz;
-               }
+				//Joystick setting
+				var joystickBlock = currentKeyBlock.FindChild( "Joystick" );
+				if( joystickBlock != null && joystickBlock.Children.Count > 0 )
+				{
+					foreach( var keyBlocklock in joystickBlock.Children )
+					{
+						var joystickvalue = SystemJoystickValue.Load( keyBlocklock );
+						joystickvalue.Parent = item;
+						item.BindedJoystickValues.Add( joystickvalue );
+					}
+				}
+
+				var deadZoneBlock = currentKeyBlock.FindChild( "DeadZone" );
+				if( deadZoneBlock != null )
+				{
+					string deadZoneString = deadZoneBlock.GetAttribute( "DeadZone" );
+					float deadZoneValue = float.Parse( deadZoneString );
+					DeadZone = deadZoneValue;
+				}
 			}
 		}
 	}

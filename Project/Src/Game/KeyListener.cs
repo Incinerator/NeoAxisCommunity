@@ -37,17 +37,23 @@ namespace Game
 			}
 		}
 
+		/// <summary>
+		/// Process pressed key in order to bind it 
+		/// </summary>
 		protected override bool OnKeyDown( KeyEvent e )
 		{
 			if( base.OnKeyDown( e ) )
 				return true;
+			//new key allready detected
 			if( _newJoystickValue != null || _newKeyboardMousevalue != null )
 				return true;
+
 			if( e.Key == EKeys.Escape )
 			{
 				SetShouldDetach();
 				return true;
 			}
+
 			if( controlItem != null && _oldKeyboardMouseValue != null )
 			{
 				_newKeyboardMousevalue = new GameControlsManager.SystemKeyboardMouseValue( e.Key ) { Parent = controlItem };
@@ -67,16 +73,17 @@ namespace Game
 			return false;
 		}
 
-		public bool DoMouseWheel( int delta )
-		{
-			return OnMouseWheel( delta );
-		}
+		/// <summary>
+		/// Process Mouse Wheel in order to bind it 
+		/// </summary>
 		protected override bool OnMouseWheel( int delta )
 		{
 			if( base.OnMouseWheel( delta ) )
 				return true;
+			//new key allready detected
 			if( _newJoystickValue != null || _newKeyboardMousevalue != null )
 				return true;
+
 			if( controlItem != null && _oldKeyboardMouseValue != null )
 			{
 				var scrollDirection = delta > 0 ? MouseScroll.ScrollUp : MouseScroll.ScrollDown;
@@ -95,12 +102,17 @@ namespace Game
 			return false;
 		}
 
+		/// <summary>
+		/// Process Mouse Click in order to bind it 
+		/// </summary>
 		protected override bool OnMouseDown( EMouseButtons button )
 		{
 			if( base.OnMouseDown( button ) )
 				return true;
+			//new key allready detected
 			if( _newJoystickValue != null || _newKeyboardMousevalue != null )
 				return true;
+
 			if( controlItem != null && _oldKeyboardMouseValue != null )
 			{
 				_newKeyboardMousevalue = new GameControlsManager.SystemKeyboardMouseValue( button ) { Parent = controlItem };
@@ -119,71 +131,9 @@ namespace Game
 			return false;
 		}
 
-		void SetKey()
-		{
-			if( _newKeyboardMousevalue != null && _oldKeyboardMouseValue != null )
-			{
-				if( !_oldKeyboardMouseValue.Unbound )
-					controlItem.BindedKeyboardMouseValues.Remove( _oldKeyboardMouseValue );
-				controlItem.BindedKeyboardMouseValues.Add( _newKeyboardMousevalue );
-			}
-			if( _newJoystickValue != null && _oldJoystickValue != null )
-			{
-				if( !_oldJoystickValue.Unbound )
-					controlItem.BindedJoystickValues.Remove( _oldJoystickValue );
-				controlItem.BindedJoystickValues.Add( _newJoystickValue );
-			}
-		}
-
-		//bit hacky but it works
-		void ClearKey()
-		{
-			if( _newKeyboardMousevalue != null && _oldKeyboardMouseValue != null )
-			{
-				if( !_oldKeyboardMouseValue.Unbound )
-					controlItem.BindedKeyboardMouseValues.Remove( _oldKeyboardMouseValue );
-				//controlItem.BindedKeyboardMouseValues.Add(_newKeyboardMousevalue);
-			}
-			if( _newJoystickValue != null && _oldJoystickValue != null )
-			{
-				if( !_oldJoystickValue.Unbound )
-					controlItem.BindedJoystickValues.Remove( _oldJoystickValue );
-				//controlItem.BindedJoystickValues.Add(_newJoystickValue);
-			}
-			GameControlsManager.Instance.SaveCustomConfig();
-		}
-
-		void RemoveDuplicate()
-		{
-			if( _conflictKeyboardMouseValue != null )
-			{
-				_conflictKeyboardMouseValue.Parent.BindedKeyboardMouseValues.Remove( _conflictKeyboardMouseValue );
-			}
-			if( _conflictJoystickValue != null )
-			{
-				_conflictJoystickValue.Parent.BindedJoystickValues.Remove( _conflictJoystickValue );
-			}
-		}
-
-		private void CancelButton_Click( object sender )
-		{
-			SetShouldDetach();
-		}
-
-		private void OKButton_Click( object sender )
-		{
-			RemoveDuplicate();
-			SetKey();
-			SetShouldDetach();
-
-		}
-
-		private void ClearButton_Click( object sender )
-		{
-			ClearKey();
-			SetShouldDetach();
-		}
-
+		/// <summary>
+		/// Process Joystick Event in order to bind it 
+		/// </summary>
 		protected override bool OnJoystickEvent( JoystickInputEvent e )
 		{
 
@@ -300,6 +250,80 @@ namespace Game
 			return false;
 		}
 
+		/// <summary>
+		/// Bind the new Input to GameControlKey, Unbind prefious one if exist
+		/// </summary>
+		void SetKey()
+		{
+			if( _newKeyboardMousevalue != null && _oldKeyboardMouseValue != null )
+			{
+				if( !_oldKeyboardMouseValue.Unbound )
+					controlItem.BindedKeyboardMouseValues.Remove( _oldKeyboardMouseValue );
+				controlItem.BindedKeyboardMouseValues.Add( _newKeyboardMousevalue );
+			}
+			if( _newJoystickValue != null && _oldJoystickValue != null )
+			{
+				if( !_oldJoystickValue.Unbound )
+					controlItem.BindedJoystickValues.Remove( _oldJoystickValue );
+				controlItem.BindedJoystickValues.Add( _newJoystickValue );
+			}
+		}
+
+		/// <summary>
+		/// Unbind the selected GameControlKey
+		/// </summary>
+		void ClearKey()
+		{
+			if( _newKeyboardMousevalue != null && _oldKeyboardMouseValue != null )
+			{
+				if( !_oldKeyboardMouseValue.Unbound )
+					controlItem.BindedKeyboardMouseValues.Remove( _oldKeyboardMouseValue );
+			}
+			if( _newJoystickValue != null && _oldJoystickValue != null )
+			{
+				if( !_oldJoystickValue.Unbound )
+					controlItem.BindedJoystickValues.Remove( _oldJoystickValue );
+			}
+		}
+
+		/// <summary>
+		/// Unbind conflicted Input
+		/// </summary>
+		void RemoveDuplicate()
+		{
+			if( _conflictKeyboardMouseValue != null )
+			{
+				_conflictKeyboardMouseValue.Parent.BindedKeyboardMouseValues.Remove( _conflictKeyboardMouseValue );
+			}
+			if( _conflictJoystickValue != null )
+			{
+				_conflictJoystickValue.Parent.BindedJoystickValues.Remove( _conflictJoystickValue );
+			}
+		}
+
+		private void CancelButton_Click( object sender )
+		{
+			SetShouldDetach();
+		}
+
+		private void OKButton_Click( object sender )
+		{
+			RemoveDuplicate();
+			SetKey();
+			SetShouldDetach();
+		}
+
+		private void ClearButton_Click( object sender )
+		{
+			ClearKey();
+			SetShouldDetach();
+		}
+
+	
+
+		/// <summary>
+		/// Create a confirmation Dialog if conflict occured 
+		/// </summary>
 		void CreateConfirmDialogue( string message )
 		{
 			Control confirmControl = ControlDeclarationManager.Instance.CreateControl( @"GUI\Confirm.gui" );
