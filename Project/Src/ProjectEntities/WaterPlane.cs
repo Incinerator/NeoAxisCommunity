@@ -460,6 +460,11 @@ namespace ProjectEntities
 			if( reflectionMapState != null )
 				reflectionMapState.SetTextureName( reflectionTextureName );
 		}
+
+		public override bool IsSupportsStaticBatching()
+		{
+			return false;
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1480,118 +1485,121 @@ namespace ProjectEntities
 
 		public void TickPhysicsInfluence( bool allowSplashes )
 		{
-			EngineRandom random = World.Instance.Random;
-
-			List<SubmergedCheckItem> submergedItems = new List<SubmergedCheckItem>();
-
-			Vec2 halfSize = Size * .5f;
-			Bounds volumeBounds = new Bounds(
-				new Vec3( Position.X - halfSize.X, Position.Y - halfSize.Y, Position.Z - physicsHeight ),
-				new Vec3( Position.X + halfSize.X, Position.Y + halfSize.Y, Position.Z ) );
-
-			Body[] bodies = PhysicsWorld.Instance.VolumeCast( volumeBounds,
-				(int)ContactGroup.CastOnlyDynamic );
-
-			foreach( Body body in bodies )
+			if( PhysicsHeight != 0 && Type.PhysicsDensity != 0 )
 			{
-				if( body.Static )
-					continue;
+				EngineRandom random = World.Instance.Random;
 
-				Mat3 bodyRotationAsMatrix = body.Rotation.ToMat3();
+				List<SubmergedCheckItem> submergedItems = new List<SubmergedCheckItem>();
 
-				foreach( Shape shape in body.Shapes )
+				Vec2 halfSize = Size * .5f;
+				Bounds volumeBounds = new Bounds(
+					new Vec3( Position.X - halfSize.X, Position.Y - halfSize.Y, Position.Z - physicsHeight ),
+					new Vec3( Position.X + halfSize.X, Position.Y + halfSize.Y, Position.Z ) );
+
+				Body[] bodies = PhysicsWorld.Instance.VolumeCast( volumeBounds,
+					(int)ContactGroup.CastOnlyDynamic );
+
+				foreach( Body body in bodies )
 				{
-					if( shape.ContactGroup == (int)ContactGroup.NoContact )
+					if( body.Static )
 						continue;
 
-					submergedItems.Clear();
-					GetShapeSubmergedSpheres( ref bodyRotationAsMatrix, shape, submergedItems );
+					Mat3 bodyRotationAsMatrix = body.Rotation.ToMat3();
 
-					if( submergedItems.Count != 0 )
+					foreach( Shape shape in body.Shapes )
 					{
-						float volume = shape.Volume;
+						if( shape.ContactGroup == (int)ContactGroup.NoContact )
+							continue;
 
-						//calculate summary submerged coefficient and force center
-						float submergedCoef;
-						Vec3 submergedCenter;
+						submergedItems.Clear();
+						GetShapeSubmergedSpheres( ref bodyRotationAsMatrix, shape, submergedItems );
+
+						if( submergedItems.Count != 0 )
 						{
-							if( submergedItems.Count != 1 )
+							float volume = shape.Volume;
+
+							//calculate summary submerged coefficient and force center
+							float submergedCoef;
+							Vec3 submergedCenter;
 							{
-								submergedCoef = 0;
-								submergedCenter = Vec3.Zero;
-
-								float len = 0;
-								for( int n = 0; n < submergedItems.Count; n++ )
-									len += submergedItems[ n ].coef;
-
-								if( len != 0 )
+								if( submergedItems.Count != 1 )
 								{
-									float invLen = 1.0f / len;
+									submergedCoef = 0;
+									submergedCenter = Vec3.Zero;
+
+									float len = 0;
 									for( int n = 0; n < submergedItems.Count; n++ )
+										len += submergedItems[ n ].coef;
+
+									if( len != 0 )
 									{
-										SubmergedCheckItem item = submergedItems[ n ];
-										submergedCoef += item.coef;
-										submergedCenter += item.center * ( item.coef * invLen );
+										float invLen = 1.0f / len;
+										for( int n = 0; n < submergedItems.Count; n++ )
+										{
+											SubmergedCheckItem item = submergedItems[ n ];
+											submergedCoef += item.coef;
+											submergedCenter += item.center * ( item.coef * invLen );
+										}
+										submergedCoef /= (float)submergedItems.Count;
 									}
-									submergedCoef /= (float)submergedItems.Count;
+								}
+								else
+								{
+									submergedCoef = submergedItems[ 0 ].coef;
+									submergedCenter = submergedItems[ 0 ].center;
 								}
 							}
-							else
+
+							//create splashes
+							if( allowSplashes )
+								CreateSplashes( body, submergedItems );
+
+							//add forces
+							if( submergedCoef != 0 )
 							{
-								submergedCoef = submergedItems[ 0 ].coef;
-								submergedCenter = submergedItems[ 0 ].center;
-							}
-						}
-
-						//create splashes
-						if( allowSplashes )
-							CreateSplashes( body, submergedItems );
-
-						//add forces
-						if( submergedCoef != 0 )
-						{
-							float shapeDensity = GetShapeInfluenceDensity( shape );
-							if( shapeDensity != 0 )
-							{
-								float densityCoef = Type.PhysicsDensity / shapeDensity;
-								float mass = volume * shape.Density;
-
-								//buoyancy force
+								float shapeDensity = GetShapeInfluenceDensity( shape );
+								if( shapeDensity != 0 )
 								{
-									const float roughnessLinearCoef = .5f;
+									float densityCoef = Type.PhysicsDensity / shapeDensity;
+									float mass = volume * shape.Density;
 
-									float coef = densityCoef * submergedCoef;
-									coef += random.NextFloatCenter() * roughnessLinearCoef;
+									//buoyancy force
+									{
+										const float roughnessLinearCoef = .5f;
 
-									Vec3 vector = -PhysicsWorld.Instance.MainScene.Gravity * ( mass * coef );
-									body.AddForce( ForceType.GlobalAtGlobalPos, TickDelta, vector, submergedCenter );
-								}
+										float coef = densityCoef * submergedCoef;
+										coef += random.NextFloatCenter() * roughnessLinearCoef;
 
-								//linear damping
-								{
-									float constCoef = 2;
+										Vec3 vector = -PhysicsWorld.Instance.MainScene.Gravity * ( mass * coef );
+										body.AddForce( ForceType.GlobalAtGlobalPos, TickDelta, vector, submergedCenter );
+									}
 
-									float coef = submergedCoef * constCoef * densityCoef;
+									//linear damping
+									{
+										float constCoef = 2;
 
-									Vec3 vector = -body.LinearVelocity * mass * coef;
-									body.AddForce( ForceType.GlobalAtGlobalPos, TickDelta, vector, submergedCenter );
-								}
+										float coef = submergedCoef * constCoef * densityCoef;
 
-								//angular damping
-								{
-									const float constCoef = .5f;
-									const float roughnessAngularCoef = .25f;
+										Vec3 vector = -body.LinearVelocity * mass * coef;
+										body.AddForce( ForceType.GlobalAtGlobalPos, TickDelta, vector, submergedCenter );
+									}
 
-									float coef = submergedCoef * constCoef;
+									//angular damping
+									{
+										const float constCoef = .5f;
+										const float roughnessAngularCoef = .25f;
 
-									Vec3 vector = -body.AngularVelocity * mass * coef;
+										float coef = submergedCoef * constCoef;
 
-									float roughnessX = random.NextFloatCenter() * roughnessAngularCoef;
-									float roughnessY = random.NextFloatCenter() * roughnessAngularCoef;
-									float roughnessZ = random.NextFloatCenter() * roughnessAngularCoef;
-									vector += new Vec3( roughnessX, roughnessY, roughnessZ );
+										Vec3 vector = -body.AngularVelocity * mass * coef;
 
-									body.AddForce( ForceType.GlobalTorque, TickDelta, vector, Vec3.Zero );
+										float roughnessX = random.NextFloatCenter() * roughnessAngularCoef;
+										float roughnessY = random.NextFloatCenter() * roughnessAngularCoef;
+										float roughnessZ = random.NextFloatCenter() * roughnessAngularCoef;
+										vector += new Vec3( roughnessX, roughnessY, roughnessZ );
+
+										body.AddForce( ForceType.GlobalTorque, TickDelta, vector, Vec3.Zero );
+									}
 								}
 							}
 						}

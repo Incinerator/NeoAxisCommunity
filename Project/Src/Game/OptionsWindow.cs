@@ -915,16 +915,6 @@ namespace Game
 
 		protected override bool OnMouseWheel( int delta )
 		{
-			//quick fix until NA Fix mouse wheel to revers render order
-			foreach( var control in Controls )
-			{
-				if( control is KeyListener )
-				{
-					var keyListener = control as KeyListener;
-					if( keyListener.DoMouseWheel( delta ) )
-						return true;
-				}
-			}
 			if( base.OnMouseWheel( delta ) )
 				return true;
 			return false;

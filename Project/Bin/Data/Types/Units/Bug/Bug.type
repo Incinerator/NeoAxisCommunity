@@ -9,6 +9,7 @@ type Bug
 	walkForce = 300000
 	flyControlMaxSpeed = 3
 	flyControlForce = 28000
+	jumpSupport = True
 	initialAI = DefaultGameCharacterAI
 	viewRadius = 40
 	fpsCameraOffset = 0.4 0 0.3

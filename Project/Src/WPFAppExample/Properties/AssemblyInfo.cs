@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "NeoAxis Group Ltd." )]
 [assembly: AssemblyProduct( "WPFAppExample" )]
-[assembly: AssemblyCopyright( "Copyright © 2006-2013 NeoAxis Group Ltd." )]
+[assembly: AssemblyCopyright( "Copyright © 2006-2014 NeoAxis Group Ltd." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "2.0.0.0" )]
-[assembly: AssemblyFileVersion( "2.0.0.0" )]
+[assembly: AssemblyVersion( "2.1.0.0" )]
+[assembly: AssemblyFileVersion( "2.1.0.0" )]
