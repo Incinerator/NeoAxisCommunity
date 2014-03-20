@@ -379,7 +379,7 @@ namespace ProjectEntities
 	/// <summary>
 	/// Defines the physical characters.
 	/// </summary>
-	public class Character : Unit
+	public partial class Character : Unit
 	{
 		Body mainBody;
 
@@ -620,11 +620,18 @@ namespace ProjectEntities
 				onGroundTime = 0;
 				notOnGroundTime += TickDelta;
 			}
-		
+
 			CalculateGroundRelativeVelocity();
 
 			if( forceMoveVectorTimer != 0 )
 				forceMoveVectorTimer--;
+
+			#region Ladders
+
+			if( Intellect != null )
+				TickLadder();
+
+			#endregion
 
 			if( Type.DamageFastChangeSpeedFactor != 0 )
 				DamageFastChangeSpeedTick();
@@ -1029,6 +1036,12 @@ namespace ProjectEntities
 				if( EntitySystemWorld.Instance.IsServer() )
 					Server_SendJumpEventToAllClients();
 			}
+			#region Ladders
+			else if( currentLadder != null && shouldJumpTime != 0 )
+			{
+				JumpFromLadder();
+			}
+			#endregion
 		}
 
 		public void TryJump()

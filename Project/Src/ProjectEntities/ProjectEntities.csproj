@@ -138,6 +138,7 @@
     <Compile Include="BooleanSwitch.cs" />
     <Compile Include="Action Specific\Tank.cs" />
     <Compile Include="Community\Elevator.cs" />
+    <Compile Include="Community\Ladder.cs" />
     <Compile Include="ExampleEntityExtendedProperties.cs" />
     <Compile Include="Community\SelectiveSpawnPoint.cs" />
     <Compile Include="WaterPlaneClipVolume.cs" />
@@ -217,8 +218,9 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Community\" />
+    <Compile Include="Community\Character.Ladder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

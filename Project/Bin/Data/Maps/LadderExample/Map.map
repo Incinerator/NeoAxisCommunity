@@ -1,0 +1,704 @@
+type = GameMap
+uin = 2
+classPrompt = GameMap
+gameMusic = "Sounds\\Music\\Game.ogg"
+windDirection = 0
+windSpeed = 1
+resetYCoordinateForDynamicBodies = False
+destroyObjectsBelowHeight = -500
+ambientLight = 0.2 0.2 0.2
+editorCameraPosition = 7.047438 13.18867 4.638028
+editorCameraDirection = 4.801749 -0.008622646
+shadowColor = 1 1 1
+shadowPSSMSplitFactors = 0.1 0.4
+logicSystemManager = 3
+staticBatchingRenderingEnabled = False
+staticBatchingPhysicsEnabledInMapEditor = False
+staticBatchingPhysicsEnabledInSimulation = False
+staticBatchingGridCellSize = 30 30 30
+staticBatchingFilterByMaxTriangleCount = 512
+shadowTechnique = ShadowmapMedium
+sceneGraphSettings
+{
+	amountOfObjectsOutsideOctreeBoundsToRebuld = 30
+	octreeBoundsRebuildExpand = 50 50 50
+	minNodeSize = 10 10 10
+	objectCountThresholdToCreateChildNodes = 10
+	maxNodeCount = 300000
+}
+dataForEditor
+{
+}
+rootEditorLayer
+{
+	name = Root Layer
+}
+entity
+{
+	type = LogicSystemManager
+	uin = 3
+	referencesToCompileDLL = "System.dll\r\nSystem.Drawing.dll\r\n\r\nEngineApp.dll\r\nUISystem.dll\r\nFileSystem.dll\r\nLog.dll\r\nMathEx.dll\r\nRenderer.dll\r\nPhysicsSystem.dll\r\nSoundSystem.dll\r\nEntitySystem.dll\r\nMapSystem.dll\r\nUtils.dll\r\nHeightmapTerrain.dll\r\nDecorativeObjectManager.dll\r\n\r\nProjectCommon.dll\r\nProjectEntities.dll"
+	usingNamespacesToCodeGeneration = "using System;\r\nusing System.Collections.Generic;\r\nusing System.Text;\r\n\r\nusing Engine;\r\nusing Engine.FileSystem;\r\nusing Engine.MathEx;\r\nusing Engine.Utils;\r\nusing Engine.Renderer;\r\nusing Engine.PhysicsSystem;\r\nusing Engine.SoundSystem;\r\nusing Engine.UISystem;\r\nusing Engine.EntitySystem;\r\nusing Engine.MapSystem;\r\n\r\nusing ProjectCommon;\r\nusing ProjectEntities;"
+	mapClassManager = 4
+	entity
+	{
+		type = LogicClassManager
+		uin = 4
+	}
+}
+entity
+{
+	type = Light
+	uin = 5
+	classPrompt = Light
+	enabled = True
+	lightType = Directional
+	diffuseColor = 1 1 1
+	diffusePower = 1
+	specularColor = 0 0 0
+	specularPower = 1
+	attenuationNear = 0
+	attenuationFar = 10
+	attenuationPower = 2
+	ffpAttenuationConstant = 1
+	ffpAttenuationLinear = 0
+	ffpAttenuationQuadric = 0
+	spotlightInnerAngle = 30
+	spotlightOuterAngle = 40
+	spotlightFalloff = 1
+	castShadows = True
+	allowStaticLighting = False
+	allowDynamicLighting = True
+	customShaderParameter = 0 0 0 0
+	position = 16.99779 17.06732 7.476116
+	rotation = 0.4860383 0.2837176 -0.7138766 0.4167147
+	name = Light_0
+}
+entity
+{
+	type = StaticBox
+	uin = 6
+	classPrompt = MapObject
+	position = 12.5 0.5 0.5
+	name = StaticBox_0
+}
+entity
+{
+	type = StaticBox
+	uin = 7
+	classPrompt = MapObject
+	position = 11.5 0.5 0.5
+	name = StaticBox_1
+}
+entity
+{
+	type = StaticBox
+	uin = 8
+	classPrompt = MapObject
+	position = 9.5 0.5 0.5
+	name = StaticBox_2
+}
+entity
+{
+	type = StaticBox
+	uin = 9
+	classPrompt = MapObject
+	position = 10.5 0.5 0.5
+	name = StaticBox_3
+}
+entity
+{
+	type = StaticBox
+	uin = 10
+	classPrompt = MapObject
+	position = 5.5 0.5 0.5
+	name = StaticBox_4
+}
+entity
+{
+	type = StaticBox
+	uin = 11
+	classPrompt = MapObject
+	position = 6.5 0.5 0.5
+	name = StaticBox_5
+}
+entity
+{
+	type = StaticBox
+	uin = 12
+	classPrompt = MapObject
+	position = 7.5 0.5 0.5
+	name = StaticBox_6
+}
+entity
+{
+	type = StaticBox
+	uin = 13
+	classPrompt = MapObject
+	position = 8.5 0.5 0.5
+	name = StaticBox_7
+}
+entity
+{
+	type = StaticBox
+	uin = 14
+	classPrompt = MapObject
+	position = 12.5 -0.5 0.5
+	name = StaticBox_8
+}
+entity
+{
+	type = StaticBox
+	uin = 15
+	classPrompt = MapObject
+	position = 11.5 -0.5 0.5
+	name = StaticBox_9
+}
+entity
+{
+	type = StaticBox
+	uin = 16
+	classPrompt = MapObject
+	position = 9.5 -0.5 0.5
+	name = StaticBox_10
+}
+entity
+{
+	type = StaticBox
+	uin = 17
+	classPrompt = MapObject
+	position = 10.5 -0.5 0.5
+	name = StaticBox_11
+}
+entity
+{
+	type = StaticBox
+	uin = 18
+	classPrompt = MapObject
+	position = 5.5 -0.5 0.5
+	name = StaticBox_12
+}
+entity
+{
+	type = StaticBox
+	uin = 19
+	classPrompt = MapObject
+	position = 6.5 -0.5 0.5
+	name = StaticBox_13
+}
+entity
+{
+	type = StaticBox
+	uin = 20
+	classPrompt = MapObject
+	position = 7.5 -0.5 0.5
+	name = StaticBox_14
+}
+entity
+{
+	type = StaticBox
+	uin = 21
+	classPrompt = MapObject
+	position = 8.5 -0.5 0.5
+	name = StaticBox_15
+}
+entity
+{
+	type = StaticBox
+	uin = 22
+	classPrompt = MapObject
+	position = 12.5 -1.5 0.5
+	name = StaticBox_16
+}
+entity
+{
+	type = StaticBox
+	uin = 23
+	classPrompt = MapObject
+	position = 11.5 -1.5 0.5
+	name = StaticBox_17
+}
+entity
+{
+	type = StaticBox
+	uin = 24
+	classPrompt = MapObject
+	position = 9.5 -1.5 0.5
+	name = StaticBox_18
+}
+entity
+{
+	type = StaticBox
+	uin = 25
+	classPrompt = MapObject
+	position = 10.5 -1.5 0.5
+	name = StaticBox_19
+}
+entity
+{
+	type = StaticBox
+	uin = 26
+	classPrompt = MapObject
+	position = 5.5 -1.5 0.5
+	name = StaticBox_20
+}
+entity
+{
+	type = StaticBox
+	uin = 27
+	classPrompt = MapObject
+	position = 6.5 -1.5 0.5
+	name = StaticBox_21
+}
+entity
+{
+	type = StaticBox
+	uin = 28
+	classPrompt = MapObject
+	position = 7.5 -1.5 0.5
+	name = StaticBox_22
+}
+entity
+{
+	type = StaticBox
+	uin = 29
+	classPrompt = MapObject
+	position = 8.5 -1.5 0.5
+	name = StaticBox_23
+}
+entity
+{
+	type = StaticBox
+	uin = 30
+	classPrompt = MapObject
+	position = 12.5 -2.5 0.5
+	name = StaticBox_24
+}
+entity
+{
+	type = StaticBox
+	uin = 31
+	classPrompt = MapObject
+	position = 11.5 -2.5 0.5
+	name = StaticBox_25
+}
+entity
+{
+	type = StaticBox
+	uin = 32
+	classPrompt = MapObject
+	position = 9.5 -2.5 0.5
+	name = StaticBox_26
+}
+entity
+{
+	type = StaticBox
+	uin = 33
+	classPrompt = MapObject
+	position = 10.5 -2.5 0.5
+	name = StaticBox_27
+}
+entity
+{
+	type = StaticBox
+	uin = 34
+	classPrompt = MapObject
+	position = 5.5 -2.5 0.5
+	name = StaticBox_28
+}
+entity
+{
+	type = StaticBox
+	uin = 35
+	classPrompt = MapObject
+	position = 6.5 -2.5 0.5
+	name = StaticBox_29
+}
+entity
+{
+	type = StaticBox
+	uin = 36
+	classPrompt = MapObject
+	position = 7.5 -2.5 0.5
+	name = StaticBox_30
+}
+entity
+{
+	type = StaticBox
+	uin = 37
+	classPrompt = MapObject
+	position = 8.5 -2.5 0.5
+	name = StaticBox_31
+}
+entity
+{
+	type = StaticBox
+	uin = 38
+	classPrompt = MapObject
+	position = 12.5 0.5 1.5
+	name = StaticBox_32
+}
+entity
+{
+	type = StaticBox
+	uin = 39
+	classPrompt = MapObject
+	position = 11.5 0.5 1.5
+	name = StaticBox_33
+}
+entity
+{
+	type = StaticBox
+	uin = 40
+	classPrompt = MapObject
+	position = 9.5 0.5 1.5
+	name = StaticBox_34
+}
+entity
+{
+	type = StaticBox
+	uin = 41
+	classPrompt = MapObject
+	position = 10.5 0.5 1.5
+	name = StaticBox_35
+}
+entity
+{
+	type = StaticBox
+	uin = 42
+	classPrompt = MapObject
+	position = 5.5 0.5 1.5
+	name = StaticBox_36
+}
+entity
+{
+	type = StaticBox
+	uin = 43
+	classPrompt = MapObject
+	position = 6.5 0.5 1.5
+	name = StaticBox_37
+}
+entity
+{
+	type = StaticBox
+	uin = 44
+	classPrompt = MapObject
+	position = 7.5 0.5 1.5
+	name = StaticBox_38
+}
+entity
+{
+	type = StaticBox
+	uin = 45
+	classPrompt = MapObject
+	position = 8.5 0.5 1.5
+	name = StaticBox_39
+}
+entity
+{
+	type = StaticBox
+	uin = 46
+	classPrompt = MapObject
+	position = 12.5 -0.5 1.5
+	name = StaticBox_40
+}
+entity
+{
+	type = StaticBox
+	uin = 47
+	classPrompt = MapObject
+	position = 11.5 -0.5 1.5
+	name = StaticBox_41
+}
+entity
+{
+	type = StaticBox
+	uin = 48
+	classPrompt = MapObject
+	position = 9.5 -0.5 1.5
+	name = StaticBox_42
+}
+entity
+{
+	type = StaticBox
+	uin = 49
+	classPrompt = MapObject
+	position = 10.5 -0.5 1.5
+	name = StaticBox_43
+}
+entity
+{
+	type = StaticBox
+	uin = 50
+	classPrompt = MapObject
+	position = 5.5 -0.5 1.5
+	name = StaticBox_44
+}
+entity
+{
+	type = StaticBox
+	uin = 51
+	classPrompt = MapObject
+	position = 6.5 -0.5 1.5
+	name = StaticBox_45
+}
+entity
+{
+	type = StaticBox
+	uin = 52
+	classPrompt = MapObject
+	position = 7.5 -0.5 1.5
+	name = StaticBox_46
+}
+entity
+{
+	type = StaticBox
+	uin = 53
+	classPrompt = MapObject
+	position = 8.5 -0.5 1.5
+	name = StaticBox_47
+}
+entity
+{
+	type = StaticBox
+	uin = 54
+	classPrompt = MapObject
+	position = 12.5 -1.5 1.5
+	name = StaticBox_48
+}
+entity
+{
+	type = StaticBox
+	uin = 55
+	classPrompt = MapObject
+	position = 11.5 -1.5 1.5
+	name = StaticBox_49
+}
+entity
+{
+	type = StaticBox
+	uin = 56
+	classPrompt = MapObject
+	position = 9.5 -1.5 1.5
+	name = StaticBox_50
+}
+entity
+{
+	type = StaticBox
+	uin = 57
+	classPrompt = MapObject
+	position = 10.5 -1.5 1.5
+	name = StaticBox_51
+}
+entity
+{
+	type = StaticBox
+	uin = 58
+	classPrompt = MapObject
+	position = 5.5 -1.5 1.5
+	name = StaticBox_52
+}
+entity
+{
+	type = StaticBox
+	uin = 59
+	classPrompt = MapObject
+	position = 6.5 -1.5 1.5
+	name = StaticBox_53
+}
+entity
+{
+	type = StaticBox
+	uin = 60
+	classPrompt = MapObject
+	position = 7.5 -1.5 1.5
+	name = StaticBox_54
+}
+entity
+{
+	type = StaticBox
+	uin = 61
+	classPrompt = MapObject
+	position = 8.5 -1.5 1.5
+	name = StaticBox_55
+}
+entity
+{
+	type = StaticBox
+	uin = 62
+	classPrompt = MapObject
+	position = 12.5 -2.5 1.5
+	name = StaticBox_56
+}
+entity
+{
+	type = StaticBox
+	uin = 63
+	classPrompt = MapObject
+	position = 11.5 -2.5 1.5
+	name = StaticBox_57
+}
+entity
+{
+	type = StaticBox
+	uin = 64
+	classPrompt = MapObject
+	position = 9.5 -2.5 1.5
+	name = StaticBox_58
+}
+entity
+{
+	type = StaticBox
+	uin = 65
+	classPrompt = MapObject
+	position = 10.5 -2.5 1.5
+	name = StaticBox_59
+}
+entity
+{
+	type = StaticBox
+	uin = 66
+	classPrompt = MapObject
+	position = 5.5 -2.5 1.5
+	name = StaticBox_60
+}
+entity
+{
+	type = StaticBox
+	uin = 67
+	classPrompt = MapObject
+	position = 6.5 -2.5 1.5
+	name = StaticBox_61
+}
+entity
+{
+	type = StaticBox
+	uin = 68
+	classPrompt = MapObject
+	position = 7.5 -2.5 1.5
+	name = StaticBox_62
+}
+entity
+{
+	type = StaticBox
+	uin = 69
+	classPrompt = MapObject
+	position = 8.5 -2.5 1.5
+	name = StaticBox_63
+}
+entity
+{
+	type = StaticBox
+	uin = 70
+	classPrompt = MapObject
+	position = -0.5 -1 2
+	scale = 4 4 4
+	name = StaticBox_164
+}
+entity
+{
+	type = SkyBox
+	uin = 71
+	classPrompt = SkyBox
+	enabled = True
+	color = 1 1 1
+	power = 1
+}
+entity
+{
+	type = Ladder
+	uin = 72
+	classPrompt = Ladder
+	position = -0.5 0.9611237 4
+	rotation = 0 0 -0.7071068 0.7071068
+	scale = 0.1 1 8
+	name = Ladder_0
+}
+entity
+{
+	type = Ladder
+	uin = 73
+	classPrompt = Ladder
+	position = 9.073102 0.9611237 1.008218
+	rotation = 0 0 -0.7071068 0.7071068
+	scale = 0.1 1 2.004487
+	name = Ladder_1
+}
+entity
+{
+	type = SpawnPoint
+	uin = 74
+	classPrompt = SpawnPoint
+	defaultPoint = False
+	position = 2.636704 7.17932 0.04222227
+	rotation = 0 0 -0.7660444 0.6427876
+	name = SpawnPoint_0
+}
+entity
+{
+	type = StaticBox
+	uin = 75
+	classPrompt = MapObject
+	position = -0.5 -1 6
+	scale = 4 4 4
+	name = StaticBox_64
+}
+entity
+{
+	type = HeightmapTerrain
+	uin = 76
+	classPrompt = HeightmapTerrain
+	enabled = True
+	position = 0 0 -50
+	horizontalSize = 1000
+	verticalSize = 100
+	dataDirectory = HeightmapTerrain2
+	masksSize = 2048
+	detailMapsDistance = 50
+	renderQueueGroup = WorldGeometry1
+	collision = True
+	collisionMaterialName = Default
+	collisionHeightfieldThickness = 2
+	castDynamicShadows = False
+	receiveStaticShadows = True
+	simpleRendering = False
+	tileSize = 64
+	visible = True
+	allowVertexTextureFetchOptimization = True
+	ambientOcclusion
+	{
+		enabled = False
+		size = 1024
+		rayLength = 1
+		iterationCount = 100
+		blur = True
+		power = 1
+	}
+	lodSettings
+	{
+		enabled = True
+		maxCount = 99
+		lodLevelDistances = 100 + level * 200
+		morphAreaPercent = 0.3
+		showLevels = False
+	}
+	layers
+	{
+		item
+		{
+			name = base
+			baseMap = "Base\\Types\\HeightmapTerrain\\DefaultLayer0Base.jpg"
+			baseScale = 10
+			detailMap = "Base\\Types\\HeightmapTerrain\\DefaultLayer0Detail.jpg"
+			detailScale = 2
+		}
+		item
+		{
+			name = second
+			baseMap = "Base\\Types\\HeightmapTerrain\\DefaultLayer1Base.jpg"
+			baseScale = 10
+			detailMap = "Base\\Types\\HeightmapTerrain\\DefaultLayer1Detail.jpg"
+			detailScale = 2
+		}
+	}
+}
