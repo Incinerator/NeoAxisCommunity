@@ -1,0 +1,6 @@
+highLevelMaterial LadderDebug
+{
+	template = ShaderBaseMaterial
+	blending = AlphaBlend
+	diffuseColor = 1 0 0 0.2352941
+}

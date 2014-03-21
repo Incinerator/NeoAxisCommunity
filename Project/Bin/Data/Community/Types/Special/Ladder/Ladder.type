@@ -1,0 +1,11 @@
+type Ladder
+{
+	class = Ladder
+	attachedObjects
+	{
+		mesh
+		{
+			meshName = ".\\Ladder.mesh"
+		}
+	}
+}
