@@ -64,7 +64,7 @@ namespace ProjectCommon
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	/// <summary>
-	/// Define the Attribut to set default control for an action 
+	/// Define the Attribute to set default control for an action 
 	/// </summary>
 	[AttributeUsageAttribute( AttributeTargets.Field, AllowMultiple = true )]
 	public class DefaultJoystickValueAttribute : Attribute
@@ -88,9 +88,9 @@ namespace ProjectCommon
 			value = new GameControlsManager.SystemJoystickValue( pov, direction );
 		}
 
-		public DefaultJoystickValueAttribute( JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter )
+		public DefaultJoystickValueAttribute( JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters axisfilter ) 
 		{
-			value = new GameControlsManager.SystemJoystickValue( slider, axis, filter );
+			value = new GameControlsManager.SystemJoystickValue( slider, axis, axisfilter );
 		}
 
 		public GameControlsManager.SystemJoystickValue Value
@@ -404,9 +404,11 @@ namespace ProjectCommon
 			JoystickPOVDirections povDirection;
 			JoystickSliders slider;
 			JoystickSliderAxes sliderAxis;
+
 			private GameControlItem _parent;
 
 			public GameControlItem Parent
+
 			{
 				get { return _parent; }
 				set { _parent = value; }
@@ -493,10 +495,11 @@ namespace ProjectCommon
 				get { return slider; }
 			}
 
-			public JoystickSliderAxes SliderAxis
+			public JoystickSliderAxes SliderAxis 
 			{
 				get { return sliderAxis; }
 			}
+
 
 			public static void Save( SystemJoystickValue item, TextBlock block )
 			{
@@ -517,6 +520,7 @@ namespace ProjectCommon
 				case Types.Slider:
 					block.SetAttribute( "slider", item.Slider.ToString() );
 					block.SetAttribute( "sliderAxis", item.SliderAxis.ToString() );
+                    block.SetAttribute( "sliderAxisFilter", item.AxisFilter.ToString()); //Incin -- add axis filter see block above
 					break;
 				}
 			}
@@ -573,6 +577,12 @@ namespace ProjectCommon
 						value.sliderAxis = (JoystickSliderAxes)Enum.Parse( typeof( JoystickSliderAxes ), slideraxis );
 
 				}
+                {
+                    var slideraxisfilter = block.GetAttribute("SliderAxisFilter");
+                    if (!string.IsNullOrEmpty(slideraxisfilter))
+                        value.axisFilter = (JoystickAxisFilters)Enum.Parse(typeof(JoystickAxisFilters), slideraxisfilter); //Incin -- slideraxisFilter
+
+                }
 				return value;
 			}
 
@@ -587,7 +597,7 @@ namespace ProjectCommon
 				if( type == Types.POV )
 					return string.Format( "{0} - POV: {1}({2})", Parent.ControlKey, POV, POVDirection );
 				if( type == Types.Slider )
-					return string.Format( "{0} - Slider: {1}({2})", Parent.ControlKey, Slider, SliderAxis );
+					return string.Format( "{0} - Slider: {1}({2})({3})", Parent.ControlKey, Slider, SliderAxis, axisFilter ); //Incin -- {3}axisFilter
 				return "Error";
 			}
 		}
@@ -1085,11 +1095,11 @@ namespace ProjectCommon
 										break;
 
 									case JoystickAxisFilters.OnlyGreaterZero:    //ignore negative values for foot pedals
-										if( currentValue >= 0 )
+										if( currentValue >= 0 && currentValue > DeadZone ) // Incin -- account for deadzone
 											strength = currentValue;
 										break;
 									case JoystickAxisFilters.OnlyLessZero:    //ignore positive values for foot pedals
-										if( currentValue <= 0 )
+										if( currentValue <= 0 && currentValue < -DeadZone) //Incin -- account for deadzone also
 											strength = -currentValue;
 										break;
 									}
@@ -1331,10 +1341,14 @@ namespace ProjectCommon
 			}
 			return false;
 		}
+
+        //Incin -- needs slideraxisFilter code
 		/// <summary>
 		/// Check if the Given Input is Binded. Return the currently binded control to the input
 		/// </summary>
-		public bool IsAlreadyBinded( JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue control )
+        /// 
+        //Incin -- added SliderAxisfilters values
+        public bool IsAlreadyBinded(JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filters, out SystemJoystickValue control)
 		{
 			control = null;
 			foreach( GameControlItem item in Items )
@@ -1343,7 +1357,8 @@ namespace ProjectCommon
 					continue;
 				foreach( SystemJoystickValue value in item.BindedJoystickValues )
 				{
-					if( value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis )
+                    //Incin -- added && value.SliderAxisFilter == filters
+                    if (value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis && value.AxisFilter == filters)
 					{
 						control = value;
 						return true;
