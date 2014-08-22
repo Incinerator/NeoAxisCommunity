@@ -16,16 +16,12 @@ namespace ProjectCommon
 		[DefaultKeyboardMouseValue( EKeys.Up )]
 		[DefaultJoystickValue( JoystickAxes.Y, JoystickAxisFilters.GreaterZero )]
 		[DefaultJoystickValue( JoystickAxes.XBox360_LeftThumbstickY, JoystickAxisFilters.GreaterZero )]
-        //Incin --example slider using only positive values of X axis
-        [DefaultJoystickValue(JoystickSliders.Slider1,JoystickSliderAxes.X, JoystickAxisFilters.OnlyGreaterZero)]
 		Forward,
 
 		[DefaultKeyboardMouseValue( EKeys.S )]
 		[DefaultKeyboardMouseValue( EKeys.Down )]
 		[DefaultJoystickValue( JoystickAxes.Y, JoystickAxisFilters.LessZero )]
 		[DefaultJoystickValue( JoystickAxes.XBox360_LeftThumbstickY, JoystickAxisFilters.LessZero )]
-        //Incin --example slider using only negative values of X axis
-        [DefaultJoystickValue(JoystickSliders.Slider1, JoystickSliderAxes.X, JoystickAxisFilters.OnlyLessZero)]
 		Backward,
 
 		[DefaultKeyboardMouseValue( EKeys.A )]
