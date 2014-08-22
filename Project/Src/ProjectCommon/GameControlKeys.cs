@@ -16,12 +16,17 @@ namespace ProjectCommon
 		[DefaultKeyboardMouseValue( EKeys.Up )]
 		[DefaultJoystickValue( JoystickAxes.Y, JoystickAxisFilters.GreaterZero )]
 		[DefaultJoystickValue( JoystickAxes.XBox360_LeftThumbstickY, JoystickAxisFilters.GreaterZero )]
+
+        //JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter
+        [DefaultJoystickValue(JoystickSliders.Slider1, JoystickSliderAxes.X, JoystickAxisFilters.OnlyGreaterZero)]
 		Forward,
 
 		[DefaultKeyboardMouseValue( EKeys.S )]
 		[DefaultKeyboardMouseValue( EKeys.Down )]
 		[DefaultJoystickValue( JoystickAxes.Y, JoystickAxisFilters.LessZero )]
 		[DefaultJoystickValue( JoystickAxes.XBox360_LeftThumbstickY, JoystickAxisFilters.LessZero )]
+
+        [DefaultJoystickValue(JoystickSliders.Slider1, JoystickSliderAxes.X, JoystickAxisFilters.OnlyLessZero)]
 		Backward,
 
 		[DefaultKeyboardMouseValue( EKeys.A )]

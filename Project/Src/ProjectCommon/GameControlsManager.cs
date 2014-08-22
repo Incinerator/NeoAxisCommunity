@@ -517,6 +517,7 @@ namespace ProjectCommon
 				case Types.Slider:
 					block.SetAttribute( "slider", item.Slider.ToString() );
 					block.SetAttribute( "sliderAxis", item.SliderAxis.ToString() );
+                    block.SetAttribute("slideraxisFilter", item.axisFilter.ToString());
 					break;
 				}
 			}
@@ -573,6 +574,12 @@ namespace ProjectCommon
 						value.sliderAxis = (JoystickSliderAxes)Enum.Parse( typeof( JoystickSliderAxes ), slideraxis );
 
 				}
+                {
+                    var slideraxisfilter = block.GetAttribute("slideraxisFilter");
+                    if (!string.IsNullOrEmpty(slideraxisfilter))
+                        value.axisFilter = (JoystickAxisFilters)Enum.Parse(typeof(JoystickAxisFilters), slideraxisfilter);
+
+                }
 				return value;
 			}
 
@@ -587,7 +594,7 @@ namespace ProjectCommon
 				if( type == Types.POV )
 					return string.Format( "{0} - POV: {1}({2})", Parent.ControlKey, POV, POVDirection );
 				if( type == Types.Slider )
-					return string.Format( "{0} - Slider: {1}({2})", Parent.ControlKey, Slider, SliderAxis );
+					return string.Format( "{0} - Slider: {1}({2})({3})", Parent.ControlKey, Slider, SliderAxis, AxisFilter );
 				return "Error";
 			}
 		}
@@ -1085,11 +1092,11 @@ namespace ProjectCommon
 										break;
 
 									case JoystickAxisFilters.OnlyGreaterZero:    //ignore negative values for foot pedals
-										if( currentValue >= 0 )
+                                        if (currentValue >= 0 && currentValue > DeadZone)
 											strength = currentValue;
 										break;
 									case JoystickAxisFilters.OnlyLessZero:    //ignore positive values for foot pedals
-										if( currentValue <= 0 )
+										if( currentValue <= 0 && currentValue < -DeadZone)
 											strength = -currentValue;
 										break;
 									}
@@ -1334,7 +1341,7 @@ namespace ProjectCommon
 		/// <summary>
 		/// Check if the Given Input is Binded. Return the currently binded control to the input
 		/// </summary>
-		public bool IsAlreadyBinded( JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue control )
+		public bool IsAlreadyBinded( JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter, out SystemJoystickValue control )
 		{
 			control = null;
 			foreach( GameControlItem item in Items )
@@ -1343,7 +1350,8 @@ namespace ProjectCommon
 					continue;
 				foreach( SystemJoystickValue value in item.BindedJoystickValues )
 				{
-					if( value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis )
+					if( value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis
+                        && value.AxisFilter == filter)
 					{
 						control = value;
 						return true;

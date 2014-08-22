@@ -5,6 +5,8 @@ using Engine;
 using Engine.UISystem;
 using ProjectCommon;
 
+
+//Incin be warned this code as of 8/21/14 may not work as you expect
 namespace Game
 {
 	public class KeyListener : Control
@@ -151,6 +153,7 @@ namespace Game
 					{
 						_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Button.Name ) { Parent = controlItem };
 						GameControlsManager.SystemJoystickValue key;
+
 						if( GameControlsManager.Instance.IsAlreadyBinded( evt.Button.Name, out key ) )
 						{
 							message = "Button " + evt.Button.Name + " is already bound to  " + key.Parent.ControlKey + ". Override? or Click Clear to remove the bind";
@@ -161,17 +164,28 @@ namespace Game
 				//JoystickAxisChangedEvent
 				{
 					var evt = e as JoystickAxisChangedEvent;
+                    
 					if( evt != null )
 					{
 						var filter = JoystickAxisFilters.DEADZONE;
-						if( evt.Axis.Value < -GameControlsManager.Instance.DeadZone )
-						{
-							filter = JoystickAxisFilters.LessZero;
-						}
-						else if( evt.Axis.Value > GameControlsManager.Instance.DeadZone )
-						{
-							filter = JoystickAxisFilters.GreaterZero;
-						}
+
+                        if (_oldJoystickValue.AxisFilter != null) 
+                        {
+                            filter = _oldJoystickValue.AxisFilter;
+                        }
+
+                        CreateAxisFilterDialogue(out filter);
+                        //Incin -- this needs to add the other filters so it reads the filters right
+                        // should call the key information to populate here the var value
+
+                        //if( evt.Axis.Value < -GameControlsManager.Instance.DeadZone )
+                        //{
+                        //    filter = JoystickAxisFilters.LessZero;
+                        //}
+                        //else if( evt.Axis.Value > GameControlsManager.Instance.DeadZone )
+                        //{
+                        //    filter = JoystickAxisFilters.GreaterZero;
+                        //}
 
 						//pass the dead zone
 						if( filter != JoystickAxisFilters.DEADZONE )
@@ -206,20 +220,42 @@ namespace Game
 					var evt = e as JoystickSliderChangedEvent;
 					if( evt != null )
 					{
-						var currentValue = evt.Axis == JoystickSliderAxes.X
-									? evt.Slider.Value.X
-									: evt.Slider.Value.Y;
+
+						//var currentValue = evt.Axis == JoystickSliderAxes.X
+						//			? evt.Slider.Value.X
+						//			: evt.Slider.Value.Y;
 
 						var filter = JoystickAxisFilters.DEADZONE;
-						if( currentValue < -GameControlsManager.Instance.DeadZone )
-						{
-							filter = JoystickAxisFilters.LessZero;
-						}
-						else if( currentValue > GameControlsManager.Instance.DeadZone )
-						{
-							filter = JoystickAxisFilters.GreaterZero;
-						}
+                        //Incin -- this needs to add the other filters so it reads the filters right
+                        // should call the key information to populate here the var value
+                        if (_oldJoystickValue.AxisFilter != null)
+                        {
+                            filter = _oldJoystickValue.AxisFilter;
+                        }
 
+                        JoystickAxisFilters newfilter = JoystickAxisFilters.DEADZONE;
+                        bool finished = false;
+                        
+                        if (newfilter == JoystickAxisFilters.DEADZONE){
+                            CreateAxisFilterDialogue(out newfilter, out finished);
+                            return true;
+                        }
+
+                        if (filter != newfilter)
+                        {
+                            //not same setting
+                            //save new setting
+                        }
+
+                        //if( currentValue < -GameControlsManager.Instance.DeadZone )
+                        //{
+                        //    filter = JoystickAxisFilters.LessZero;
+                        //}
+                        //else if( currentValue > GameControlsManager.Instance.DeadZone )
+                        //{
+                        //    filter = JoystickAxisFilters.GreaterZero;
+                        //}
+                        
 						//pass the dead zone
 						if( filter != JoystickAxisFilters.DEADZONE )
 						{
@@ -228,9 +264,9 @@ namespace Game
 								Parent = controlItem
 							};
 							GameControlsManager.SystemJoystickValue key;
-							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Slider.Name, evt.Axis, out key ) )
+							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Slider.Name, evt.Axis, filter, out key ) )
 							{
-								message = "Slider " + evt.Slider.Name + "(" + evt.Axis + ") is already bound to  " +
+								message = "Slider " + evt.Slider.Name + "(" + evt.Axis + ")" + "(" + filter + ") is already bound to  " +
 										  key.Parent.ControlKey + ". Override ?";
 								_conflictJoystickValue = key;
 							}
@@ -319,7 +355,13 @@ namespace Game
 			SetShouldDetach();
 		}
 
-	
+        //Incin 
+        private void SetAxisFilteron_OK_Click(object sender)
+        {
+            //change filter type
+            SetKey();
+            SetShouldDetach();
+        }
 
 		/// <summary>
 		/// Create a confirmation Dialog if conflict occured 
@@ -334,5 +376,48 @@ namespace Game
 			( (Button)confirmControl.Controls[ "OK" ] ).Click += OKButton_Click;
 			( (Button)confirmControl.Controls[ "Clear" ] ).Click += ClearButton_Click;
 		}
-	}
+
+          //Incin
+        void CreateAxisFilterDialogue(out JoystickAxisFilters filterselection, out bool finished)
+        {
+            ComboBox comboBox;
+            Control AxisFilterControl = ControlDeclarationManager.Instance.CreateControl(@"GUI\AxisFilter.gui");
+            Controls.Add(AxisFilterControl);
+            MouseCover = true;
+            comboBox = (ComboBox)AxisFilterControl.Controls["cmbAxisFilter"];
+            comboBox.Items.Add("GreaterZero");
+            comboBox.Items.Add("LessZero");
+            comboBox.Items.Add("OnlyGreaterZero");
+            comboBox.Items.Add("OnlyLessZero");
+            JoystickAxisFilters selection = JoystickAxisFilters.GreaterZero;
+            int i = comboBox.SelectedIndex;
+            
+            comboBox.SelectedIndexChange += delegate(ComboBox sender)
+            {
+                i = comboBox.SelectedIndex;
+                if(i == 0)
+                    selection = JoystickAxisFilters.GreaterZero;
+                if (i == 1)
+                    selection = JoystickAxisFilters.LessZero;
+                if (i == 2)
+                    selection = JoystickAxisFilters.OnlyGreaterZero;
+                if (i == 3)
+                    selection = JoystickAxisFilters.OnlyLessZero;
+
+            };
+
+            filterselection = selection; //enums start at 1?
+            
+            //Need a global variable to pass the filter to?
+            ((Button)AxisFilterControl.Controls["OK"]).Click += delegate(Button sender)
+            {
+                SetAxisFilteron_OK_Click(sender);
+            };
+
+            //not sure if we need this
+            //((Button)AxisFilterControl.Controls["Cancel"]).Click += CancelButton_Click;
+            finished = true;
+        }
+
+    }
 }
