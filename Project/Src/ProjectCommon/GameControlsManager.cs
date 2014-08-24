@@ -449,13 +449,14 @@ namespace ProjectCommon
                 slideraxisFilter = source.SliderAxisFilter;
 				_parent = source.Parent;
 			}
-
+            //only check axis without filter
             public SystemJoystickValue(JoystickAxes axis)
             {
                 type = Types.Axis;
                 this.axis = axis;
             }
 
+            //check for axis and filter
 			public SystemJoystickValue( JoystickAxes axis, JoystickAxisFilters axisFilter )
 			{
 				type = Types.Axis;
@@ -470,6 +471,7 @@ namespace ProjectCommon
 				this.povDirection = povDirection;
 			}
 
+            //check slider with axis without filter
             public SystemJoystickValue(JoystickSliders slider, JoystickSliderAxes axe)
             {
                 type = Types.Slider;
@@ -477,11 +479,12 @@ namespace ProjectCommon
                 this.sliderAxis = axe;
             }
 
-			public SystemJoystickValue( JoystickSliders slider, JoystickAxisFilters filter )
+            //check slider axis and filter
+			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe, JoystickAxisFilters filter )
 			{
 				type = Types.Slider;
 				this.slider = slider;
-				//this.sliderAxis = axe;
+				this.sliderAxis = axe;
 				this.slideraxisFilter = filter;
 			}
 
