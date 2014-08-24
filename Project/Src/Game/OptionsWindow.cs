@@ -38,7 +38,8 @@ namespace Game
 		ComboBox comboBoxInputDevices;
 		CheckBox checkBoxDepthBufferAccess;
 		ComboBox comboBoxAntialiasing;
-
+        //Incin
+        JoystickAxisFilters axisfilterselection;
 		///////////////////////////////////////////
 
 		class ComboBoxItem
@@ -638,6 +639,21 @@ namespace Game
 					GameControlsManager.Instance.AlwaysRun = sender.Checked;
 				};
 
+                                //Incin -- change Axis Filter alone
+                Button axisfilterbutton = ((Button)pageControls.Controls["ChangeAxisfilter"]);
+
+                axisfilterbutton.Click += delegate(Button sender)
+                {
+                    //GameControlsManager.Instance.ResetKeyMouseSettings();
+                    //GameControlsManager.Instance.ResetJoystickSettings();
+                    //load axisfilter window
+                    //select filter and update item
+                    //JoystickAxisFilters selection;
+                    CreateAxisFilterDialogue();
+                    //UpdateBindedInputControlsListBox();
+                };
+                axisfilterbutton.Enable = false;
+
 				//Devices
 				comboBox = (ComboBox)pageControls.Controls[ "InputDevices" ];
 				comboBoxInputDevices = comboBox;
@@ -651,8 +667,16 @@ namespace Game
 
 				comboBox.SelectedIndexChange += delegate( ComboBox sender )
 				{
+                    
+                    if (sender.SelectedIndex == 0)
+                        axisfilterbutton.Enable = false; 
+                    else 
+                        axisfilterbutton.Enable = true;
+
 					UpdateBindedInputControlsListBox();
 				};
+
+                
 
 				scrollBar = (ScrollBar)pageControls.Controls[ "DeadzoneVScroll" ];
 				scrollBar.Value = GameControlsManager.Instance.DeadZone;
@@ -685,7 +709,6 @@ namespace Game
 					GameControlsManager.Instance.ResetJoystickSettings();
 					UpdateBindedInputControlsListBox();
 				};
-
 				//Controls
 				//UpdateBindedInputControlsTextBox(); //original
 				UpdateBindedInputControlsListBox(); //End HellEnt
@@ -1139,5 +1162,56 @@ namespace Game
 				button.Active = tabControl.SelectedIndex == n;
 			}
 		}
+
+        //Incin 
+        private void SetAxisFilteron_OK_Click(object sender)
+        {
+            //change filter type
+            //KeyListener.SetKey();
+
+            SetShouldDetach();
+        }
+
+        //Incin
+        void CreateAxisFilterDialogue()
+        {
+            ComboBox comboBox;
+            Control AxisFilterControl = ControlDeclarationManager.Instance.CreateControl(@"GUI\AxisFilter.gui");
+            Controls.Add(AxisFilterControl);
+            MouseCover = true;
+            comboBox = (ComboBox)AxisFilterControl.Controls["cmbAxisFilter"];
+            comboBox.Items.Add("GreaterZero");
+            comboBox.Items.Add("LessZero");
+            comboBox.Items.Add("OnlyGreaterZero");
+            comboBox.Items.Add("OnlyLessZero");
+           
+            int i = 0;
+
+            comboBox.SelectedIndexChange += delegate(ComboBox sender)
+            {
+                //JoystickAxisFilters selection = JoystickAxisFilters.GreaterZero;
+
+                i = sender.SelectedIndex;
+                if (i == 0)
+                    axisfilterselection = JoystickAxisFilters.GreaterZero;
+                else if (i == 1)
+                    axisfilterselection = JoystickAxisFilters.LessZero;
+                else if (i == 2)
+                    axisfilterselection = JoystickAxisFilters.OnlyGreaterZero;
+                else if (i == 3)
+                    axisfilterselection = JoystickAxisFilters.OnlyLessZero;
+                else
+                    axisfilterselection = JoystickAxisFilters.DEADZONE;
+            };
+            comboBox.SelectedIndex = 0;
+            //Need a global variable to pass the filter to?
+            ((Button)AxisFilterControl.Controls["OK"]).Click += delegate(Button sender)
+            {
+                SetAxisFilteron_OK_Click(sender);
+            };
+
+            //not sure if we need this
+            //((Button)AxisFilterControl.Controls["Cancel"]).Click += CancelButton_Click;
+        }
 	}
 }

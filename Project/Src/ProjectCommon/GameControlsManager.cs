@@ -44,8 +44,6 @@ namespace ProjectCommon
 		}
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
-
 	public enum JoystickAxisFilters
 	{
 		//NotZero,
@@ -388,6 +386,19 @@ namespace ProjectCommon
 		/// </summary>
 		public class SystemJoystickValue : SystemControlValue
 		{
+
+            //public abstract class JoystickSliderAxisFilterChangedEvent
+            //{ }
+            	////////////////////////////////////////////////////////////////////////////////////////////////
+            //public class JoystickAxisFilterChangedEvent : JoystickInputEvent
+            //{
+            //    public JoystickAxisFilters JoystickAxisFilterChangedEvent(JoystickAxisFilters filter)
+            //    {
+            //        ;
+            //    }
+                
+            //}
+
 			public enum Types
 			{
 				Button,
@@ -404,6 +415,8 @@ namespace ProjectCommon
 			JoystickPOVDirections povDirection;
 			JoystickSliders slider;
 			JoystickSliderAxes sliderAxis;
+            JoystickAxisFilters slideraxisFilter;
+
 			private GameControlItem _parent;
 
 			public GameControlItem Parent
@@ -411,6 +424,7 @@ namespace ProjectCommon
 				get { return _parent; }
 				set { _parent = value; }
 			}
+
 
 			public bool Unbound;
 
@@ -432,8 +446,15 @@ namespace ProjectCommon
 				axisFilter = source.AxisFilter;
 				pov = source.POV;
 				povDirection = source.POVDirection;
+                slideraxisFilter = source.SliderAxisFilter;
 				_parent = source.Parent;
 			}
+
+            public SystemJoystickValue(JoystickAxes axis)
+            {
+                type = Types.Axis;
+                this.axis = axis;
+            }
 
 			public SystemJoystickValue( JoystickAxes axis, JoystickAxisFilters axisFilter )
 			{
@@ -449,12 +470,19 @@ namespace ProjectCommon
 				this.povDirection = povDirection;
 			}
 
-			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe, JoystickAxisFilters filter )
+            public SystemJoystickValue(JoystickSliders slider, JoystickSliderAxes axe)
+            {
+                type = Types.Slider;
+                this.slider = slider;
+                this.sliderAxis = axe;
+            }
+
+			public SystemJoystickValue( JoystickSliders slider, JoystickAxisFilters filter )
 			{
 				type = Types.Slider;
 				this.slider = slider;
-				this.sliderAxis = axe;
-				this.axisFilter = filter;
+				//this.sliderAxis = axe;
+				this.slideraxisFilter = filter;
 			}
 
 			public Types Type
@@ -498,6 +526,11 @@ namespace ProjectCommon
 				get { return sliderAxis; }
 			}
 
+            public JoystickAxisFilters SliderAxisFilter
+            {
+                get { return slideraxisFilter; }
+            }
+
 			public static void Save( SystemJoystickValue item, TextBlock block )
 			{
 				block.SetAttribute( "type", item.Type.ToString() );
@@ -517,7 +550,7 @@ namespace ProjectCommon
 				case Types.Slider:
 					block.SetAttribute( "slider", item.Slider.ToString() );
 					block.SetAttribute( "sliderAxis", item.SliderAxis.ToString() );
-                    block.SetAttribute("slideraxisFilter", item.axisFilter.ToString());
+                    block.SetAttribute("slideraxisFilter", item.SliderAxisFilter.ToString());
 					break;
 				}
 			}
@@ -577,7 +610,7 @@ namespace ProjectCommon
                 {
                     var slideraxisfilter = block.GetAttribute("slideraxisFilter");
                     if (!string.IsNullOrEmpty(slideraxisfilter))
-                        value.axisFilter = (JoystickAxisFilters)Enum.Parse(typeof(JoystickAxisFilters), slideraxisfilter);
+                        value.slideraxisFilter = (JoystickAxisFilters)Enum.Parse(typeof(JoystickAxisFilters), slideraxisfilter);
 
                 }
 				return value;
@@ -594,7 +627,7 @@ namespace ProjectCommon
 				if( type == Types.POV )
 					return string.Format( "{0} - POV: {1}({2})", Parent.ControlKey, POV, POVDirection );
 				if( type == Types.Slider )
-					return string.Format( "{0} - Slider: {1}({2})({3})", Parent.ControlKey, Slider, SliderAxis, AxisFilter );
+					return string.Format( "{0} - Slider: {1}({2})({3})", Parent.ControlKey, Slider, SliderAxis, SliderAxisFilter );
 				return "Error";
 			}
 		}
@@ -1071,7 +1104,9 @@ namespace ProjectCommon
 							foreach( SystemJoystickValue value in item.BindedJoystickValues )
 							{
 								if( value.Type == SystemJoystickValue.Types.Slider &&
-									value.Slider == evt.Slider.Name && value.SliderAxis == evt.Axis )
+									value.Slider == evt.Slider.Name && value.SliderAxis == evt.Axis 
+                                    //&& value.SliderAxisFilter == evt.Slider.GetType("SliderAxisFilter")
+                                    )
 								{
 									var currentValue = evt.Axis == JoystickSliderAxes.X
 										? evt.Slider.Value.X
@@ -1079,7 +1114,7 @@ namespace ProjectCommon
 
 									float strength = 0f;
 
-									switch( value.AxisFilter )
+									switch( value.SliderAxisFilter )
 									{
 									case JoystickAxisFilters.LessZero:
 										if( currentValue < -DeadZone )

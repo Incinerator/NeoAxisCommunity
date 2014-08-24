@@ -167,14 +167,11 @@ namespace Game
                     
 					if( evt != null )
 					{
-						var filter = JoystickAxisFilters.DEADZONE;
+                        //bool finished;
+						var filter = _oldJoystickValue.AxisFilter;
 
-                        if (_oldJoystickValue.AxisFilter != null) 
-                        {
-                            filter = _oldJoystickValue.AxisFilter;
-                        }
-
-                        CreateAxisFilterDialogue(out filter);
+                        //CreateAxisFilterDialogue(out filter, out finished);
+                        
                         //Incin -- this needs to add the other filters so it reads the filters right
                         // should call the key information to populate here the var value
 
@@ -225,27 +222,22 @@ namespace Game
 						//			? evt.Slider.Value.X
 						//			: evt.Slider.Value.Y;
 
-						var filter = JoystickAxisFilters.DEADZONE;
+						var filter = _oldJoystickValue.AxisFilter;//JoystickAxisFilters.DEADZONE;
                         //Incin -- this needs to add the other filters so it reads the filters right
                         // should call the key information to populate here the var value
-                        if (_oldJoystickValue.AxisFilter != null)
-                        {
-                            filter = _oldJoystickValue.AxisFilter;
-                        }
-
-                        JoystickAxisFilters newfilter = JoystickAxisFilters.DEADZONE;
-                        bool finished = false;
                         
-                        if (newfilter == JoystickAxisFilters.DEADZONE){
-                            CreateAxisFilterDialogue(out newfilter, out finished);
-                            return true;
-                        }
+                        //JoystickAxisFilters newfilter = JoystickAxisFilters.DEADZONE;
+                                               
+                        //if (newfilter == JoystickAxisFilters.DEADZONE){
+                        //    CreateAxisFilterDialogue(out newfilter);
+                        //    return true;
+                        //}
 
-                        if (filter != newfilter)
-                        {
-                            //not same setting
-                            //save new setting
-                        }
+                        //if (filter != newfilter)
+                        //{
+                        //    //not same setting
+                        //    //save new setting
+                        //}
 
                         //if( currentValue < -GameControlsManager.Instance.DeadZone )
                         //{
@@ -289,7 +281,7 @@ namespace Game
 		/// <summary>
 		/// Bind the new Input to GameControlKey, Unbind prefious one if exist
 		/// </summary>
-		void SetKey()
+		public void SetKey()
 		{
 			if( _newKeyboardMousevalue != null && _oldKeyboardMouseValue != null )
 			{
@@ -355,14 +347,6 @@ namespace Game
 			SetShouldDetach();
 		}
 
-        //Incin 
-        private void SetAxisFilteron_OK_Click(object sender)
-        {
-            //change filter type
-            SetKey();
-            SetShouldDetach();
-        }
-
 		/// <summary>
 		/// Create a confirmation Dialog if conflict occured 
 		/// </summary>
@@ -376,48 +360,5 @@ namespace Game
 			( (Button)confirmControl.Controls[ "OK" ] ).Click += OKButton_Click;
 			( (Button)confirmControl.Controls[ "Clear" ] ).Click += ClearButton_Click;
 		}
-
-          //Incin
-        void CreateAxisFilterDialogue(out JoystickAxisFilters filterselection, out bool finished)
-        {
-            ComboBox comboBox;
-            Control AxisFilterControl = ControlDeclarationManager.Instance.CreateControl(@"GUI\AxisFilter.gui");
-            Controls.Add(AxisFilterControl);
-            MouseCover = true;
-            comboBox = (ComboBox)AxisFilterControl.Controls["cmbAxisFilter"];
-            comboBox.Items.Add("GreaterZero");
-            comboBox.Items.Add("LessZero");
-            comboBox.Items.Add("OnlyGreaterZero");
-            comboBox.Items.Add("OnlyLessZero");
-            JoystickAxisFilters selection = JoystickAxisFilters.GreaterZero;
-            int i = comboBox.SelectedIndex;
-            
-            comboBox.SelectedIndexChange += delegate(ComboBox sender)
-            {
-                i = comboBox.SelectedIndex;
-                if(i == 0)
-                    selection = JoystickAxisFilters.GreaterZero;
-                if (i == 1)
-                    selection = JoystickAxisFilters.LessZero;
-                if (i == 2)
-                    selection = JoystickAxisFilters.OnlyGreaterZero;
-                if (i == 3)
-                    selection = JoystickAxisFilters.OnlyLessZero;
-
-            };
-
-            filterselection = selection; //enums start at 1?
-            
-            //Need a global variable to pass the filter to?
-            ((Button)AxisFilterControl.Controls["OK"]).Click += delegate(Button sender)
-            {
-                SetAxisFilteron_OK_Click(sender);
-            };
-
-            //not sure if we need this
-            //((Button)AxisFilterControl.Controls["Cancel"]).Click += CancelButton_Click;
-            finished = true;
-        }
-
     }
 }
