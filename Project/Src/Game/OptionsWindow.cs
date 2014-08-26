@@ -1172,6 +1172,11 @@ namespace Game
             SetShouldDetach();
         }
 
+        private void CancelButton_Click(object sender)
+        {
+            SetShouldDetach();
+        }
+
         //Incin
         void CreateAxisFilterDialogue()
         {
@@ -1211,7 +1216,7 @@ namespace Game
             };
 
             //not sure if we need this
-            //((Button)AxisFilterControl.Controls["Cancel"]).Click += CancelButton_Click;
+            ((Button)AxisFilterControl.Controls["Cancel"]).Click += CancelButton_Click;
         }
 	}
 }
