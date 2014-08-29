@@ -38,8 +38,11 @@ namespace Game
 		ComboBox comboBoxInputDevices;
 		CheckBox checkBoxDepthBufferAccess;
 		ComboBox comboBoxAntialiasing;
-        //Incin
-        JoystickAxisFilters axisfilterselection;
+
+        //Incin -- Need class access to these items
+        ComboBox cmbBoxDevice; //need local access to this
+        private ListBox controlsList = null; //need local access for this
+        JoystickAxisFilters axisfilterselection = JoystickAxisFilters.DEADZONE; //this is used to select filter axis of each 
 		///////////////////////////////////////////
 
 		class ComboBoxItem
@@ -100,7 +103,7 @@ namespace Game
 			base.OnAttach();
 
 			ComboBox comboBox;
-			ScrollBar scrollBar;
+            ScrollBar scrollBar;
 			CheckBox checkBox;
 			TextBox textBox;
 
@@ -655,17 +658,17 @@ namespace Game
                 axisfilterbutton.Enable = false;
 
 				//Devices
-				comboBox = (ComboBox)pageControls.Controls[ "InputDevices" ];
-				comboBoxInputDevices = comboBox;
-				comboBox.Items.Add( "Keyboard/Mouse" );
+				cmbBoxDevice = (ComboBox)pageControls.Controls[ "InputDevices" ];
+                comboBoxInputDevices = cmbBoxDevice;
+                cmbBoxDevice.Items.Add("Keyboard/Mouse");
 				if( InputDeviceManager.Instance != null )
 				{
 					foreach( InputDevice device in InputDeviceManager.Instance.Devices )
-						comboBox.Items.Add( device );
+                        cmbBoxDevice.Items.Add(device);
 				}
-				comboBox.SelectedIndex = 0;
+                cmbBoxDevice.SelectedIndex = 0;
 
-				comboBox.SelectedIndexChange += delegate( ComboBox sender )
+                cmbBoxDevice.SelectedIndexChange += delegate(ComboBox sender)
 				{
                     
                     if (sender.SelectedIndex == 0)
@@ -694,7 +697,7 @@ namespace Game
 				};
 
 				Control message = window.Controls[ "TabControl/Controls/ListControls/Message" ];
-				ListBox controlsList = pageControls.Controls[ "ListControls" ] as ListBox;
+				controlsList = pageControls.Controls[ "ListControls" ] as ListBox;
 				controlsList.ItemMouseDoubleClick += delegate( object sender, ListBox.ItemMouseEventArgs e )
 				{
 					message.Text = "Type the new key (ESC to cancel)";
@@ -825,10 +828,11 @@ namespace Game
 
 			EngineApp.Instance.VideoMode = size;
 		}
+
 		void UpdateBindedInputControlsListBox()
 		{
 			Control pageControls = window.Controls[ "TabControl" ].Controls[ "Controls" ];
-			ListBox controlsList = pageControls.Controls[ "ListControls" ] as ListBox;
+			controlsList = pageControls.Controls[ "ListControls" ] as ListBox;
 
 			controlsList.Items.Clear();
 
@@ -845,6 +849,7 @@ namespace Game
 				}
 			}
 
+            
 
 
 			foreach( GameControlsManager.GameControlItem item in GameControlsManager.Instance.Items )
@@ -1164,18 +1169,42 @@ namespace Game
 		}
 
         //Incin 
-        private void SetAxisFilteron_OK_Click(object sender)
+        //update Control to use this axis filter using dialogue only
+        //Get the Controls selected item only if it is a joystick
+        private void AxisFilterSelectedIndexChanged(ComboBox sender)
         {
-            //change filter type
-            //KeyListener.SetKey();
-
-            SetShouldDetach();
+            JoystickAxisFilters axis = (JoystickAxisFilters)sender.SelectedIndex;
+            switch (axis)
+            {
+                case JoystickAxisFilters.GreaterZero:
+                    {
+                        
+                        break;
+                    }
+                case JoystickAxisFilters.LessZero:
+                    {
+                        break;
+                    }
+                case JoystickAxisFilters.OnlyGreaterZero:
+                    {
+                        break;
+                    }
+                case JoystickAxisFilters.OnlyLessZero:
+                    {
+                        break;
+                    }
+                case JoystickAxisFilters.DEADZONE:
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        //JoystickAxisFilters.DEADZONE .. won't ever happen
+                        break;
+                    }
+            }
         }
 
-        private void CancelButton_Click(object sender)
-        {
-            SetShouldDetach();
-        }
 
         //Incin
         void CreateAxisFilterDialogue()
@@ -1195,6 +1224,9 @@ namespace Game
             comboBox.SelectedIndexChange += delegate(ComboBox sender)
             {
                 //JoystickAxisFilters selection = JoystickAxisFilters.GreaterZero;
+                object selecteditem = controlsList.SelectedItem;
+                if (selecteditem == null)
+                    return;
 
                 i = sender.SelectedIndex;
                 if (i == 0)
@@ -1207,16 +1239,27 @@ namespace Game
                     axisfilterselection = JoystickAxisFilters.OnlyLessZero;
                 else
                     axisfilterselection = JoystickAxisFilters.DEADZONE;
+
+                 AxisFilterSelectedIndexChanged(sender);
+ 
             };
+
+
             comboBox.SelectedIndex = 0;
             //Need a global variable to pass the filter to?
             ((Button)AxisFilterControl.Controls["OK"]).Click += delegate(Button sender)
             {
-                SetAxisFilteron_OK_Click(sender);
+                //SetAxisFilteron_OK_Click(sender);
+                AxisFilterControl.SetShouldDetach();
+                axisfilterselection = JoystickAxisFilters.DEADZONE; //set back to Deadzone
+                
             };
 
             //not sure if we need this
-            ((Button)AxisFilterControl.Controls["Cancel"]).Click += CancelButton_Click;
+            //((Button)AxisFilterControl.Controls["Cancel"]).Click += delegate(Button sender)
+            //{
+            //    SetShouldDetach();
+            //};
         }
 	}
 }
