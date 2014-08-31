@@ -40,9 +40,10 @@ namespace Game
 		ComboBox comboBoxAntialiasing;
 
         //Incin -- Need class access to these items
-        ComboBox cmbBoxDevice; //need local access to this
+        private ComboBox cmbBoxDevice; //need local access to this
         private ListBox controlsList = null; //need local access for this
-        JoystickAxisFilters axisfilterselection = JoystickAxisFilters.DEADZONE; //this is used to select filter axis of each 
+        private JoystickAxisFilters axisfilterselection = JoystickAxisFilters.DEADZONE; //this is used to select filter axis of each 
+        private Button axisfilterbutton;
 		///////////////////////////////////////////
 
 		class ComboBoxItem
@@ -643,16 +644,36 @@ namespace Game
 				};
 
                                 //Incin -- change Axis Filter alone
-                Button axisfilterbutton = ((Button)pageControls.Controls["ChangeAxisfilter"]);
+                axisfilterbutton = ((Button)pageControls.Controls["ChangeAxisfilter"]);
 
                 axisfilterbutton.Click += delegate(Button sender)
                 {
+                    if (controlsList.SelectedItem == null)
+                        return;
+
+                    string selectedtext = controlsList.SelectedItem.ToString();
+                    if (selectedtext == null)
+                    {
+                        return;
+                    }
+                    else 
+                    {
+                        if (selectedtext.Contains("GreaterZero") || selectedtext.Contains("LessZero") ||
+                            selectedtext.Contains("OnlyGreaterZero") || selectedtext.Contains("OnlyLessZero"))
+                        {
+                            CreateAxisFilterDialogue();
+                        }
+                        else
+                        {
+                            ;
+                            //string message = "Select an item with an axis filter.";
+                        }
+                    }
                     //GameControlsManager.Instance.ResetKeyMouseSettings();
                     //GameControlsManager.Instance.ResetJoystickSettings();
                     //load axisfilter window
                     //select filter and update item
-                    //JoystickAxisFilters selection;
-                    CreateAxisFilterDialogue();
+                    
                     //UpdateBindedInputControlsListBox();
                 };
                 axisfilterbutton.Enable = false;
@@ -705,13 +726,41 @@ namespace Game
 					Controls.Add( new KeyListener( sender ) );
 				};
 
+                controlsList.SelectedIndexChange += delegate(ListBox sender)
+                {
+                    if (controlsList.SelectedItem == null)
+                        return;
+                    string selectedtext = controlsList.SelectedItem.ToString();
+                    if (selectedtext == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if (selectedtext.Contains("GreaterZero") || selectedtext.Contains("LessZero") ||
+                            selectedtext.Contains("OnlyGreaterZero") || selectedtext.Contains("OnlyLessZero"))
+                        {
+                            if (axisfilterbutton != null)
+                            {
+                                axisfilterbutton.Enable = true;
+                            }
+                        }
+                        else
+                        {
+                            if (axisfilterbutton != null)
+                            {
+                                axisfilterbutton.Enable = false;
+                            }
+                        }
+                    }
+                };
 
-				( (Button)pageControls.Controls[ "Default" ] ).Click += delegate( Button sender )
-				{
-					GameControlsManager.Instance.ResetKeyMouseSettings();
-					GameControlsManager.Instance.ResetJoystickSettings();
-					UpdateBindedInputControlsListBox();
-				};
+                ((Button)pageControls.Controls["Default"]).Click += delegate(Button sender)
+                {
+                    GameControlsManager.Instance.ResetKeyMouseSettings();
+                    GameControlsManager.Instance.ResetJoystickSettings();
+                    UpdateBindedInputControlsListBox();
+                };
 				//Controls
 				//UpdateBindedInputControlsTextBox(); //original
 				UpdateBindedInputControlsListBox(); //End HellEnt
@@ -1224,21 +1273,31 @@ namespace Game
             comboBox.SelectedIndexChange += delegate(ComboBox sender)
             {
                 //JoystickAxisFilters selection = JoystickAxisFilters.GreaterZero;
-                object selecteditem = controlsList.SelectedItem;
+                string selecteditem = controlsList.SelectedItem.ToString();
                 if (selecteditem == null)
                     return;
 
                 i = sender.SelectedIndex;
                 if (i == 0)
+                {
                     axisfilterselection = JoystickAxisFilters.GreaterZero;
+                }
                 else if (i == 1)
+                {
                     axisfilterselection = JoystickAxisFilters.LessZero;
+                }
                 else if (i == 2)
+                {
                     axisfilterselection = JoystickAxisFilters.OnlyGreaterZero;
+                }
                 else if (i == 3)
+                {
                     axisfilterselection = JoystickAxisFilters.OnlyLessZero;
+                }
                 else
+                {
                     axisfilterselection = JoystickAxisFilters.DEADZONE;
+                }
 
                  AxisFilterSelectedIndexChanged(sender);
  

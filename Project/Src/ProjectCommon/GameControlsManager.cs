@@ -627,7 +627,7 @@ namespace ProjectCommon
 				if( type == Types.POV )
 					return string.Format( "{0} - POV: {1}({2})", Parent.ControlKey, POV, POVDirection );
 				if( type == Types.Slider )
-					return string.Format( "{0} - Slider: {1}({2})({3})", Parent.ControlKey, Slider, SliderAxis, SliderAxisFilter );
+					return string.Format( "{0} - Slider: {1}{2}({3})", Parent.ControlKey, Slider, SliderAxis, SliderAxisFilter );
 				return "Error";
 			}
 		}
