@@ -691,13 +691,13 @@ namespace Game
 
                 cmbBoxDevice.SelectedIndexChange += delegate(ComboBox sender)
 				{
-                    
-                    if (sender.SelectedIndex == 0)
-                        axisfilterbutton.Enable = false; 
-                    else 
-                        axisfilterbutton.Enable = true;
+                    if(axisfilterbutton != null)
+                        axisfilterbutton.Enable = false;
 
-					UpdateBindedInputControlsListBox();
+                    UpdateBindedInputControlsListBox();
+
+                    if (controlsList.SelectedIndex != null)
+                        controlsList.SelectedIndex = 0;
 				};
 
                 
@@ -764,7 +764,9 @@ namespace Game
 				//Controls
 				//UpdateBindedInputControlsTextBox(); //original
 				UpdateBindedInputControlsListBox(); //End HellEnt
-
+                
+                if (controlsList.SelectedIndex != null)
+                    controlsList.SelectedIndex = 0;
 
 
 			}
@@ -1270,29 +1272,61 @@ namespace Game
            
             int i = 0;
 
+            //comboBox.TextChange += delegate(ComboBox sender)
+            //{
+            //    string selecteditem = controlsList.SelectedItem.ToString();
+            //    if (selecteditem == null)
+            //        return;
+            //    else
+            //    {
+            //        if (selecteditem.Contains("OnlyGreaterZero"))
+            //        {
+            //            comboBox.SelectedIndex = 2;
+            //        }
+            //        else if (selecteditem.Contains("OnlyLessZero"))
+            //        {
+            //            comboBox.SelectedIndex = 3;
+            //        }
+            //        else if (selecteditem.Contains("GreaterZero"))
+            //        {
+            //            comboBox.SelectedIndex = 0;
+            //        }
+            //        else if (selecteditem.Contains("LessZero"))
+            //        {
+            //            comboBox.SelectedIndex = 1;
+            //        }
+
+            //    }
+
+            //};
+
             comboBox.SelectedIndexChange += delegate(ComboBox sender)
             {
-                //JoystickAxisFilters selection = JoystickAxisFilters.GreaterZero;
+   
                 string selecteditem = controlsList.SelectedItem.ToString();
                 if (selecteditem == null)
                     return;
-
+                //incin -- this needs to change, it's not right
                 i = sender.SelectedIndex;
                 if (i == 0)
                 {
                     axisfilterselection = JoystickAxisFilters.GreaterZero;
+                    comboBox.SelectedIndex = 0;
                 }
                 else if (i == 1)
                 {
                     axisfilterselection = JoystickAxisFilters.LessZero;
+                    comboBox.SelectedIndex = 1;
                 }
                 else if (i == 2)
                 {
                     axisfilterselection = JoystickAxisFilters.OnlyGreaterZero;
+                    comboBox.SelectedIndex = 2;
                 }
                 else if (i == 3)
                 {
                     axisfilterselection = JoystickAxisFilters.OnlyLessZero;
+                    comboBox.SelectedIndex = 3;
                 }
                 else
                 {
@@ -1314,11 +1348,10 @@ namespace Game
                 
             };
 
-            //not sure if we need this
-            //((Button)AxisFilterControl.Controls["Cancel"]).Click += delegate(Button sender)
-            //{
-            //    SetShouldDetach();
-            //};
+            ((Button)AxisFilterControl.Controls["Cancel"]).Click += delegate(Button sender)
+            {
+                AxisFilterControl.SetShouldDetach();
+            };
         }
 	}
 }
