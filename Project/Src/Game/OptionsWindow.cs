@@ -1272,35 +1272,7 @@ namespace Game
            
             int i = 0;
 
-            //comboBox.TextChange += delegate(ComboBox sender)
-            //{
-            //    string selecteditem = controlsList.SelectedItem.ToString();
-            //    if (selecteditem == null)
-            //        return;
-            //    else
-            //    {
-            //        if (selecteditem.Contains("OnlyGreaterZero"))
-            //        {
-            //            comboBox.SelectedIndex = 2;
-            //        }
-            //        else if (selecteditem.Contains("OnlyLessZero"))
-            //        {
-            //            comboBox.SelectedIndex = 3;
-            //        }
-            //        else if (selecteditem.Contains("GreaterZero"))
-            //        {
-            //            comboBox.SelectedIndex = 0;
-            //        }
-            //        else if (selecteditem.Contains("LessZero"))
-            //        {
-            //            comboBox.SelectedIndex = 1;
-            //        }
-
-            //    }
-
-            //};
-
-            comboBox.SelectedIndexChange += delegate(ComboBox sender)
+             comboBox.SelectedIndexChange += delegate(ComboBox sender)
             {
    
                 string selecteditem = controlsList.SelectedItem.ToString();

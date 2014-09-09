@@ -380,13 +380,19 @@ namespace ProjectCommon
 
 		///////////////////////////////////////////
         //Incin -- Custom Axis Filter Event
-        //public class JoystickAxisFilterChangedEvent : JoystickInputEvent
-        //{
-        //    public JoystickAxisFilters JoystickAxisFilterChangedEvent(JoystickAxisFilters filter)
-        //    {
-        //        return filter;
-        //    }
-        //}
+
+        public class JoystickAxisFilterChangedEvent : JoystickInputEvent
+        {
+            public JoystickAxisFilters JoystickAxisFilterChangedEvent(JoystickInputDevice device, JoystickAxisFilters filter)
+            {
+                if(this.Device != null)
+                {
+                    if(device == this.Device)
+                        return filter;
+                }
+                return JoystickAxisFilters.DEADZONE;
+            }
+        }
 
 		/// <summary>
 		/// Represents Joystick Input Value Item, used to bind with GameControlKey

@@ -186,7 +186,8 @@ namespace Game
 
                         //pass the dead zone
                         //Ignore Filter Axis on purpose
-                        if (evt.Axis.Name.Equals(_oldJoystickValue.Axis)) 
+                        //Bug Fix add (!evt.Axis
+                        if (!evt.Axis.Name.Equals(_oldJoystickValue.Axis)) 
                         //if (filter != JoystickAxisFilters.DEADZONE)
                         {
                             _newJoystickValue = new GameControlsManager.SystemJoystickValue(evt.Axis.Name) { Parent = controlItem };
@@ -254,7 +255,7 @@ namespace Game
                         //if (filter != JoystickAxisFilters.DEADZONE)
 
                         //Incin -- Ignore Filters on purpose !!!!
-                        if (evt.Slider.Name.Equals(_oldJoystickValue.Slider) && !evt.Axis.Equals(_oldJoystickValue.Axis))
+                        if (!evt.Slider.Name.Equals(_oldJoystickValue.Slider) || !evt.Axis.Equals(_oldJoystickValue.Axis))
                         {
                             _newJoystickValue = new GameControlsManager.SystemJoystickValue(evt.Slider.Name, evt.Axis)//, filter)
                             {
