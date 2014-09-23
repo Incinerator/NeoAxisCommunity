@@ -1225,6 +1225,8 @@ namespace Game
         private void AxisFilterSelectedIndexChanged(ComboBox sender)
         {
             JoystickAxisFilters axis = (JoystickAxisFilters)sender.SelectedIndex;
+            CreateAxisFilterDialogue();
+
             switch (axis)
             {
                 case JoystickAxisFilters.GreaterZero:

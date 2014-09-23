@@ -192,7 +192,7 @@ namespace Game
                         {
                             _newJoystickValue = new GameControlsManager.SystemJoystickValue(evt.Axis.Name) { Parent = controlItem };
                             GameControlsManager.SystemJoystickValue key;
-                            if (GameControlsManager.Instance.IsAlreadyBinded(evt.Axis.Name, out key))
+                            if (GameControlsManager.Instance.IsAlreadyBinded(evt.Axis.Name, filter, out key))
                             {
                                 message = "Axis " + evt.Axis.Name + "is already bound to  " + key.Parent.ControlKey + ". Override ?, or Click Clear to remove the bind";
                                 _conflictJoystickValue = key;
@@ -220,6 +220,7 @@ namespace Game
                     var evt = e as JoystickSliderChangedEvent;
                     if (evt != null)
                     {
+                        var filter = _oldJoystickValue.SliderAxisFilter;
 
                         //var currentValue = evt.Axis == JoystickSliderAxes.X
                         //			? evt.Slider.Value.X
@@ -291,7 +292,7 @@ namespace Game
 		}
 
 		/// <summary>
-		/// Bind the new Input to GameControlKey, Unbind prefious one if exist
+		/// Bind the new Input to GameControlKey, Unbind previous one if exist
 		/// </summary>
 		public void SetKey()
 		{

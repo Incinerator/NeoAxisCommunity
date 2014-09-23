@@ -379,19 +379,40 @@ namespace ProjectCommon
 		}
 
 		///////////////////////////////////////////
-        //Incin -- Custom Axis Filter Event
 
-        public class JoystickAxisFilterChangedEvent : JoystickInputEvent
+        /// <summary>
+        /// Incin -- Custom Axis Filter Event
+        /// check the control that pushed the event 
+        /// look up the key in the database and change axisfilter accordingly
+        /// </summary>
+
+        public class JoystickAxisFilterChangedEvent : JoystickInputEvent 
         {
-            public JoystickAxisFilters JoystickAxisFilterChangedEvent(JoystickInputDevice device, JoystickAxisFilters filter)
+            public JoystickAxisFilterChangedEvent(JoystickInputDevice device, JoystickAxisFilters filter) : base(device)
             {
-                if(this.Device != null)
-                {
-                    if(device == this.Device)
-                        return filter;
-                }
+                //if(this.Device != null)
+                //{
+                //    if (device == this.Device)
+                //        ;   
+                //}
+                //filter = JoystickAxisFilters.DEADZONE;
+            }
+
+            /// <summary>
+            /// iNCIN -- Get the custom axis filter to be used
+            /// </summary>
+            /// <returns>
+            /// returns Axis Filter Type
+            /// </returns>
+            public JoystickAxisFilters GetAxisFilterUsed(JoystickAxisFilters currentfilter)
+            {
+                //
                 return JoystickAxisFilters.DEADZONE;
             }
+
+
+
+
         }
 
 		/// <summary>
@@ -1110,9 +1131,7 @@ namespace ProjectCommon
 							foreach( SystemJoystickValue value in item.BindedJoystickValues )
 							{
 								if( value.Type == SystemJoystickValue.Types.Slider &&
-									value.Slider == evt.Slider.Name && value.SliderAxis == evt.Axis 
-                                    //&& value.SliderAxisFilter == evt.Slider.GetType("SliderAxisFilter")
-                                    )
+									value.Slider == evt.Slider.Name && value.SliderAxis == evt.Axis )
 								{
 									var currentValue = evt.Axis == JoystickSliderAxes.X
 										? evt.Slider.Value.X
@@ -1120,7 +1139,7 @@ namespace ProjectCommon
 
 									float strength = 0f;
 
-									switch( value.SliderAxisFilter )
+									switch( value.AxisFilter )
 									{
 									case JoystickAxisFilters.LessZero:
 										if( currentValue < -DeadZone )
@@ -1133,11 +1152,11 @@ namespace ProjectCommon
 										break;
 
 									case JoystickAxisFilters.OnlyGreaterZero:    //ignore negative values for foot pedals
-                                        if (currentValue >= 0 && currentValue > DeadZone)
+										if( currentValue >= 0 )
 											strength = currentValue;
 										break;
 									case JoystickAxisFilters.OnlyLessZero:    //ignore positive values for foot pedals
-										if( currentValue <= 0 && currentValue < -DeadZone)
+										if( currentValue <= 0 )
 											strength = -currentValue;
 										break;
 									}
