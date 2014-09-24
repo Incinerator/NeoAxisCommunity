@@ -167,8 +167,7 @@ namespace Game
 
 					if( evt != null )
 					{
-						var filter = JoystickAxisFilters.DEADZONE;//_oldJoystickValue.AxisFilter;
-
+						var filter = JoystickAxisFilters.DEADZONE;
 
 						if( evt.Axis.Value < -GameControlsManager.Instance.DeadZone )
 						{
@@ -214,13 +213,11 @@ namespace Game
 					if( evt != null )
 					{
 
-
 						var currentValue = evt.Axis == JoystickSliderAxes.X
 									? evt.Slider.Value.X
 									: evt.Slider.Value.Y;
 
 						var filter = JoystickAxisFilters.DEADZONE;
-
 
 						if( currentValue < -GameControlsManager.Instance.DeadZone )
 						{
@@ -231,7 +228,6 @@ namespace Game
 							filter = JoystickAxisFilters.GreaterZero;
 						}
 
-
 						if( filter != JoystickAxisFilters.DEADZONE )
 						{
 							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Slider.Name, evt.Axis, filter )
@@ -239,9 +235,9 @@ namespace Game
 								Parent = controlItem
 							};
 							GameControlsManager.SystemJoystickValue key;
-							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Slider.Name, evt.Axis, filter, out key ) ) // filter, out key))
+							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Slider.Name, evt.Axis, filter, out key ) ) 
 							{
-								message = "Slider " + evt.Slider.Name + "(" + evt.Axis + "  /" + filter + ") is already bound to  " +
+								message = "Slider " + evt.Slider.Name + "(" + evt.Axis + "  / " + filter + ") is already bound to  " +
 										  key.Parent.ControlKey + ". Override ?";
 								_conflictJoystickValue = key;
 							}
@@ -251,11 +247,6 @@ namespace Game
 					}
 				}
 
-				//if (_conflictJoystickValue.Equals(_oldJoystickValue))
-				//{
-				//    return false;
-				//}
-				//else 
 				if( _conflictJoystickValue != null )
 				{
 					CreateConfirmDialogue( message );

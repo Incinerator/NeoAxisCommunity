@@ -27,7 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>1591</NoWarn>
     <DocumentationFile>..\..\Bin\Game.xml</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

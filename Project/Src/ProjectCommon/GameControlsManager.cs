@@ -432,14 +432,13 @@ namespace ProjectCommon
 				povDirection = source.POVDirection;
 				_parent = source.Parent;
 			}
-			//only check axis without filter
+
 			public SystemJoystickValue( JoystickAxes axis )
 			{
 				type = Types.Axis;
 				this.axis = axis;
 			}
 
-			//check for axis and filter
 			public SystemJoystickValue( JoystickAxes axis, JoystickAxisFilters axisFilter )
 			{
 				type = Types.Axis;
@@ -454,7 +453,6 @@ namespace ProjectCommon
 				this.povDirection = povDirection;
 			}
 
-			//check slider with axis without filter
 			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe )
 			{
 				type = Types.Slider;
@@ -462,7 +460,6 @@ namespace ProjectCommon
 				this.sliderAxis = axe;
 			}
 
-			//check slider axis and filter
 			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe, JoystickAxisFilters filter )
 			{
 				type = Types.Slider;
@@ -604,7 +601,7 @@ namespace ProjectCommon
 				if( type == Types.POV )
 					return string.Format( "{0} - POV: {1}({2})", Parent.ControlKey, POV, POVDirection );
 				if( type == Types.Slider )
-					return string.Format( "{0} - Slider: {1}{2}({3})", Parent.ControlKey, Slider, SliderAxis, AxisFilter );
+					return string.Format( "{0} - Slider: {1} Axis: {2}({3})", Parent.ControlKey, Slider, SliderAxis, AxisFilter );
 				return "Error";
 			}
 		}
@@ -1133,18 +1130,7 @@ namespace ProjectCommon
 												item.ControlKey ) );
 										}
 									}
-									//if( currentValue > DeadZone )
-									//{
-									//    if( GameControlsEvent != null )
-									//    {
-									//        GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, currentValue ) );
-									//    }
-									//}
-									//else
-									//{
-									//    GameControlsEvent( new GameControlsKeyUpEventData(
-									//            item.ControlKey ) );
-									//}
+
 									handled = true;
 								}
 							}
@@ -1313,28 +1299,6 @@ namespace ProjectCommon
 			return false;
 		}
 
-		///// <summary>
-		///// Check if the Given Input is Binded. Return the currently binded control to the input
-		///// </summary>
-		//public bool IsAlreadyBinded( JoystickAxes axis, out SystemJoystickValue control )
-		//{
-		//    control = null;
-		//    foreach( GameControlItem item in Items )
-		//    {
-		//        if( item.BindedJoystickValues.Count <= 0 )
-		//            continue;
-		//        foreach( SystemJoystickValue value in item.BindedJoystickValues )
-		//        {
-		//            if( value.Type == SystemJoystickValue.Types.Axis && value.Axis == axis )
-		//            {
-		//                control = value;
-		//                return true;
-		//            }
-		//        }
-		//    }
-		//    return false;
-		//}
-
 		/// <summary>
 		/// Check if the Given Input is Binded. Return the currently binded control to the input
 		/// </summary>
@@ -1378,28 +1342,6 @@ namespace ProjectCommon
 			}
 			return false;
 		}
-
-		///// <summary>
-		///// Check if the Given Input is Binded. Return the currently binded control to the input
-		///// </summary>
-		//public bool IsAlreadyBinded( JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue control )
-		//{
-		//    control = null;
-		//    foreach( GameControlItem item in Items )
-		//    {
-		//        if( item.BindedJoystickValues.Count <= 0 )
-		//            continue;
-		//        foreach( SystemJoystickValue value in item.BindedJoystickValues )
-		//        {
-		//            if( value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis )
-		//            {
-		//                control = value;
-		//                return true;
-		//            }
-		//        }
-		//    }
-		//    return false;
-		//}
 
 		/// <summary>
 		/// Check if the Given Input is Binded. Return the currently binded control to the input
