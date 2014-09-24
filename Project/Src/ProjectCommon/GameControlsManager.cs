@@ -378,49 +378,11 @@ namespace ProjectCommon
 
 		}
 
-		///////////////////////////////////////////
-
-        /// <summary>
-        /// Incin -- Custom Axis Filter Event
-        /// check the control that pushed the event 
-        /// look p the key in the database and change axisfilter accordingly
-        /// </summary>
-
-		//public class JoystickAxisFilterChangedEvent : JoystickInputEvent
-		//{
-		//    //public JoystickAxisFilters JoystickAxisFilterChangedEvent( JoystickInputDevice device, JoystickAxisFilters filter )
-		//    //{
-		//    //    if( this.Device != null )
-		//    //    {
-		//    //        if( device == this.Device )
-		//    //            return filter;
-		//    //    }
-		//    //    return JoystickAxisFilters.DEADZONE;
-		//    //}
-		//}
-
-
-            /// <summary>
-            /// iNCIN -- Get the custom axis filter to be used
-            /// </summary>
-            /// <returns>
-            /// returns Axis Filter Type
-            /// </returns>
-			//public JoystickAxisFilters GetAxisFilterUsed(JoystickAxisFilters currentfilter)
-			//{
-                //
-
-
-
-
-
 		/// <summary>
 		/// Represents Joystick Input Value Item, used to bind with GameControlKey
 		/// </summary>
 		public class SystemJoystickValue : SystemControlValue
 		{
-
-
 
 			public enum Types
 			{
@@ -1016,6 +978,7 @@ namespace ProjectCommon
 
 									switch( value.AxisFilter )
 									{
+
 									case JoystickAxisFilters.LessZero:
 										if( evt.Axis.Value < -DeadZone )
 											strength = -evt.Axis.Value;
@@ -1031,10 +994,12 @@ namespace ProjectCommon
 										if( evt.Axis.Value >= DeadZone )
 											strength = evt.Axis.Value;
 										break;
+
 									case JoystickAxisFilters.OnlyLessZero:    //ignore positive values
 										if( evt.Axis.Value <= -DeadZone )
 											strength = -evt.Axis.Value;
 										break;
+
 									}
 
 									if( strength != 0 )
@@ -1129,6 +1094,7 @@ namespace ProjectCommon
 
 									switch( value.AxisFilter )
 									{
+
 									case JoystickAxisFilters.LessZero:
 										if( currentValue < -DeadZone )
 											strength = -currentValue;
@@ -1143,10 +1109,12 @@ namespace ProjectCommon
 										if( currentValue >= 0 && currentValue > DeadZone )
 											strength = currentValue;
 										break;
+
 									case JoystickAxisFilters.OnlyLessZero:    //ignore positive values for foot pedals
 										if( currentValue <= 0 && currentValue < -DeadZone )
 											strength = -currentValue;
 										break;
+
 									}
 
 									if( strength != 0 )
@@ -1165,18 +1133,18 @@ namespace ProjectCommon
 												item.ControlKey ) );
 										}
 									}
-									if( currentValue > DeadZone )
-									{
-										if( GameControlsEvent != null )
-										{
-											GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, currentValue ) );
-										}
-									}
-									else
-									{
-										GameControlsEvent( new GameControlsKeyUpEventData(
-												item.ControlKey ) );
-									}
+									//if( currentValue > DeadZone )
+									//{
+									//    if( GameControlsEvent != null )
+									//    {
+									//        GameControlsEvent( new GameControlsKeyDownEventData( item.ControlKey, currentValue ) );
+									//    }
+									//}
+									//else
+									//{
+									//    GameControlsEvent( new GameControlsKeyUpEventData(
+									//            item.ControlKey ) );
+									//}
 									handled = true;
 								}
 							}
@@ -1345,27 +1313,27 @@ namespace ProjectCommon
 			return false;
 		}
 
-		/// <summary>
-		/// Check if the Given Input is Binded. Return the currently binded control to the input
-		/// </summary>
-		public bool IsAlreadyBinded( JoystickAxes axis, out SystemJoystickValue control )
-		{
-			control = null;
-			foreach( GameControlItem item in Items )
-			{
-				if( item.BindedJoystickValues.Count <= 0 )
-					continue;
-				foreach( SystemJoystickValue value in item.BindedJoystickValues )
-				{
-					if( value.Type == SystemJoystickValue.Types.Axis && value.Axis == axis )
-					{
-						control = value;
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+		///// <summary>
+		///// Check if the Given Input is Binded. Return the currently binded control to the input
+		///// </summary>
+		//public bool IsAlreadyBinded( JoystickAxes axis, out SystemJoystickValue control )
+		//{
+		//    control = null;
+		//    foreach( GameControlItem item in Items )
+		//    {
+		//        if( item.BindedJoystickValues.Count <= 0 )
+		//            continue;
+		//        foreach( SystemJoystickValue value in item.BindedJoystickValues )
+		//        {
+		//            if( value.Type == SystemJoystickValue.Types.Axis && value.Axis == axis )
+		//            {
+		//                control = value;
+		//                return true;
+		//            }
+		//        }
+		//    }
+		//    return false;
+		//}
 
 		/// <summary>
 		/// Check if the Given Input is Binded. Return the currently binded control to the input
@@ -1411,27 +1379,27 @@ namespace ProjectCommon
 			return false;
 		}
 
-		/// <summary>
-		/// Check if the Given Input is Binded. Return the currently binded control to the input
-		/// </summary>
-		public bool IsAlreadyBinded( JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue control )
-		{
-			control = null;
-			foreach( GameControlItem item in Items )
-			{
-				if( item.BindedJoystickValues.Count <= 0 )
-					continue;
-				foreach( SystemJoystickValue value in item.BindedJoystickValues )
-				{
-					if( value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis )
-					{
-						control = value;
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+		///// <summary>
+		///// Check if the Given Input is Binded. Return the currently binded control to the input
+		///// </summary>
+		//public bool IsAlreadyBinded( JoystickSliders slider, JoystickSliderAxes axis, out SystemJoystickValue control )
+		//{
+		//    control = null;
+		//    foreach( GameControlItem item in Items )
+		//    {
+		//        if( item.BindedJoystickValues.Count <= 0 )
+		//            continue;
+		//        foreach( SystemJoystickValue value in item.BindedJoystickValues )
+		//        {
+		//            if( value.Type == SystemJoystickValue.Types.Slider && value.Slider == slider && value.SliderAxis == axis )
+		//            {
+		//                control = value;
+		//                return true;
+		//            }
+		//        }
+		//    }
+		//    return false;
+		//}
 
 		/// <summary>
 		/// Check if the Given Input is Binded. Return the currently binded control to the input

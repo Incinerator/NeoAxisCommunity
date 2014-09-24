@@ -21,6 +21,7 @@ namespace Game
 
 		public KeyListener( object sender )
 		{
+			MouseCover = true;
 			var list = sender as ListBox;
 
 			var keybordvalue = list.SelectedItem as GameControlsManager.SystemKeyboardMouseValue;
@@ -182,9 +183,9 @@ namespace Game
 						{
 							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Axis.Name, filter ) { Parent = controlItem };
 							GameControlsManager.SystemJoystickValue key;
-							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Axis.Name, out key ) )
+							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Axis.Name, filter, out key ) )
 							{
-								message = "Axis " + evt.Axis.Name + "is already bound to  " + key.Parent.ControlKey + ". Override ?, or Click Clear to remove the bind";
+								message = "Axis " + evt.Axis.Name + "(" + filter + ")" + " is already bound to  " + key.Parent.ControlKey + ". Override ?, or Click Clear to remove the bind";
 								_conflictJoystickValue = key;
 							}
 						}
@@ -238,9 +239,9 @@ namespace Game
 								Parent = controlItem
 							};
 							GameControlsManager.SystemJoystickValue key;
-							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Slider.Name, evt.Axis, out key ) ) // filter, out key))
+							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Slider.Name, evt.Axis, filter, out key ) ) // filter, out key))
 							{
-								message = "Slider " + evt.Slider.Name + "(" + evt.Axis + ") is already bound to  " +
+								message = "Slider " + evt.Slider.Name + "(" + evt.Axis + "  /" + filter + ") is already bound to  " +
 										  key.Parent.ControlKey + ". Override ?";
 								_conflictJoystickValue = key;
 							}
@@ -347,7 +348,7 @@ namespace Game
 			Control confirmControl = ControlDeclarationManager.Instance.CreateControl( @"GUI\Confirm.gui" );
 			Controls.Add( confirmControl );
 			confirmControl.Controls[ "MessageBox" ].Text = message;
-			MouseCover = true;
+			confirmControl.MouseCover = true;
 			( (Button)confirmControl.Controls[ "Cancel" ] ).Click += CancelButton_Click;
 			( (Button)confirmControl.Controls[ "OK" ] ).Click += OKButton_Click;
 			( (Button)confirmControl.Controls[ "Clear" ] ).Click += ClearButton_Click;
