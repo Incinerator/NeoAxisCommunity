@@ -950,13 +950,19 @@ namespace Game
 			Controls.Add( AxisFilterControl );
 
 			comboBox = (ComboBox)AxisFilterControl.Controls[ "cmbAxisFilter" ];
-			foreach( var value in Enum.GetValues( typeof( JoystickAxisFilters ) ) )
-			{
-				comboBox.Items.Add( value );
-			}
+			//foreach( var value in Enum.GetValues( typeof( JoystickAxisFilters ) ) )
+			//{
+			//    comboBox.Items.Add( value );
+			//}
+			comboBox.Items.Add( JoystickAxisFilters.GreaterZero );
+			comboBox.Items.Add( JoystickAxisFilters.LessZero );
+			comboBox.Items.Add( JoystickAxisFilters.OnlyGreaterZero );
+			comboBox.Items.Add( JoystickAxisFilters.OnlyLessZero );
 
+			int index = (int)( controlsList.SelectedItem as GameControlsManager.SystemJoystickValue ).AxisFilter;
+			index = index == 4 ? 0 : index;//hack to get the good index 
+			comboBox.SelectedIndex = index;
 
-			comboBox.SelectedIndex = (int)( controlsList.SelectedItem as GameControlsManager.SystemJoystickValue ).AxisFilter;
 			( (Button)AxisFilterControl.Controls[ "OK" ] ).Click += delegate( Button sender )
 			{
 				AxisFilterControl.SetShouldDetach();
