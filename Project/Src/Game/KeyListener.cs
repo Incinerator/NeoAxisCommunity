@@ -187,10 +187,10 @@ namespace Game
 						//pass the dead zone
 						//Ignore Filter Axis on purpose
 						//Bug Fix add (!evt.Axis
-						if( !evt.Axis.Name.Equals( _oldJoystickValue.Axis ) )
+						//if( !evt.Axis.Name.Equals( _oldJoystickValue.Axis ) )
 						//if (filter != JoystickAxisFilters.DEADZONE)
 						{
-							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Axis.Name ) { Parent = controlItem };
+							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Axis.Name, filter ) { Parent = controlItem };
 							GameControlsManager.SystemJoystickValue key;
 							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Axis.Name, out key ) )
 							{
@@ -226,7 +226,7 @@ namespace Game
 						//			? evt.Slider.Value.X
 						//			: evt.Slider.Value.Y;
 
-						//var filter = _oldJoystickValue.SliderAxisFilter;//JoystickAxisFilters.DEADZONE;
+						var filter = _oldJoystickValue.SliderAxisFilter;//JoystickAxisFilters.DEADZONE;
 						//Incin -- this needs to add the other filters so it reads the filters right
 						// should call the key information to populate here the var value
 
@@ -258,7 +258,7 @@ namespace Game
 						//Incin -- Ignore Filters on purpose !!!!
 						if( !evt.Slider.Name.Equals( _oldJoystickValue.Slider ) || !evt.Axis.Equals( _oldJoystickValue.Axis ) )
 						{
-							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Slider.Name, evt.Axis )//, filter)
+							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Slider.Name, evt.Axis , filter)
 							{
 								Parent = controlItem
 							};

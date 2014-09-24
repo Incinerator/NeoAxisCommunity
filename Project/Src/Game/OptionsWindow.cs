@@ -1225,7 +1225,7 @@ namespace Game
 		private void AxisFilterSelectedIndexChanged( ComboBox sender )
 		{
 			JoystickAxisFilters axis = (JoystickAxisFilters)sender.SelectedIndex;
-            CreateAxisFilterDialogue();
+			
 
 			switch( axis )
 			{
@@ -1318,8 +1318,9 @@ namespace Game
 			{
 				//SetAxisFilteron_OK_Click(sender);
 				AxisFilterControl.SetShouldDetach();
+				( controlsList.SelectedItem as GameControlsManager.SystemJoystickValue ).AxisFilter = axisfilterselection;
+				controlsList.ItemButtons[ controlsList.SelectedIndex ].Text = controlsList.SelectedItem.ToString();
 				axisfilterselection = JoystickAxisFilters.DEADZONE; //set back to Deadzone
-
 			};
 
 			( (Button)AxisFilterControl.Controls[ "Cancel" ] ).Click += delegate( Button sender )

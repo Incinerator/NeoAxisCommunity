@@ -386,17 +386,19 @@ namespace ProjectCommon
         /// look p the key in the database and change axisfilter accordingly
         /// </summary>
 
-        public class JoystickAxisFilterChangedEvent : JoystickInputEvent 
-		{
-            public JoystickAxisFilterChangedEvent(JoystickInputDevice device, JoystickAxisFilters filter) : base(device)
-			{
-                //if(this.Device != null)
-                //{
-                //    if (device == this.Device)
-                //        ;   
-                //}
-                //filter = JoystickAxisFilters.DEADZONE;
-            }
+		//public class JoystickAxisFilterChangedEvent : JoystickInputEvent
+		//{
+		//    //public JoystickAxisFilters JoystickAxisFilterChangedEvent( JoystickInputDevice device, JoystickAxisFilters filter )
+		//    //{
+		//    //    if( this.Device != null )
+		//    //    {
+		//    //        if( device == this.Device )
+		//    //            return filter;
+		//    //    }
+		//    //    return JoystickAxisFilters.DEADZONE;
+		//    //}
+		//}
+
 
             /// <summary>
             /// iNCIN -- Get the custom axis filter to be used
@@ -407,13 +409,10 @@ namespace ProjectCommon
             public JoystickAxisFilters GetAxisFilterUsed(JoystickAxisFilters currentfilter)
             {
                 //
-				return JoystickAxisFilters.DEADZONE;
-			}
 
 
 
 
-		}
 
 		/// <summary>
 		/// Represents Joystick Input Value Item, used to bind with GameControlKey
@@ -530,6 +529,7 @@ namespace ProjectCommon
 			public JoystickAxisFilters AxisFilter
 			{
 				get { return axisFilter; }
+				set { axisFilter = value; }
 			}
 
 			public JoystickPOVs POV
@@ -967,7 +967,7 @@ namespace ProjectCommon
 		/// <param name="e">New state of the changed input</param>
 		public bool DoJoystickEvent( JoystickInputEvent e )
 		{
-			//JoystickButtonDownEvent
+			#region JoystickButtonDownEvent
 			{
 				JoystickButtonDownEvent evt = e as JoystickButtonDownEvent;
 				if( evt != null )
@@ -987,8 +987,8 @@ namespace ProjectCommon
 					return handled;
 				}
 			}
-
-			//JoystickButtonUpEvent
+			#endregion
+			#region JoystickButtonUpEvent
 			{
 				JoystickButtonUpEvent evt = e as JoystickButtonUpEvent;
 				if( evt != null )
@@ -1006,8 +1006,8 @@ namespace ProjectCommon
 					return handled;
 				}
 			}
-
-			//JoystickAxisChangedEvent
+			#endregion
+			#region JoystickAxisChangedEvent
 			{
 				JoystickAxisChangedEvent evt = e as JoystickAxisChangedEvent;
 				if( evt != null )
@@ -1075,8 +1075,8 @@ namespace ProjectCommon
 					return handled;
 				}
 			}
-
-			//JoystickPOVChangedEvent
+			#endregion
+			#region JoystickPOVChangedEvent
 			{
 				JoystickPOVChangedEvent evt = e as JoystickPOVChangedEvent;
 				if( evt != null )
@@ -1116,8 +1116,8 @@ namespace ProjectCommon
 					return handled;
 				}
 			}
-
-			//JoystickSliderChangedEvent
+			#endregion
+			#region JoystickSliderChangedEvent
 			{
 				JoystickSliderChangedEvent evt = e as JoystickSliderChangedEvent;
 				if( evt != null )
@@ -1197,6 +1197,7 @@ namespace ProjectCommon
 					return handled;
 				}
 			}
+			#endregion
 
 			return false;
 		}
