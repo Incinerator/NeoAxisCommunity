@@ -5,8 +5,6 @@ using Engine;
 using Engine.UISystem;
 using ProjectCommon;
 
-
-//Incin be warned this code as of 8/21/14 may not work as you expect
 namespace Game
 {
 	public class KeyListener : Control
@@ -146,6 +144,7 @@ namespace Game
 			if( controlItem != null && _oldJoystickValue != null )
 			{
 				string message = "";
+				bool isDeadZoneNoise = false;
 				//JoystickButtonDownEvent
 				{
 					var evt = e as JoystickButtonDownEvent;
@@ -167,28 +166,19 @@ namespace Game
 
 					if( evt != null )
 					{
-						//bool finished;
-						var filter = _oldJoystickValue.AxisFilter;
+						var filter = JoystickAxisFilters.DEADZONE;//_oldJoystickValue.AxisFilter;
 
-						//CreateAxisFilterDialogue(out filter, out finished);
 
-						//Incin -- this needs to add the other filters so it reads the filters right
-						// should call the key information to populate here the var value
+						if( evt.Axis.Value < -GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.LessZero;
+						}
+						else if( evt.Axis.Value > GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.GreaterZero;
+						}
 
-						//if( evt.Axis.Value < -GameControlsManager.Instance.DeadZone )
-						//{
-						//    filter = JoystickAxisFilters.LessZero;
-						//}
-						//else if( evt.Axis.Value > GameControlsManager.Instance.DeadZone )
-						//{
-						//    filter = JoystickAxisFilters.GreaterZero;
-						//}
-
-						//pass the dead zone
-						//Ignore Filter Axis on purpose
-						//Bug Fix add (!evt.Axis
-						//if( !evt.Axis.Name.Equals( _oldJoystickValue.Axis ) )
-						//if (filter != JoystickAxisFilters.DEADZONE)
+						if( filter != JoystickAxisFilters.DEADZONE )
 						{
 							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Axis.Name, filter ) { Parent = controlItem };
 							GameControlsManager.SystemJoystickValue key;
@@ -198,6 +188,8 @@ namespace Game
 								_conflictJoystickValue = key;
 							}
 						}
+						else
+							isDeadZoneNoise = true;
 					}
 				}
 
@@ -220,45 +212,28 @@ namespace Game
 					var evt = e as JoystickSliderChangedEvent;
 					if( evt != null )
 					{
-                        var filter = _oldJoystickValue.SliderAxisFilter;
 
-						//var currentValue = evt.Axis == JoystickSliderAxes.X
-						//			? evt.Slider.Value.X
-						//			: evt.Slider.Value.Y;
 
-						var filter = _oldJoystickValue.SliderAxisFilter;//JoystickAxisFilters.DEADZONE;
-						//Incin -- this needs to add the other filters so it reads the filters right
-						// should call the key information to populate here the var value
+						var currentValue = evt.Axis == JoystickSliderAxes.X
+									? evt.Slider.Value.X
+									: evt.Slider.Value.Y;
 
-						//JoystickAxisFilters newfilter = JoystickAxisFilters.DEADZONE;
+						var filter = JoystickAxisFilters.DEADZONE;
 
-						//if (newfilter == JoystickAxisFilters.DEADZONE){
-						//    CreateAxisFilterDialogue(out newfilter);
-						//    return true;
-						//}
 
-						//if (filter != newfilter)
-						//{
-						//    //not same setting
-						//    //save new setting
-						//}
-
-						//if( currentValue < -GameControlsManager.Instance.DeadZone )
-						//{
-						//    filter = JoystickAxisFilters.LessZero;
-						//}
-						//else if( currentValue > GameControlsManager.Instance.DeadZone )4 on split screen , how about multimonitor support
-						//{
-						//    filter = JoystickAxisFilters.GreaterZero;
-						//}
-
-						//pass the dead zone
-						//if (filter != JoystickAxisFilters.DEADZONE)
-
-						//Incin -- Ignore Filters on purpose !!!!
-						if( !evt.Slider.Name.Equals( _oldJoystickValue.Slider ) || !evt.Axis.Equals( _oldJoystickValue.Axis ) )
+						if( currentValue < -GameControlsManager.Instance.DeadZone )
 						{
-							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Slider.Name, evt.Axis , filter)
+							filter = JoystickAxisFilters.LessZero;
+						}
+						else if( currentValue > GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.GreaterZero;
+						}
+
+
+						if( filter != JoystickAxisFilters.DEADZONE )
+						{
+							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Slider.Name, evt.Axis, filter )
 							{
 								Parent = controlItem
 							};
@@ -270,7 +245,8 @@ namespace Game
 								_conflictJoystickValue = key;
 							}
 						}
-
+						else
+							isDeadZoneNoise = true;
 					}
 				}
 
@@ -284,8 +260,11 @@ namespace Game
 					CreateConfirmDialogue( message );
 					return true;
 				}
-				SetKey();
-				SetShouldDetach();
+				if( !isDeadZoneNoise )
+				{
+					SetKey();
+					SetShouldDetach();
+				}
 				return true;
 			}
 			return false;
@@ -294,7 +273,7 @@ namespace Game
 		/// <summary>
 		/// Bind the new Input to GameControlKey, Unbind previous one if exist
 		/// </summary>
-		public void SetKey()
+		void SetKey()
 		{
 			if( _newKeyboardMousevalue != null && _oldKeyboardMouseValue != null )
 			{
