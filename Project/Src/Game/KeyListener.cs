@@ -5,8 +5,6 @@ using Engine;
 using Engine.UISystem;
 using ProjectCommon;
 
-
-//Incin be warned this code as of 8/21/14 may not work as you expect
 namespace Game
 {
 	public class KeyListener : Control
@@ -23,6 +21,7 @@ namespace Game
 
 		public KeyListener( object sender )
 		{
+			MouseCover = true;
 			var list = sender as ListBox;
 
 			var keybordvalue = list.SelectedItem as GameControlsManager.SystemKeyboardMouseValue;
@@ -144,157 +143,138 @@ namespace Game
 			if( _newJoystickValue != null || _newKeyboardMousevalue != null )
 				return true;
 			if( controlItem != null && _oldJoystickValue != null )
-            {
-                string message = "";
-                //JoystickButtonDownEvent
-                {
-                    var evt = e as JoystickButtonDownEvent;
-                    if (evt != null)
-                    {
-                        _newJoystickValue = new GameControlsManager.SystemJoystickValue(evt.Button.Name) { Parent = controlItem };
-                        GameControlsManager.SystemJoystickValue key;
+			{
+				string message = "";
+				bool isDeadZoneNoise = false;
+				//JoystickButtonDownEvent
+				{
+					var evt = e as JoystickButtonDownEvent;
+					if( evt != null )
+					{
+						_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Button.Name ) { Parent = controlItem };
+						GameControlsManager.SystemJoystickValue key;
 
-                        if (GameControlsManager.Instance.IsAlreadyBinded(evt.Button.Name, out key))
-                        {
-                            message = "Button " + evt.Button.Name + " is already bound to  " + key.Parent.ControlKey + ". Override? or Click Clear to remove the bind";
-                            _conflictJoystickValue = key;
-                        }
-                    }
-                }
-                //JoystickAxisChangedEvent
-                {
-                    var evt = e as JoystickAxisChangedEvent;
+						if( GameControlsManager.Instance.IsAlreadyBinded( evt.Button.Name, out key ) )
+						{
+							message = "Button " + evt.Button.Name + " is already bound to  " + key.Parent.ControlKey + ". Override? or Click Clear to remove the bind";
+							_conflictJoystickValue = key;
+						}
+					}
+				}
+				//JoystickAxisChangedEvent
+				{
+					var evt = e as JoystickAxisChangedEvent;
 
-                    if (evt != null)
-                    {
-                        //bool finished;
-                        var filter = _oldJoystickValue.AxisFilter;
+					if( evt != null )
+					{
+						var filter = JoystickAxisFilters.DEADZONE;//_oldJoystickValue.AxisFilter;
 
-                        //CreateAxisFilterDialogue(out filter, out finished);
 
-                        //Incin -- this needs to add the other filters so it reads the filters right
-                        // should call the key information to populate here the var value
+						if( evt.Axis.Value < -GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.LessZero;
+						}
+						else if( evt.Axis.Value > GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.GreaterZero;
+						}
 
-                        //if( evt.Axis.Value < -GameControlsManager.Instance.DeadZone )
-                        //{
-                        //    filter = JoystickAxisFilters.LessZero;
-                        //}
-                        //else if( evt.Axis.Value > GameControlsManager.Instance.DeadZone )
-                        //{
-                        //    filter = JoystickAxisFilters.GreaterZero;
-                        //}
+						if( filter != JoystickAxisFilters.DEADZONE )
+						{
+							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Axis.Name, filter ) { Parent = controlItem };
+							GameControlsManager.SystemJoystickValue key;
+							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Axis.Name, filter, out key ) )
+							{
+								message = "Axis " + evt.Axis.Name + "(" + filter + ")" + " is already bound to  " + key.Parent.ControlKey + ". Override ?, or Click Clear to remove the bind";
+								_conflictJoystickValue = key;
+							}
+						}
+						else
+							isDeadZoneNoise = true;
+					}
+				}
 
-                        //pass the dead zone
-                        //Ignore Filter Axis on purpose
-                        //Bug Fix add (!evt.Axis
-                        if (!evt.Axis.Name.Equals(_oldJoystickValue.Axis)) 
-                        //if (filter != JoystickAxisFilters.DEADZONE)
-                        {
-                            _newJoystickValue = new GameControlsManager.SystemJoystickValue(evt.Axis.Name) { Parent = controlItem };
-                            GameControlsManager.SystemJoystickValue key;
-                            if (GameControlsManager.Instance.IsAlreadyBinded(evt.Axis.Name, filter, out key))
-                            {
-                                message = "Axis " + evt.Axis.Name + "is already bound to  " + key.Parent.ControlKey + ". Override ?, or Click Clear to remove the bind";
-                                _conflictJoystickValue = key;
-                            }
-                        }
-                    }
-                }
+				{
+					var evt = e as JoystickPOVChangedEvent;
+					if( evt != null )
+					{
 
-                {
-                    var evt = e as JoystickPOVChangedEvent;
-                    if (evt != null)
-                    {
+						_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.POV.Name, evt.POV.Value ) { Parent = controlItem };
+						GameControlsManager.SystemJoystickValue key;
+						if( GameControlsManager.Instance.IsAlreadyBinded( evt.POV.Name, evt.POV.Value, out key ) )
+						{
+							message = "Pov " + evt.POV.Name + "(" + evt.POV.Value + ") is already bound to  " + key.Parent.ControlKey + ". Override? or Click Clear to remove the bind ";
+							_conflictJoystickValue = key;
+						}
+					}
+				}
 
-                        _newJoystickValue = new GameControlsManager.SystemJoystickValue(evt.POV.Name, evt.POV.Value) { Parent = controlItem };
-                        GameControlsManager.SystemJoystickValue key;
-                        if (GameControlsManager.Instance.IsAlreadyBinded(evt.POV.Name, evt.POV.Value, out key))
-                        {
-                            message = "Pov " + evt.POV.Name + "(" + evt.POV.Value + ") is already bound to  " + key.Parent.ControlKey + ". Override? or Click Clear to remove the bind ";
-                            _conflictJoystickValue = key;
-                        }
-                    }
-                }
+				{
+					var evt = e as JoystickSliderChangedEvent;
+					if( evt != null )
+					{
 
-                {
-                    var evt = e as JoystickSliderChangedEvent;
-                    if (evt != null)
-                    {
-                        var filter = _oldJoystickValue.SliderAxisFilter;
 
-                        //var currentValue = evt.Axis == JoystickSliderAxes.X
-                        //			? evt.Slider.Value.X
-                        //			: evt.Slider.Value.Y;
+						var currentValue = evt.Axis == JoystickSliderAxes.X
+									? evt.Slider.Value.X
+									: evt.Slider.Value.Y;
 
-                        //var filter = _oldJoystickValue.SliderAxisFilter;//JoystickAxisFilters.DEADZONE;
-                        //Incin -- this needs to add the other filters so it reads the filters right
-                        // should call the key information to populate here the var value
+						var filter = JoystickAxisFilters.DEADZONE;
 
-                        //JoystickAxisFilters newfilter = JoystickAxisFilters.DEADZONE;
 
-                        //if (newfilter == JoystickAxisFilters.DEADZONE){
-                        //    CreateAxisFilterDialogue(out newfilter);
-                        //    return true;
-                        //}
+						if( currentValue < -GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.LessZero;
+						}
+						else if( currentValue > GameControlsManager.Instance.DeadZone )
+						{
+							filter = JoystickAxisFilters.GreaterZero;
+						}
 
-                        //if (filter != newfilter)
-                        //{
-                        //    //not same setting
-                        //    //save new setting
-                        //}
 
-                        //if( currentValue < -GameControlsManager.Instance.DeadZone )
-                        //{
-                        //    filter = JoystickAxisFilters.LessZero;
-                        //}
-                        //else if( currentValue > GameControlsManager.Instance.DeadZone )4 on split screen , how about multimonitor support
-                        //{
-                        //    filter = JoystickAxisFilters.GreaterZero;
-                        //}
+						if( filter != JoystickAxisFilters.DEADZONE )
+						{
+							_newJoystickValue = new GameControlsManager.SystemJoystickValue( evt.Slider.Name, evt.Axis, filter )
+							{
+								Parent = controlItem
+							};
+							GameControlsManager.SystemJoystickValue key;
+							if( GameControlsManager.Instance.IsAlreadyBinded( evt.Slider.Name, evt.Axis, filter, out key ) ) // filter, out key))
+							{
+								message = "Slider " + evt.Slider.Name + "(" + evt.Axis + "  /" + filter + ") is already bound to  " +
+										  key.Parent.ControlKey + ". Override ?";
+								_conflictJoystickValue = key;
+							}
+						}
+						else
+							isDeadZoneNoise = true;
+					}
+				}
 
-                        //pass the dead zone
-                        //if (filter != JoystickAxisFilters.DEADZONE)
-
-                        //Incin -- Ignore Filters on purpose !!!!
-                        if (!evt.Slider.Name.Equals(_oldJoystickValue.Slider) || !evt.Axis.Equals(_oldJoystickValue.Axis))
-                        {
-                            _newJoystickValue = new GameControlsManager.SystemJoystickValue(evt.Slider.Name, evt.Axis)//, filter)
-                            {
-                                Parent = controlItem
-                            };
-                            GameControlsManager.SystemJoystickValue key;
-                            if (GameControlsManager.Instance.IsAlreadyBinded(evt.Slider.Name, evt.Axis, out key )) // filter, out key))
-                            {
-                                message = "Slider " + evt.Slider.Name + "(" + evt.Axis + ") is already bound to  " +
-                                          key.Parent.ControlKey + ". Override ?";
-                                _conflictJoystickValue = key;
-                            }
-                        }
-
-                    }
-                }
-
-                //if (_conflictJoystickValue.Equals(_oldJoystickValue))
-                //{
-                //    return false;
-                //}
-                //else 
-                if (_conflictJoystickValue != null)
-                {
-                    CreateConfirmDialogue(message);
-                    return true;
-                }
-                SetKey();
-                SetShouldDetach();
-                return true;
-            }
+				//if (_conflictJoystickValue.Equals(_oldJoystickValue))
+				//{
+				//    return false;
+				//}
+				//else 
+				if( _conflictJoystickValue != null )
+				{
+					CreateConfirmDialogue( message );
+					return true;
+				}
+				if( !isDeadZoneNoise )
+				{
+					SetKey();
+					SetShouldDetach();
+				}
+				return true;
+			}
 			return false;
 		}
 
 		/// <summary>
 		/// Bind the new Input to GameControlKey, Unbind previous one if exist
 		/// </summary>
-		public void SetKey()
+		void SetKey()
 		{
 			if( _newKeyboardMousevalue != null && _oldKeyboardMouseValue != null )
 			{
@@ -368,10 +348,10 @@ namespace Game
 			Control confirmControl = ControlDeclarationManager.Instance.CreateControl( @"GUI\Confirm.gui" );
 			Controls.Add( confirmControl );
 			confirmControl.Controls[ "MessageBox" ].Text = message;
-			MouseCover = true;
+			confirmControl.MouseCover = true;
 			( (Button)confirmControl.Controls[ "Cancel" ] ).Click += CancelButton_Click;
 			( (Button)confirmControl.Controls[ "OK" ] ).Click += OKButton_Click;
 			( (Button)confirmControl.Controls[ "Clear" ] ).Click += ClearButton_Click;
 		}
-    }
+	}
 }

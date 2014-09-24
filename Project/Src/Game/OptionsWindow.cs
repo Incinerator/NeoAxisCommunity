@@ -39,11 +39,11 @@ namespace Game
 		CheckBox checkBoxDepthBufferAccess;
 		ComboBox comboBoxAntialiasing;
 
-        //Incin -- Need class access to these items
-        private ComboBox cmbBoxDevice; //need local access to this
-        private ListBox controlsList = null; //need local access for this
-        private JoystickAxisFilters axisfilterselection = JoystickAxisFilters.DEADZONE; //this is used to select filter axis of each 
-        private Button axisfilterbutton;
+		//Incin -- Need class access to these items
+		private ComboBox cmbBoxDevice; //need local access to this
+		private ListBox controlsList = null; //need local access for this
+		private JoystickAxisFilters axisfilterselection = JoystickAxisFilters.DEADZONE; //this is used to select filter axis of each 
+		private Button axisfilterbutton;
 		///////////////////////////////////////////
 
 		class ComboBoxItem
@@ -104,7 +104,7 @@ namespace Game
 			base.OnAttach();
 
 			ComboBox comboBox;
-            ScrollBar scrollBar;
+			ScrollBar scrollBar;
 			CheckBox checkBox;
 			TextBox textBox;
 
@@ -643,64 +643,45 @@ namespace Game
 					GameControlsManager.Instance.AlwaysRun = sender.Checked;
 				};
 
-                                //Incin -- change Axis Filter alone
-                axisfilterbutton = ((Button)pageControls.Controls["ChangeAxisfilter"]);
+				//Incin -- change Axis Filter alone
+				axisfilterbutton = ( (Button)pageControls.Controls[ "ChangeAxisfilter" ] );
 
-                axisfilterbutton.Click += delegate(Button sender)
-                {
-                    if (controlsList.SelectedItem == null)
-                        return;
+				axisfilterbutton.Click += delegate( Button sender )
+				{
+					if( controlsList.SelectedItem == null || axisfilterbutton == null || !( controlsList.SelectedItem is GameControlsManager.SystemJoystickValue ) )
+						return;
 
-                    string selectedtext = controlsList.SelectedItem.ToString();
-                    if (selectedtext == null)
-                    {
-                        return;
-                    }
-                    else 
-                    {
-                        if (selectedtext.Contains("GreaterZero") || selectedtext.Contains("LessZero") ||
-                            selectedtext.Contains("OnlyGreaterZero") || selectedtext.Contains("OnlyLessZero"))
-                        {
-                            CreateAxisFilterDialogue();
-                        }
-                        else
-                        {
-                            ;
-                            //string message = "Select an item with an axis filter.";
-                        }
-                    }
-                    //GameControlsManager.Instance.ResetKeyMouseSettings();
-                    //GameControlsManager.Instance.ResetJoystickSettings();
-                    //load axisfilter window
-                    //select filter and update item
-                    
-                    //UpdateBindedInputControlsListBox();
-                };
-                axisfilterbutton.Enable = false;
+					var item = controlsList.SelectedItem as GameControlsManager.SystemJoystickValue;
+
+					if( item.Type == GameControlsManager.SystemJoystickValue.Types.Axis || item.Type == GameControlsManager.SystemJoystickValue.Types.Slider )
+						CreateAxisFilterDialogue();
+
+				};
+				axisfilterbutton.Enable = false;
 
 				//Devices
 				cmbBoxDevice = (ComboBox)pageControls.Controls[ "InputDevices" ];
-                comboBoxInputDevices = cmbBoxDevice;
-                cmbBoxDevice.Items.Add("Keyboard/Mouse");
+				comboBoxInputDevices = cmbBoxDevice;
+				cmbBoxDevice.Items.Add( "Keyboard/Mouse" );
 				if( InputDeviceManager.Instance != null )
 				{
 					foreach( InputDevice device in InputDeviceManager.Instance.Devices )
-                        cmbBoxDevice.Items.Add(device);
+						cmbBoxDevice.Items.Add( device );
 				}
-                cmbBoxDevice.SelectedIndex = 0;
+				cmbBoxDevice.SelectedIndex = 0;
 
-                cmbBoxDevice.SelectedIndexChange += delegate(ComboBox sender)
+				cmbBoxDevice.SelectedIndexChange += delegate( ComboBox sender )
 				{
-                    if(axisfilterbutton != null)
-                        axisfilterbutton.Enable = false;
+					if( axisfilterbutton != null )
+						axisfilterbutton.Enable = false;
 
-                    UpdateBindedInputControlsListBox();
+					UpdateBindedInputControlsListBox();
 
-                    if (controlsList.SelectedIndex != null)
-                        controlsList.SelectedIndex = 0;
+					if( controlsList.SelectedIndex != null )
+						controlsList.SelectedIndex = 0;
 				};
 
-                
+
 
 				scrollBar = (ScrollBar)pageControls.Controls[ "DeadzoneVScroll" ];
 				scrollBar.Value = GameControlsManager.Instance.DeadZone;
@@ -726,51 +707,33 @@ namespace Game
 					Controls.Add( new KeyListener( sender ) );
 				};
 
-                controlsList.SelectedIndexChange += delegate(ListBox sender)
-                {
-                    if (controlsList.SelectedItem == null)
-                        return;
-                    string selectedtext = controlsList.SelectedItem.ToString();
-                    if (selectedtext == null)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        if (selectedtext.Contains("GreaterZero") || selectedtext.Contains("LessZero") ||
-                            selectedtext.Contains("OnlyGreaterZero") || selectedtext.Contains("OnlyLessZero"))
-                        {
-                            if (axisfilterbutton != null)
-                            {
-                                axisfilterbutton.Enable = true;
-                            }
-                        }
-                        else
-                        {
-                            if (axisfilterbutton != null)
-                            {
-                                axisfilterbutton.Enable = false;
-                            }
-                        }
-                    }
-                };
+				controlsList.SelectedIndexChange += delegate( ListBox sender )
+				{
+					if( controlsList.SelectedItem == null || axisfilterbutton == null || !( controlsList.SelectedItem is GameControlsManager.SystemJoystickValue ) )
+						return;
 
-                ((Button)pageControls.Controls["Default"]).Click += delegate(Button sender)
-                {
-                    GameControlsManager.Instance.ResetKeyMouseSettings();
-                    GameControlsManager.Instance.ResetJoystickSettings();
-                    UpdateBindedInputControlsListBox();
-                };
+					var item = controlsList.SelectedItem as GameControlsManager.SystemJoystickValue;
+
+					axisfilterbutton.Enable = item.Type == GameControlsManager.SystemJoystickValue.Types.Axis || item.Type == GameControlsManager.SystemJoystickValue.Types.Slider;
+
+				};
+
+				( (Button)pageControls.Controls[ "Default" ] ).Click += delegate( Button sender )
+				{
+					GameControlsManager.Instance.ResetKeyMouseSettings();
+					GameControlsManager.Instance.ResetJoystickSettings();
+					UpdateBindedInputControlsListBox();
+				};
 				//Controls
-				//UpdateBindedInputControlsTextBox(); //original
-				UpdateBindedInputControlsListBox(); //End HellEnt
-                
-                if (controlsList.SelectedIndex != null)
-                    controlsList.SelectedIndex = 0;
+				UpdateBindedInputControlsListBox();
 
-
+				if( controlsList.SelectedIndex != null )
+					controlsList.SelectedIndex = 0;
 			}
+
+
 			#endregion
+
 			//pageLanguage
 			{
 				Control pageLanguage = tabControl.Controls[ "Language" ];
@@ -900,7 +863,7 @@ namespace Game
 				}
 			}
 
-            
+
 
 
 			foreach( GameControlsManager.GameControlItem item in GameControlsManager.Instance.Items )
@@ -977,6 +940,36 @@ namespace Game
 			}
 
 
+		}
+
+		void CreateAxisFilterDialogue()
+		{
+			ComboBox comboBox;
+			Control AxisFilterControl = ControlDeclarationManager.Instance.CreateControl( @"GUI\AxisFilter.gui" );
+			AxisFilterControl.MouseCover = true;
+			Controls.Add( AxisFilterControl );
+
+			comboBox = (ComboBox)AxisFilterControl.Controls[ "cmbAxisFilter" ];
+			foreach( var value in Enum.GetValues( typeof( JoystickAxisFilters ) ) )
+			{
+				comboBox.Items.Add( value );
+			}
+
+
+			comboBox.SelectedIndex = (int)( controlsList.SelectedItem as GameControlsManager.SystemJoystickValue ).AxisFilter;
+			( (Button)AxisFilterControl.Controls[ "OK" ] ).Click += delegate( Button sender )
+			{
+				AxisFilterControl.SetShouldDetach();
+				axisfilterselection = (JoystickAxisFilters)comboBox.SelectedItem;
+				( controlsList.SelectedItem as GameControlsManager.SystemJoystickValue ).AxisFilter = axisfilterselection;
+				controlsList.ItemButtons[ controlsList.SelectedIndex ].Text = controlsList.SelectedItem.ToString();
+				axisfilterselection = JoystickAxisFilters.DEADZONE; //set back to Deadzone
+			};
+
+			( (Button)AxisFilterControl.Controls[ "Cancel" ] ).Click += delegate( Button sender )
+			{
+				AxisFilterControl.SetShouldDetach();
+			};
 		}
 
 		protected override void OnControlDetach( Control control )
@@ -1219,113 +1212,5 @@ namespace Game
 			}
 		}
 
-        //Incin 
-        //update Control to use this axis filter using dialogue only
-        //Get the Controls selected item only if it is a joystick
-        private void AxisFilterSelectedIndexChanged(ComboBox sender)
-        {
-            JoystickAxisFilters axis = (JoystickAxisFilters)sender.SelectedIndex;
-            CreateAxisFilterDialogue();
-
-            switch (axis)
-            {
-                case JoystickAxisFilters.GreaterZero:
-                    {
-                        
-                        break;
-                    }
-                case JoystickAxisFilters.LessZero:
-                    {
-                        break;
-                    }
-                case JoystickAxisFilters.OnlyGreaterZero:
-                    {
-                        break;
-                    }
-                case JoystickAxisFilters.OnlyLessZero:
-                    {
-                        break;
-                    }
-                case JoystickAxisFilters.DEADZONE:
-                    {
-                        break;
-                    }
-                default:
-                    {
-                        //JoystickAxisFilters.DEADZONE .. won't ever happen
-                        break;
-                    }
-            }
-        }
-
-
-        //Incin
-        void CreateAxisFilterDialogue()
-        {
-            ComboBox comboBox;
-            Control AxisFilterControl = ControlDeclarationManager.Instance.CreateControl(@"GUI\AxisFilter.gui");
-            Controls.Add(AxisFilterControl);
-            MouseCover = true;
-            comboBox = (ComboBox)AxisFilterControl.Controls["cmbAxisFilter"];
-            comboBox.Items.Add("GreaterZero");
-            comboBox.Items.Add("LessZero");
-            comboBox.Items.Add("OnlyGreaterZero");
-            comboBox.Items.Add("OnlyLessZero");
-           
-            int i = 0;
-
-             comboBox.SelectedIndexChange += delegate(ComboBox sender)
-            {
-   
-                string selecteditem = controlsList.SelectedItem.ToString();
-                if (selecteditem == null)
-                    return;
-                //incin -- this needs to change, it's not right
-                i = sender.SelectedIndex;
-                if (i == 0)
-                {
-                    axisfilterselection = JoystickAxisFilters.GreaterZero;
-                    comboBox.SelectedIndex = 0;
-                }
-                else if (i == 1)
-                {
-                    axisfilterselection = JoystickAxisFilters.LessZero;
-                    comboBox.SelectedIndex = 1;
-                }
-                else if (i == 2)
-                {
-                    axisfilterselection = JoystickAxisFilters.OnlyGreaterZero;
-                    comboBox.SelectedIndex = 2;
-                }
-                else if (i == 3)
-                {
-                    axisfilterselection = JoystickAxisFilters.OnlyLessZero;
-                    comboBox.SelectedIndex = 3;
-                }
-                else
-                {
-                    axisfilterselection = JoystickAxisFilters.DEADZONE;
-                }
-
-                 AxisFilterSelectedIndexChanged(sender);
- 
-            };
-
-
-            comboBox.SelectedIndex = 0;
-            //Need a global variable to pass the filter to?
-            ((Button)AxisFilterControl.Controls["OK"]).Click += delegate(Button sender)
-            {
-                //SetAxisFilteron_OK_Click(sender);
-                AxisFilterControl.SetShouldDetach();
-                axisfilterselection = JoystickAxisFilters.DEADZONE; //set back to Deadzone
-                
-            };
-
-            ((Button)AxisFilterControl.Controls["Cancel"]).Click += delegate(Button sender)
-            {
-                AxisFilterControl.SetShouldDetach();
-            };
-        }
 	}
 }
