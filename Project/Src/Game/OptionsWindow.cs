@@ -677,7 +677,7 @@ namespace Game
 
 					UpdateBindedInputControlsListBox();
 
-					if( controlsList.SelectedIndex != null )
+					if( controlsList.SelectedIndex != -1 )
 						controlsList.SelectedIndex = 0;
 				};
 
@@ -727,7 +727,7 @@ namespace Game
 				//Controls
 				UpdateBindedInputControlsListBox();
 
-				if( controlsList.SelectedIndex != null )
+				if( controlsList.SelectedIndex != -1 )
 					controlsList.SelectedIndex = 0;
 			}
 
