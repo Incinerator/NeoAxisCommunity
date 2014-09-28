@@ -18,7 +18,7 @@ control "Gui\\Controls\\DefaultWindow.gui"
 	control TabControl
 	{
 		pageButtonsPosition = ScaleByResolution 740 70
-		pageButtonsOffset = ScaleByResolution 0 40
+		pageButtonsOffset = ScaleByResolution 120 0
 		position = ScaleByResolution 30 40
 		size = ScaleByResolution 700 670
 		name = TabControl
