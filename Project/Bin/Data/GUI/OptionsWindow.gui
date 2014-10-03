@@ -85,7 +85,7 @@ control "Gui\\Controls\\DefaultWindow.gui"
 				shadowOffset = ScaleByResolution 2 2
 				autoSize = True
 				position = ScaleByResolution 0 570
-				size = Screen 0.08535156 0.025
+				size = Screen 0.08535157 0.025
 				text = Show FPS
 			}
 			control "Gui\\Controls\\DefaultCheckBox.gui"
@@ -100,7 +100,7 @@ control "Gui\\Controls\\DefaultWindow.gui"
 				shadowOffset = ScaleByResolution 2 2
 				autoSize = True
 				position = ScaleByResolution 0 450
-				size = Screen 0.186289 0.025
+				size = Screen 0.1862891 0.025
 				text = Water reflection level
 			}
 			control "Gui\\Controls\\DefaultComboBox.gui"
@@ -172,7 +172,7 @@ control "Gui\\Controls\\DefaultWindow.gui"
 				shadowOffset = ScaleByResolution 2 2
 				autoSize = True
 				position = ScaleByResolution 0 180
-				size = Screen 0.07125 0.025
+				size = Screen 0.07125001 0.025
 				text = Filtering
 			}
 			control "Gui\\Controls\\DefaultComboBox.gui"
@@ -535,6 +535,47 @@ control "Gui\\Controls\\DefaultWindow.gui"
 				name = MusicVolume
 			}
 		}
+		page4 Control
+		{
+			position = ScaleByResolution 20 20
+			size = ScaleByResolution 670 670
+			name = Language
+			text = Language
+			visible = False
+			control TextBox
+			{
+				textHorizontalAlign = Left
+				textVerticalAlign = Top
+				shadowOffset = ScaleByResolution 2 2
+				autoSize = True
+				position = ScaleByResolution 0 0
+				size = Screen 0.08609375 0.025
+				text = Language
+			}
+			control "Gui\\Controls\\DefaultComboBox.gui"
+			{
+				position = ScaleByResolution 170 9.536743E-06
+				name = Language
+			}
+			control "Gui\\Controls\\DefaultButton.gui"
+			{
+				soundMouseOut = "Sounds\\ButtonMouseIntoArea.ogg"
+				position = ScaleByResolution 0 50
+				name = LanguageRestart
+				text = Restart
+				enable = False
+			}
+			control TextBox
+			{
+				textHorizontalAlign = Left
+				textVerticalAlign = Top
+				shadowOffset = ScaleByResolution 2 2
+				wordWrap = True
+				position = ScaleByResolution 210 50.00001
+				size = ScaleByResolution 391.68 89.19997
+				text = Restart application required to apply changes
+			}
+		}
 		page3 Control
 		{
 			position = ScaleByResolution 20 20
@@ -644,7 +685,7 @@ control "Gui\\Controls\\DefaultWindow.gui"
 			}
 			control "Gui\\Controls\\DefaultButton.gui"
 			{
-				position = ScaleByResolution 443 621
+				position = ScaleByResolution 403 101
 				size = ScaleByResolution 150 36.4
 				name = ControlSave
 				text = Save Controls
@@ -703,51 +744,17 @@ control "Gui\\Controls\\DefaultWindow.gui"
 			}
 			control "Gui\\Controls\\DefaultButton.gui"
 			{
-				position = ScaleByResolution 203 621
+				position = ScaleByResolution 403 621
 				size = ScaleByResolution 190 36.4
 				name = ChangeAxisfilter
 				text = Change Axis Filter
 			}
-		}
-		page4 Control
-		{
-			position = ScaleByResolution 20 20
-			size = ScaleByResolution 670 670
-			name = Language
-			text = Language
-			visible = False
-			control TextBox
-			{
-				textHorizontalAlign = Left
-				textVerticalAlign = Top
-				shadowOffset = ScaleByResolution 2 2
-				autoSize = True
-				position = ScaleByResolution 0 0
-				size = Screen 0.08609375 0.025
-				text = Language
-			}
-			control "Gui\\Controls\\DefaultComboBox.gui"
-			{
-				position = ScaleByResolution 170 9.536743E-06
-				name = Language
-			}
 			control "Gui\\Controls\\DefaultButton.gui"
 			{
-				soundMouseOut = "Sounds\\ButtonMouseIntoArea.ogg"
-				position = ScaleByResolution 0 50
-				name = LanguageRestart
-				text = Restart
-				enable = False
-			}
-			control TextBox
-			{
-				textHorizontalAlign = Left
-				textVerticalAlign = Top
-				shadowOffset = ScaleByResolution 2 2
-				wordWrap = True
-				position = ScaleByResolution 210 50.00001
-				size = ScaleByResolution 391.68 89.19997
-				text = Restart application required to apply changes
+				position = ScaleByResolution 183 621
+				size = ScaleByResolution 190 36.4
+				name = btnAddBinding
+				text = Add Binding
 			}
 		}
 	}

@@ -13,7 +13,10 @@ using Engine.Utils;
 using Engine.SoundSystem;
 using ProjectCommon;
 using ProjectEntities;
-
+///<summary>
+//Incin -- This Source is intended for accessing any and all devices that can be used for input to the game engine , phones , TV remotes...
+// anything that can be bound to a pc. Pulling from the InputDevice of the object
+///</summary>
 namespace Game
 {
 	/// <summary>
@@ -30,9 +33,9 @@ namespace Game
 
 		static int lastPageIndex;
 
-		Control window;
+		Control window;	
+        Button[] pageButtons = new Button[ 5 ];
 		TabControl tabControl;
-		Button[] pageButtons = new Button[ 5 ];
 
 		ComboBox comboBoxResolution;
 		ComboBox comboBoxInputDevices;
@@ -44,6 +47,7 @@ namespace Game
 		private ListBox controlsList = null; //need local access for this
 		private JoystickAxisFilters axisfilterselection = JoystickAxisFilters.DEADZONE; //this is used to select filter axis of each 
 		private Button axisfilterbutton;
+		private Button btnAddBinding; //for adding commands to binding window
 		///////////////////////////////////////////
 
 		class ComboBoxItem
@@ -601,8 +605,20 @@ namespace Game
 			//pageControls
 			{
 				Control pageControls = tabControl.Controls[ "Controls" ];
+				
+                cmbBoxDevice = (ComboBox)pageControls.Controls[ "InputDevices" ];
+				axisfilterbutton = ((Button)pageControls.Controls["ChangeAxisfilter"]);
+				btnAddBinding = ((Button)pageControls.Controls["btnAddBinding"]);
+                btnAddBinding.Click += delegate(Button sender)
+                {
+                    //if (btnAddBinding == null)
+                    //    return;
+                    CreateAdd_Custom_Control_Dialogue();
+                };
 
-				//MouseHSensitivity
+                controlsList = pageControls.Controls[ "ListControls" ] as ListBox;
+				
+                //MouseHSensitivity
 				scrollBar = (ScrollBar)pageControls.Controls[ "MouseHSensitivity" ];
 				scrollBar.Value = GameControlsManager.Instance.MouseSensitivity.X;
 				scrollBar.ValueChange += delegate( ScrollBar sender )
@@ -643,24 +659,8 @@ namespace Game
 					GameControlsManager.Instance.AlwaysRun = sender.Checked;
 				};
 
-				//Incin -- change Axis Filter alone
-				axisfilterbutton = ( (Button)pageControls.Controls[ "ChangeAxisfilter" ] );
-
-				axisfilterbutton.Click += delegate( Button sender )
-				{
-					if( controlsList.SelectedItem == null || axisfilterbutton == null || !( controlsList.SelectedItem is GameControlsManager.SystemJoystickValue ) )
-						return;
-
-					var item = controlsList.SelectedItem as GameControlsManager.SystemJoystickValue;
-
-					if( item.Type == GameControlsManager.SystemJoystickValue.Types.Axis || item.Type == GameControlsManager.SystemJoystickValue.Types.Slider )
-						CreateAxisFilterDialogue();
-
-				};
-				axisfilterbutton.Enable = false;
 
 				//Devices
-				cmbBoxDevice = (ComboBox)pageControls.Controls[ "InputDevices" ];
 				comboBoxInputDevices = cmbBoxDevice;
 				cmbBoxDevice.Items.Add( "Keyboard/Mouse" );
 				if( InputDeviceManager.Instance != null )
@@ -669,19 +669,18 @@ namespace Game
 						cmbBoxDevice.Items.Add( device );
 				}
 				cmbBoxDevice.SelectedIndex = 0;
+                UpdateBindedInputControlsListBox();
 
 				cmbBoxDevice.SelectedIndexChange += delegate( ComboBox sender )
 				{
 					if( axisfilterbutton != null )
 						axisfilterbutton.Enable = false;
-
-					UpdateBindedInputControlsListBox();
-
-					if( controlsList.SelectedIndex != -1 )
+                    
+                    if( controlsList.SelectedIndex != -1 )
 						controlsList.SelectedIndex = 0;
+                    
+                    UpdateBindedInputControlsListBox();
 				};
-
-
 
 				scrollBar = (ScrollBar)pageControls.Controls[ "DeadzoneVScroll" ];
 				scrollBar.Value = GameControlsManager.Instance.DeadZone;
@@ -699,7 +698,7 @@ namespace Game
 				};
 
 				Control message = window.Controls[ "TabControl/Controls/ListControls/Message" ];
-				controlsList = pageControls.Controls[ "ListControls" ] as ListBox;
+				
 				controlsList.ItemMouseDoubleClick += delegate( object sender, ListBox.ItemMouseEventArgs e )
 				{
 					message.Text = "Type the new key (ESC to cancel)";
@@ -724,6 +723,33 @@ namespace Game
 					GameControlsManager.Instance.ResetJoystickSettings();
 					UpdateBindedInputControlsListBox();
 				};
+
+				//Incin -- change Axis Filter alone
+				axisfilterbutton.Click += delegate(Button sender)
+				{
+					if (controlsList.SelectedItem == null || axisfilterbutton == null || !(controlsList.SelectedItem is GameControlsManager.SystemJoystickValue))
+						return;
+
+					var item = controlsList.SelectedItem as GameControlsManager.SystemJoystickValue;
+
+					if (item.Type == GameControlsManager.SystemJoystickValue.Types.Axis || item.Type == GameControlsManager.SystemJoystickValue.Types.Slider)
+						CreateAxisFilterDialogue();
+
+				};
+				axisfilterbutton.Enable = false;
+
+                {
+					if (controlsList.SelectedItem == null || axisfilterbutton == null || !(controlsList.SelectedItem is GameControlsManager.SystemJoystickValue))
+						return;
+
+					var item = controlsList.SelectedItem as GameControlsManager.SystemJoystickValue;
+
+					if (item.Type == GameControlsManager.SystemJoystickValue.Types.Axis || item.Type == GameControlsManager.SystemJoystickValue.Types.Slider)
+						CreateAxisFilterDialogue();
+
+				};
+
+
 				//Controls
 				UpdateBindedInputControlsListBox();
 
@@ -976,6 +1002,233 @@ namespace Game
 			{
 				AxisFilterControl.SetShouldDetach();
 			};
+		}
+
+        ///<summary>
+        ///void CreateAdd_Custom_Control_Dialogue()
+        ///populate all drop downs and comboboxes
+        ///filter by device or device Type
+        ///hide unneeded info or unhide pages
+        /// </summary>
+		void CreateAdd_Custom_Control_Dialogue()
+		{
+            Control Add_Custom_Control = ControlDeclarationManager.Instance.CreateControl(@"GUI\Add_Custom_Control.gui");
+            Add_Custom_Control.MouseCover = true;
+			Controls.Add(Add_Custom_Control);
+
+            #region AddCustomControl.Gui
+
+            #region MainControls
+
+            ComboBox cmbDeviceType;
+            cmbDeviceType = (ComboBox)Add_Custom_Control.Controls["cmbDeviceType"];
+            foreach (var value in Enum.GetValues(typeof(Devices)))
+            {
+                cmbDeviceType.Items.Add(value);
+                cmbDeviceType.SelectedIndex = 0;
+            }
+            
+            ComboBox cmbDevice;
+            cmbDevice = (ComboBox)Add_Custom_Control.Controls["cmbDevice"];
+            cmbDevice.Items.Add("Keyboard/Mouse");
+            if (InputDeviceManager.Instance != null)
+            {
+                foreach (InputDevice devicename in InputDeviceManager.Instance.Devices)
+                    cmbDevice.Items.Add(devicename);
+                //filter 
+            }
+
+            //Commands Available
+            ListBox cmbCommand;
+            cmbCommand = (ListBox)Add_Custom_Control.Controls["cntrlCommands"].Controls["lstCommand"];
+            foreach (var value in Enum.GetValues(typeof(GameControlKeys)))
+            {
+                cmbCommand.Items.Add(value);
+            }
+
+
+            //control Tab Controls
+            TabControl MainOptionsTabControl;
+            MainOptionsTabControl = (TabControl)Add_Custom_Control.Controls["MainOptionsTabControl"];
+            MainOptionsTabControl.Visible = true; 
+            #endregion MainControls
+            #region pageMouseoptions
+
+            Control pageMouseOptions;
+            pageMouseOptions = (Control)Add_Custom_Control.Controls["MainOptionsTabControl"].Controls["pageMouseOptions"];
+            //Page visible= false || true;
+
+            #region MouseTabControls
+
+            //MainOptionsTabControl.MouseTabControl.pageMouseButtonOptions
+            TabControl MouseTabControl = (TabControl)pageMouseOptions.Controls["MouseTabControl"];
+
+            ComboBox cmbMouseButtonChoices;
+            cmbMouseButtonChoices = (ComboBox)MouseTabControl.Controls["pageMouseButtonOptions"].Controls["cmbMouseButtonChoices"];
+            foreach (var value in Enum.GetValues(typeof(EMouseButtons)))
+            {
+                cmbMouseButtonChoices.Items.Add(value);
+            }
+            //MainOptionsTabControl.MouseTabControl.pageMouseScrollOptions.cmbMouseScrollChoices
+            ComboBox cmbMouseScrollChoices;
+            cmbMouseScrollChoices = (ComboBox)MouseTabControl.Controls["pageMouseScrollOptions"].Controls["cmbMouseScrollChoices"];
+            foreach (var value in Enum.GetValues(typeof(MouseScroll)))
+            {
+                cmbMouseScrollChoices.Items.Add(value);
+            }
+            #endregion
+            #endregion pageMouseOptions
+            #region pageKeyboardOptions
+
+            Control pageKeyboardOptions = (Control)Add_Custom_Control.Controls["MainOptionsTabControl"].Controls["pageKeyboardOptions"];
+            //visible false true?
+
+            ListBox lstKeyboardButtonChoices;
+            lstKeyboardButtonChoices = (ListBox)pageKeyboardOptions.Controls["lstKeyboardButtonChoices"];
+            foreach (var value in Enum.GetValues(typeof(EKeys)))
+            {
+                lstKeyboardButtonChoices.Items.Add(value);
+            }
+            #endregion pageKeyboardOptions
+
+            //MainOptionsTabControl.pageJoystickOptions
+            //tabJoystickControlOptions
+            #region pageJoystickOptions
+            Control pageJoystickOptions;
+            pageJoystickOptions = (Control)Add_Custom_Control.Controls["MainOptionsTabControl"].Controls["pageJoystickOptions"];//.Controls["tabJoystickControlOptions"];
+            //visible = false?
+
+
+            TabControl tabJoystickControlOptions;
+            tabJoystickControlOptions = (TabControl)pageJoystickOptions.Controls["tabJoystickControlOptions"];
+
+            #region pageSliderOptions
+            Control pageSliderOptions = tabJoystickControlOptions.Controls["pageSliderOptions"];
+
+                    #region cmbSliderChoices
+                    ComboBox cmbSliderChoices;
+                    cmbSliderChoices = (ComboBox)pageSliderOptions.Controls["cmbSliderChoices"];
+                    foreach (var value in Enum.GetValues(typeof(JoystickSliders)))
+                    {
+                        cmbSliderChoices.Items.Add(value);
+                    }
+
+                    ComboBox cmbSliderAxisChoices;
+                    cmbSliderAxisChoices = (ComboBox)pageSliderOptions.Controls["cmbSliderAxisChoices"];
+                    foreach (var value in Enum.GetValues(typeof(JoystickSliderAxes)))
+                    {
+                        cmbSliderAxisChoices.Items.Add(value);
+                    }
+
+                    ComboBox cmbSliderAxisFilterChoices;
+                    cmbSliderAxisFilterChoices = (ComboBox)pageSliderOptions.Controls["cmbSliderAxisFilterChoices"];
+                    foreach (var value in Enum.GetValues(typeof(JoystickAxisFilters)))
+                    {
+                        cmbSliderAxisFilterChoices.Items.Add(value);
+                    }
+                    #endregion cmbSliderChoices
+             #endregion pageSliderOptions       
+                    #region pageAxisOptions
+                    
+                    Control pageAxisOptions = tabJoystickControlOptions.Controls["pageAxisOptions"];
+
+                ComboBox cmbAxisChoices;
+                cmbAxisChoices = (ComboBox)pageAxisOptions.Controls["cmbAxisChoices"];
+                foreach (var value in Enum.GetValues(typeof(JoystickSliderAxes)))
+                {
+                    cmbAxisChoices.Items.Add(value);
+                }
+
+
+                ComboBox cmbAxisFilterChoices;
+                cmbAxisFilterChoices = (ComboBox)pageAxisOptions.Controls["cmbAxisFilterChoices"];
+                foreach (var value in Enum.GetValues(typeof(JoystickSliderAxes)))
+                {
+                    cmbAxisFilterChoices.Items.Add(value);
+                }
+
+
+                Control pageJoystickButtonOptions = tabJoystickControlOptions.Controls["pageJoystickButtonOptions"];
+                    ComboBox cmbJoyButtonChoices = (ComboBox)pageJoystickButtonOptions.Controls["cmbJoyButtonChoices"];
+                    foreach (var value in Enum.GetValues(typeof(JoystickButtons)))
+                    {
+                        cmbJoyButtonChoices.Items.Add(value);
+                    }
+                    #endregion pageAxisOptions
+            #endregion pageJoystickOptions
+
+                    ///<summary>
+            /// Filters down through each TabControl hides what isn't needed
+            /// MainOptionsTabControl
+            /// 
+            /// 
+            /// 
+            /// 
+            /// 
+            /// 
+            /// 
+            ///</summary>
+          
+            cmbDeviceType.SelectedIndexChange += delegate (ComboBox sender) 
+            {
+                Devices devicetype = (Devices)sender.SelectedIndex;
+                
+                
+                switch (devicetype)
+                {
+                    case Devices.Joystick:
+                        {
+                            string message = "< Joystick selected >";
+                            break;
+                        }
+                    case Devices.Keyboard:
+                        {
+                            string message = "< Keyboard selected >";
+                            break;
+                        }
+                    case Devices.Xbox360:
+                        {
+                            string message = "< Xbox360 selected >";
+                            break;
+                        }
+                    default:
+                        {
+                            string message = "< Nothing selected >";
+                            break;
+                        }
+                }
+
+            };
+            
+
+
+
+
+            
+			//comboBox.Items.Add(JoystickAxisFilters.GreaterZero);
+			//comboBox.Items.Add(JoystickAxisFilters.LessZero);
+			//comboBox.Items.Add(JoystickAxisFilters.OnlyGreaterZero);
+			//comboBox.Items.Add(JoystickAxisFilters.OnlyLessZero);
+
+			//int index = (int)(controlsList.SelectedItem as GameControlsManager.SystemJoystickValue).AxisFilter;
+			//index = index == 4 ? 0 : index; //hack to get the good index 
+			//comboBox.SelectedIndex = index;
+
+			((Button)Add_Custom_Control.Controls["buttonOK"]).Click += delegate(Button sender)
+			{
+				
+				//axisfilterselection = (JoystickAxisFilters)comboBox.SelectedItem;
+				//(controlsList.SelectedItem as GameControlsManager.SystemJoystickValue).AxisFilter = axisfilterselection;
+				//controlsList.ItemButtons[controlsList.SelectedIndex].Text = controlsList.SelectedItem.ToString();
+				//axisfilterselection = JoystickAxisFilters.DEADZONE; //set back to Deadzone
+                Add_Custom_Control.SetShouldDetach();
+			};
+
+			((Button)Add_Custom_Control.Controls["buttonCancel"]).Click += delegate(Button sender)
+			{
+				Add_Custom_Control.SetShouldDetach();
+			};
+            #endregion
 		}
 
 		protected override void OnControlDetach( Control control )
