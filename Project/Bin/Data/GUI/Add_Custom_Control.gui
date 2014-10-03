@@ -26,7 +26,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	{
 		position = ScaleByResolution 428.75 40
 		size = Parent 0.493903 0.02717235
-		text = Device
+		text = Devices Connected Choices
 	}
 	control "GUI\\Controls\\DefaultComboBox.gui"
 	{
@@ -71,7 +71,6 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			position = ScaleByResolution 0 0
 			name = pageMouseOptions
 			text = Mouse Options
-			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 180 0
@@ -153,6 +152,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			position = ScaleByResolution 0 0
 			name = pageJoystickOptions
 			text = Joystick Options
+			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 170 0
@@ -311,7 +311,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	{
 		position = ScaleByResolution 18.75 39.99999
 		size = Parent 0.4479623 0.02717235
-		text = Device Type
+		text = Default Device Type Choices
 	}
 	control "GUI\\Controls\\DefaultComboBox.gui"
 	{
