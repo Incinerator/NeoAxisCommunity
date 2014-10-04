@@ -71,6 +71,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			position = ScaleByResolution 0 0
 			name = pageMouseOptions
 			text = Mouse Options
+			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 180 0
@@ -152,7 +153,6 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			position = ScaleByResolution 0 0
 			name = pageJoystickOptions
 			text = Joystick Options
-			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 170 0
@@ -172,6 +172,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 					size = ScaleByResolution 828.75 350
 					name = pageSliderOptions
 					text = Slider Options
+					visible = False
 					control TextBox
 					{
 						position = ScaleByResolution 150 39.99998
@@ -257,7 +258,6 @@ control "GUI\\Controls\\DefaultWindow.gui"
 					position = ScaleByResolution 0 0
 					name = pageJoystickButtonOptions
 					text = Button Options
-					visible = False
 					control TextBox
 					{
 						position = ScaleByResolution -10 60
@@ -265,12 +265,11 @@ control "GUI\\Controls\\DefaultWindow.gui"
 						name = TextAxisChoices
 						text = Button Choices
 					}
-					control "GUI\\Controls\\DefaultComboBox.gui"
+					control "GUI\\Controls\\DefaultListBox.gui"
 					{
-						textIfNoSelection = "<Nothing Selected>"
 						position = ScaleByResolution 0 80.00002
-						size = ScaleByResolution 520 30
-						name = cmbJoyButtonChoices
+						size = ScaleByResolution 520 210
+						name = lstJoyButtonChoices
 					}
 				}
 			}

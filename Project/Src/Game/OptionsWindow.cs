@@ -24,11 +24,23 @@ namespace Game
 	/// </summary>
 	public class OptionsWindow : Control
 	{
+        //Enum device  Types installed on system
 		enum Devices
 		{
-			Keyboard,
-			Xbox360,
-			Joystick
+            //System,
+            GetServices,
+            //System InputDevices 
+			Keyboard, //what type of keyboard? phone? keyboard? or default values
+            Mouse, //name by name of device or default values
+			Joystick, //named by name of device or default values
+            Joystick_Xbox360, //name by name of device or default values
+            Joystick_WII,
+            Joystick_Playstation,
+            Custom, //add customized Controls.. any custom Controls designed
+            Custom_Audio, //named by device or device defaults example (zoom device to control guitar inputs)
+            RemoteControl, //A controleer for TV.. bluetoothed?
+
+            All_Devices // Index ... No added devices? wtf
 		}
 
 		static int lastPageIndex;
@@ -881,7 +893,7 @@ namespace Game
 			{
 				if( comboBoxInputDevices.SelectedItem.ToString().ToLower().Contains( "xbox360" ) )
 				{
-					device = Devices.Xbox360;
+                    device = Devices.Joystick_Xbox360;
 				}
 				else
 				{
@@ -915,7 +927,7 @@ namespace Game
 					var unbound = true;
 					foreach( var key in item.bindedJoystickValues )
 					{
-						if( device == Devices.Xbox360 )
+                        if (device == Devices.Joystick_Xbox360)
 						{
 							if( key.Type == GameControlsManager.SystemJoystickValue.Types.Button )
 							{
@@ -1024,17 +1036,20 @@ namespace Game
             cmbDeviceType = (ComboBox)Add_Custom_Control.Controls["cmbDeviceType"];
             foreach (var value in Enum.GetValues(typeof(Devices)))
             {
-                cmbDeviceType.Items.Add(value);
-                cmbDeviceType.SelectedIndex = 0;
+                if(!(value.ToString().Contains(Devices.GetServices.ToString())) && !(value.ToString().Contains(Devices.All_Devices.ToString()))) //exclude for internal use
+
+                    cmbDeviceType.Items.Add(value);
+                //cmbDeviceType.SelectedIndex = 0;
             }
             
             ComboBox cmbDevice;
             cmbDevice = (ComboBox)Add_Custom_Control.Controls["cmbDevice"];
-            cmbDevice.Items.Add("Keyboard/Mouse");
+            cmbDevice.Items.Add("Keyboard"); //unhandled object as device
+            cmbDevice.Items.Add("Mouse");   //unhandled object as a device
             if (InputDeviceManager.Instance != null)
             {
                 foreach (InputDevice devicename in InputDeviceManager.Instance.Devices)
-                    cmbDevice.Items.Add(devicename);
+                    cmbDevice.Items.Add(devicename); //handled objects
                 //filter 
             }
 
@@ -1085,10 +1100,14 @@ namespace Game
 
             ListBox lstKeyboardButtonChoices;
             lstKeyboardButtonChoices = (ListBox)pageKeyboardOptions.Controls["lstKeyboardButtonChoices"];
+            lstKeyboardButtonChoices.Items.Add("<Nothing Selected>");
+
             foreach (var value in Enum.GetValues(typeof(EKeys)))
             {
                 lstKeyboardButtonChoices.Items.Add(value);
             }
+            //if (lstKeyboardButtonChoices.ItemButtons["lstKeyboardButtonChoices"]Text.Contains("<Nothing Selected>") != null)
+            //    lstKeyboardButtonChoices.SelectedIndex = -1;
             #endregion pageKeyboardOptions
 
             //MainOptionsTabControl.pageJoystickOptions
@@ -1142,17 +1161,19 @@ namespace Game
 
                 ComboBox cmbAxisFilterChoices;
                 cmbAxisFilterChoices = (ComboBox)pageAxisOptions.Controls["cmbAxisFilterChoices"];
-                foreach (var value in Enum.GetValues(typeof(JoystickSliderAxes)))
+                foreach (var value in Enum.GetValues(typeof(JoystickAxisFilters )))
                 {
                     cmbAxisFilterChoices.Items.Add(value);
                 }
 
 
                 Control pageJoystickButtonOptions = tabJoystickControlOptions.Controls["pageJoystickButtonOptions"];
-                    ComboBox cmbJoyButtonChoices = (ComboBox)pageJoystickButtonOptions.Controls["cmbJoyButtonChoices"];
+                    ListBox lstJoyButtonChoices = (ListBox)pageJoystickButtonOptions.Controls["lstJoyButtonChoices"];
+                    lstJoyButtonChoices.Items.Add("<Nothing Selected>");
+                    lstJoyButtonChoices.SelectedIndex = -1;
                     foreach (var value in Enum.GetValues(typeof(JoystickButtons)))
                     {
-                        cmbJoyButtonChoices.Items.Add(value);
+                        lstJoyButtonChoices.Items.Add(value);
                     }
                     #endregion pageAxisOptions
             #endregion pageJoystickOptions
@@ -1186,7 +1207,7 @@ namespace Game
                             string message = "< Keyboard selected >";
                             break;
                         }
-                    case Devices.Xbox360:
+                    case Devices.Joystick_Xbox360:
                         {
                             string message = "< Xbox360 selected >";
                             break;
