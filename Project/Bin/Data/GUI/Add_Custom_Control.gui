@@ -5,45 +5,47 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	position = Parent -0.01504517 -0.009175584
 	horizontalAlign = Center
 	verticalAlign = Center
-	size = ScaleByResolution 870.6875 693.9063
+	size = ScaleByResolution 870.6875 703.9063
 	text = Add New Custom Bindings
 	mouseCover = True
 	control "GUI\\Controls\\DefaultButton.gui"
 	{
-		position = ScaleByResolution 18.75 640
-		size = ScaleByResolution 378.5313 46.40005
+		position = ScaleByResolution 18.75 645
+		size = ScaleByResolution 278.5313 46.40005
 		name = buttonOK
 		text = OK
 	}
 	control "GUI\\Controls\\DefaultButton.gui"
 	{
-		position = ScaleByResolution 458.75 640
-		size = ScaleByResolution 389 46.40005
+		position = ScaleByResolution 568.75 645
+		size = ScaleByResolution 289 46.40008
 		name = buttonCancel
 		text = Cancel
 	}
 	control TextBox
 	{
-		position = ScaleByResolution 428.75 40
-		size = Parent 0.493903 0.02717235
+		position = ScaleByResolution 538.75 40
+		size = Parent 0.367566 0.02717235
 		text = Devices Connected Choices
+		visible = False
 	}
 	control "GUI\\Controls\\DefaultComboBox.gui"
 	{
 		textIfNoSelection = "<Nothing Selected>"
-		position = ScaleByResolution 428.75 60.00001
-		size = ScaleByResolution 428.75 30
+		position = ScaleByResolution 528.75 60.00001
+		size = ScaleByResolution 328.75 30
 		name = cmbDevice
+		visible = False
 	}
 	control Control
 	{
 		position = Parent 0.02153471 0.1529272
-		size = Parent 0.9526237 0.1130226
+		size = Parent 0.6080684 0.1802952
 		name = cntrlCommands
 		control TextBox
 		{
-			position = ScaleByResolution 0 -6.117134
-			size = Parent 0.6132095 0.2712297
+			position = ScaleByResolution 0 -12.64643
+			size = Parent 0.934305 0.2712297
 			text = Bind to Command
 		}
 		control "GUI\\Controls\\DefaultListBox.gui"
@@ -59,19 +61,11 @@ control "GUI\\Controls\\DefaultWindow.gui"
 		position = ScaleByResolution 8.75 240
 		size = Parent 0.9687831 0.4800478
 		name = MainOptionsTabControl
-		pageButton "GUI\\Controls\\DefaultButton.gui"
-		{
-			position = ScaleByResolution 0 -140
-			size = ScaleByResolution 170 30
-			visible = False
-			enable = False
-		}
 		page0 Control
 		{
 			position = ScaleByResolution 0 0
 			name = pageMouseOptions
 			text = Mouse Options
-			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 180 0
@@ -80,7 +74,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 				name = MouseTabControl
 				pageButton "GUI\\Controls\\DefaultButton.gui"
 				{
-					position = ScaleByResolution -18.75 -100
+					position = ScaleByResolution 520 -40
 					size = ScaleByResolution 180 30
 					visible = False
 					enable = False
@@ -153,6 +147,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			position = ScaleByResolution 0 0
 			name = pageJoystickOptions
 			text = Joystick Options
+			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 170 0
@@ -172,7 +167,6 @@ control "GUI\\Controls\\DefaultWindow.gui"
 					size = ScaleByResolution 828.75 350
 					name = pageSliderOptions
 					text = Slider Options
-					visible = False
 					control TextBox
 					{
 						position = ScaleByResolution 150 39.99998
@@ -258,6 +252,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 					position = ScaleByResolution 0 0
 					name = pageJoystickButtonOptions
 					text = Button Options
+					visible = False
 					control TextBox
 					{
 						position = ScaleByResolution -10 60
@@ -276,7 +271,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 		}
 		control TextBox
 		{
-			position = ScaleByResolution 28.75 340.0001
+			position = ScaleByResolution 30 315.0001
 			size = Parent 0.5800797 0.07859052
 			name = txtboxSelectedStrength
 			text = Selected Strength
@@ -285,9 +280,29 @@ control "GUI\\Controls\\DefaultWindow.gui"
 		{
 			valueRange = -1 1
 			value = 1
-			position = ScaleByResolution 20 359.9999
+			position = ScaleByResolution 20 335
 			size = ScaleByResolution 510 24
 			name = scrlSelectedStrength
+		}
+		control "GUI\\Controls\\DefaultButton.gui"
+		{
+			position = ScaleByResolution 10 0
+			name = btnMouseOptions
+			text = Mouse Options
+		}
+		control "GUI\\Controls\\DefaultButton.gui"
+		{
+			position = ScaleByResolution 210 0
+			size = ScaleByResolution 170 30
+			name = btnKeyboardOptions
+			text = Keyboard Options
+		}
+		control "GUI\\Controls\\DefaultButton.gui"
+		{
+			position = ScaleByResolution 380 7.629395E-06
+			size = ScaleByResolution 160 30
+			name = btnJoystickOptions
+			text = Joystick Options
 		}
 	}
 	control Control
@@ -308,15 +323,29 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	}
 	control TextBox
 	{
-		position = ScaleByResolution 18.75 39.99999
-		size = Parent 0.4479623 0.02717235
+		position = ScaleByResolution 18.75 35.00001
+		size = Parent 0.5857844 0.03427554
 		text = Default Device Type Choices
 	}
 	control "GUI\\Controls\\DefaultComboBox.gui"
 	{
 		textIfNoSelection = "<Nothing Selected>"
 		position = ScaleByResolution 18.75 60
-		size = ScaleByResolution 388.75 30
+		size = ScaleByResolution 508.75 30
 		name = cmbDeviceType
+	}
+	control "GUI\\Controls\\DefaultButton.gui"
+	{
+		position = ScaleByResolution 308.75 645
+		size = ScaleByResolution 248.5313 46.40005
+		name = buttonReset
+		text = Reset
+	}
+	control TextBox
+	{
+		position = ScaleByResolution 28.75 605
+		size = Parent 0.9418249 0.04137878
+		name = lblMessage
+		text = "< Nothing Selected >"
 	}
 }
