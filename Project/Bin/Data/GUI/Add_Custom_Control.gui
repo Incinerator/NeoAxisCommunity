@@ -5,19 +5,19 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	position = Parent -0.01504517 -0.009175584
 	horizontalAlign = Center
 	verticalAlign = Center
-	size = ScaleByResolution 870.6875 738.9063
+	size = ScaleByResolution 870.6875 703.9063
 	text = Add New Custom Bindings
 	mouseCover = True
 	control "GUI\\Controls\\DefaultButton.gui"
 	{
-		position = ScaleByResolution 18.75 682.5
+		position = ScaleByResolution 18.75 645
 		size = ScaleByResolution 278.5313 46.40005
 		name = buttonOK
 		text = OK
 	}
 	control "GUI\\Controls\\DefaultButton.gui"
 	{
-		position = ScaleByResolution 568.75 682.5
+		position = ScaleByResolution 568.75 645
 		size = ScaleByResolution 289 46.40008
 		name = buttonCancel
 		text = Cancel
@@ -59,7 +59,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	{
 		pageButtonsOffset = ScaleByResolution 170 0
 		position = ScaleByResolution 8.75 240
-		size = Parent 0.9802682 0.4800478
+		size = Parent 0.9687831 0.4800478
 		name = MainOptionsTabControl
 		page0 Control
 		{
@@ -81,21 +81,20 @@ control "GUI\\Controls\\DefaultWindow.gui"
 				}
 				page0 Control
 				{
-					position = ScaleByResolution 0 32.5
-					size = Parent 0.9972729 0.9324015
+					position = ScaleByResolution 0 19.99999
+					size = Parent 0.9972729 0.9875532
 					name = pageMouseButtonOptions
 					text = Button Options
-					visible = False
 					control "GUI\\Controls\\DefaultComboBox.gui"
 					{
 						textIfNoSelection = "<Nothing Selected>"
-						position = ScaleByResolution 10 99.99995
+						position = ScaleByResolution 10 110
 						size = ScaleByResolution 487.5 30
 						name = cmbMouseButtonChoices
 					}
 					control TextBox
 					{
-						position = ScaleByResolution 10 69.99995
+						position = ScaleByResolution 10 80
 						size = Parent 0.9479684 0.1292239
 						text = Mouse Button Choices
 					}
@@ -106,6 +105,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 					size = Parent 0.9972729 0.9875532
 					name = pageMouseScrollOptions
 					text = MouseScroll Options
+					visible = False
 					control "GUI\\Controls\\DefaultComboBox.gui"
 					{
 						textIfNoSelection = "<Nothing Selected>"
@@ -308,7 +308,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	control Control
 	{
 		topMost = True
-		position = ScaleByResolution 588.75 362.5
+		position = ScaleByResolution 588.75 370
 		size = Parent 0.2764339 0.3271208
 		name = cntrlSelectedImage
 		text = Image
@@ -316,7 +316,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	control Control
 	{
 		topMost = True
-		position = ScaleByResolution 588.75 122.5
+		position = ScaleByResolution 588.75 130
 		size = Parent 0.2764339 0.3271208
 		name = cntrlSelectedDeviceImage
 		text = Image
@@ -336,20 +336,15 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	}
 	control "GUI\\Controls\\DefaultButton.gui"
 	{
-		position = ScaleByResolution 308.75 682.5
+		position = ScaleByResolution 308.75 645
 		size = ScaleByResolution 248.5313 46.40005
 		name = buttonReset
 		text = Reset
 	}
 	control TextBox
 	{
-		textHorizontalAlign = Left
-		textVerticalAlign = Top
-		font = Default 0.022
-		wordWrap = True
-		alignByWidth = True
-		position = ScaleByResolution 8.75 602.5
-		size = Parent 0.9762805 0.09212942
+		position = ScaleByResolution 28.75 605
+		size = Parent 0.9418249 0.04137878
 		name = lblMessage
 		text = "< Nothing Selected >"
 	}
