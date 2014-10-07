@@ -1552,6 +1552,8 @@ namespace Game
             cmbDeviceType.SelectedIndexChange += delegate(ComboBox sender)
             {
                 message = null;
+                if (sender.SelectedIndex == -1)
+                    return;
                 if (sender.SelectedIndex != 0)
                 {
                     Devices devicetype = (Devices)sender.SelectedItem;
@@ -1682,17 +1684,17 @@ namespace Game
 
             ((Button)Add_Custom_Control.Controls["buttonReset"]).Click += delegate(Button sender)
             {
-                cmbDevice.SelectedIndex = -1;
-                cmbDeviceType.SelectedIndex = -1;
+                cmbDevice.SelectedIndex = 0;
+                cmbDeviceType.SelectedIndex = 0;
                 lstCommand.SelectedIndex = 0; //should be lstCommand
-                cmbMouseButtonChoices.SelectedIndex = -1;
-                cmbMouseScrollChoices.SelectedIndex = -1;
+                cmbMouseButtonChoices.SelectedIndex = 0;
+                cmbMouseScrollChoices.SelectedIndex = 0;
                 lstKeyboardButtonChoices.SelectedIndex = 0; //< Nothing Selected >
-                cmbSliderChoices.SelectedIndex = -1;
-                cmbSliderAxisChoices.SelectedIndex = -1;
-                cmbSliderAxisFilterChoices.SelectedIndex = -1;
-                cmbAxisChoices.SelectedIndex = -1;
-                cmbAxisFilterChoices.SelectedIndex = -1;
+                cmbSliderChoices.SelectedIndex = 0;
+                cmbSliderAxisChoices.SelectedIndex = 0;
+                cmbSliderAxisFilterChoices.SelectedIndex = 0;
+                cmbAxisChoices.SelectedIndex = 0;
+                cmbAxisFilterChoices.SelectedIndex = 0;
                 lstJoyButtonChoices.SelectedIndex = 0; //<Nothing Selected>
                 cntrlCommands.Visible = false;
                 MainOptionsTabControl.Visible = false;
