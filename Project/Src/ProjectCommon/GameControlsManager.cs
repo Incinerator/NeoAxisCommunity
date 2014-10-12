@@ -8,6 +8,7 @@ using Engine.MathEx;
 using Engine.FileSystem;
 using System.IO;
 
+
 // Thank to Hellent, SodanKerju, Goto10, Incin and Firefly for all there contributions to this source.
 
 
@@ -58,7 +59,44 @@ namespace ProjectCommon
 	{
 		ScrollUp,
 		ScrollDown,
+
 	}
+
+    public enum CustomMouseScroll
+    {
+        ScrollUp,
+        ScrollDown,
+        ScrollLeft,//Incin -- unspported -- example trackball mouse
+        ScrollRight, //Incin -- unsupported -- example trackball mouse    
+    }
+
+    //work on supporting custom Mice 
+    public enum CustomMouseButtons
+    { 
+        Button0,
+        Button1,
+        Button2,
+        Button3,
+        Button4,
+        Button5,
+        Button6,
+        Button7,
+        Button8,
+        Button9,
+        Button10,
+        Button11,
+        Button12,
+        Button13,
+        Button14,
+        Button15,
+        Button16,
+        Button17,
+        Button18,
+        Button19,
+        Button20,
+        Buttons_Count,
+    }
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	/// <summary>
@@ -71,24 +109,24 @@ namespace ProjectCommon
 
 		//
 
-		public DefaultJoystickValueAttribute( JoystickButtons button )
+		public DefaultJoystickValueAttribute( JoystickButtons button, float strength )
 		{
-			value = new GameControlsManager.SystemJoystickValue( button );
+			value = new GameControlsManager.SystemJoystickValue( button , strength);
 		}
 
-		public DefaultJoystickValueAttribute( JoystickAxes axis, JoystickAxisFilters filter )
+		public DefaultJoystickValueAttribute( JoystickAxes axis, JoystickAxisFilters filter , float strength)
 		{
-			value = new GameControlsManager.SystemJoystickValue( axis, filter );
+			value = new GameControlsManager.SystemJoystickValue( axis, filter, strength );
 		}
 
-		public DefaultJoystickValueAttribute( JoystickPOVs pov, JoystickPOVDirections direction )
+		public DefaultJoystickValueAttribute( JoystickPOVs pov, JoystickPOVDirections direction, float strength )
 		{
-			value = new GameControlsManager.SystemJoystickValue( pov, direction );
+			value = new GameControlsManager.SystemJoystickValue( pov, direction, strength );
 		}
 
-		public DefaultJoystickValueAttribute( JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter )
+		public DefaultJoystickValueAttribute( JoystickSliders slider, JoystickSliderAxes axis, JoystickAxisFilters filter, float strength )
 		{
-			value = new GameControlsManager.SystemJoystickValue( slider, axis, filter );
+			value = new GameControlsManager.SystemJoystickValue( slider, axis, filter, strength );
 		}
 
 		public GameControlsManager.SystemJoystickValue Value
@@ -261,6 +299,7 @@ namespace ProjectCommon
 
 			Types type;
 			EKeys key;
+            float strength = 1f;
 			EMouseButtons mouseButton;
 			MouseScroll scrollDirection;
 			private GameControlItem _parent;
@@ -282,6 +321,7 @@ namespace ProjectCommon
 				key = source.Key;
 				mouseButton = source.MouseButton;
 				scrollDirection = source.scrollDirection;
+                strength = source.strength;
 				_parent = source.Parent;
 			}
 
@@ -290,6 +330,7 @@ namespace ProjectCommon
 				type = Types.Key;
 				this.key = key;
 			}
+            
 
 			public SystemKeyboardMouseValue( EMouseButtons mouseButton )
 			{
@@ -313,26 +354,46 @@ namespace ProjectCommon
 				get { return key; }
 			}
 
+            public float Key_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
+
+            
+
 			public EMouseButtons MouseButton
 			{
 				get { return mouseButton; }
 			}
+
+            public float MouseButton_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
 
 			public MouseScroll ScrollDirection
 			{
 				get { return scrollDirection; }
 			}
 
+            public float ScrollDirection_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
+
 			public override string ToString()
 			{
 				if( Unbound )
 					return string.Format( "{0} - Unbound", Parent.ControlKey );
 				if( type == Types.Key )
-					return string.Format( "{0} - Key {1}", Parent.ControlKey, key );
+                    return string.Format("{0} - Key {1} Strength: {2}", Parent.ControlKey, key, strength);
 				else if( type == Types.MouseScrollDirection )
-					return string.Format( "{0} - Scroll {1}", Parent.ControlKey, scrollDirection );
+					return string.Format( "{0} - Scroll {1} Strength: {2}", Parent.ControlKey, scrollDirection, strength );
 				else
-					return string.Format( "{0} - Mouse {1} button", Parent.ControlKey, mouseButton );
+                    return string.Format("{0} - Mouse {1} button Strength: {2}", Parent.ControlKey, mouseButton, strength);
 			}
 
 			public static void Save( SystemKeyboardMouseValue item, TextBlock block )
@@ -343,12 +404,15 @@ namespace ProjectCommon
 				{
 				case Types.Key:
 					block.SetAttribute( "key", item.Key.ToString() );
+                    block.SetAttribute("strength",item.Key_Strength.ToString());
 					break;
 				case Types.MouseButton:
 					block.SetAttribute( "button", item.MouseButton.ToString() );
+                    block.SetAttribute("strength", item.MouseButton_Strength.ToString());
 					break;
 				case Types.MouseScrollDirection:
 					block.SetAttribute( "scroll", item.scrollDirection.ToString() );
+                    block.SetAttribute("strength",item.ScrollDirection_Strength.ToString());
 					break;
 				}
 			}
@@ -372,6 +436,10 @@ namespace ProjectCommon
 				var scroll = block.GetAttribute( "scroll" );
 				if( !string.IsNullOrEmpty( scroll ) )
 					value.scrollDirection = (MouseScroll)Enum.Parse( typeof( MouseScroll ), scroll );
+
+                var strength = block.GetAttribute("strength");
+                if (!string.IsNullOrEmpty(strength))
+                    value.strength = float.Parse(strength);
 
 				return value;
 			}
@@ -400,6 +468,7 @@ namespace ProjectCommon
 			JoystickPOVDirections povDirection;
 			JoystickSliders slider;
 			JoystickSliderAxes sliderAxis;
+            float strength = 1f;
 
 			private GameControlItem _parent;
 
@@ -416,11 +485,19 @@ namespace ProjectCommon
 			{
 			}
 
-			public SystemJoystickValue( JoystickButtons button )
+            public SystemJoystickValue(JoystickButtons button)
+            {
+                type = Types.Button;
+                this.button = button;
+            }
+
+			public SystemJoystickValue( JoystickButtons button, float strength)
 			{
 				type = Types.Button;
 				this.button = button;
+                this.strength = strength;
 			}
+
 
 			public SystemJoystickValue( SystemJoystickValue source )
 			{
@@ -431,41 +508,88 @@ namespace ProjectCommon
 				pov = source.POV;
 				povDirection = source.POVDirection;
 				_parent = source.Parent;
+                strength = source.strength;
 			}
 
-			public SystemJoystickValue( JoystickAxes axis )
+            public SystemJoystickValue(JoystickAxes axis)
+            {
+                type = Types.Axis;
+                this.axis = axis;
+            }
+
+			public SystemJoystickValue( JoystickAxes axis , float strength)
 			{
 				type = Types.Axis;
 				this.axis = axis;
+                this.strength = strength;
 			}
 
-			public SystemJoystickValue( JoystickAxes axis, JoystickAxisFilters axisFilter )
+            public SystemJoystickValue(JoystickAxes axis, JoystickAxisFilters axisFilter)
+            {
+                type = Types.Axis;
+                this.axis = axis;
+                this.axisFilter = axisFilter;
+            }
+
+			public SystemJoystickValue( JoystickAxes axis, JoystickAxisFilters axisFilter, float strength )
 			{
 				type = Types.Axis;
 				this.axis = axis;
 				this.axisFilter = axisFilter;
+                this.strength = strength;
 			}
+            
+            public float Axis_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
 
-			public SystemJoystickValue( JoystickPOVs pov, JoystickPOVDirections povDirection )
+            public SystemJoystickValue(JoystickPOVs pov, JoystickPOVDirections povDirection)
+            {
+                type = Types.POV;
+                this.pov = pov;
+                this.povDirection = povDirection;
+            }
+
+			public SystemJoystickValue( JoystickPOVs pov, JoystickPOVDirections povDirection, float strength )
 			{
 				type = Types.POV;
 				this.pov = pov;
 				this.povDirection = povDirection;
+                this.strength = strength;
 			}
 
-			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe )
+            public SystemJoystickValue(JoystickSliders slider, JoystickSliderAxes axe)
+            {
+                type = Types.Slider;
+                this.slider = slider;
+                this.sliderAxis = axe;
+            }
+
+			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe , float strength)
 			{
 				type = Types.Slider;
 				this.slider = slider;
 				this.sliderAxis = axe;
+                this.strength = strength;
 			}
 
-			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe, JoystickAxisFilters filter )
+            public SystemJoystickValue(JoystickSliders slider, JoystickSliderAxes axe, JoystickAxisFilters filter)
+            {
+                type = Types.Slider;
+                this.slider = slider;
+                this.sliderAxis = axe;
+                this.axisFilter = filter;
+            }
+
+			public SystemJoystickValue( JoystickSliders slider, JoystickSliderAxes axe, JoystickAxisFilters filter, float strength )
 			{
 				type = Types.Slider;
 				this.slider = slider;
 				this.sliderAxis = axe;
 				this.axisFilter = filter;
+                this.strength = strength;
 			}
 
 			public Types Type
@@ -478,6 +602,12 @@ namespace ProjectCommon
 				get { return button; }
 			}
 
+            public float Button_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
+
 			public JoystickAxes Axis
 			{
 				get { return axis; }
@@ -489,15 +619,33 @@ namespace ProjectCommon
 				set { axisFilter = value; }
 			}
 
+            public float Axisfilter_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
+
 			public JoystickPOVs POV
 			{
 				get { return pov; }
 			}
 
+            public float POV_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
+
 			public JoystickPOVDirections POVDirection
 			{
 				get { return povDirection; }
 			}
+
+            public float POVDirection_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
 
 
 			public JoystickSliders Slider
@@ -505,10 +653,22 @@ namespace ProjectCommon
 				get { return slider; }
 			}
 
+            public float Slider_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
+
 			public JoystickSliderAxes SliderAxis
 			{
 				get { return sliderAxis; }
 			}
+
+            public float SliderAxis_Strength
+            {
+                get { return strength; }
+                set { value = strength; }
+            }
 
 
 			public static void Save( SystemJoystickValue item, TextBlock block )
@@ -518,19 +678,23 @@ namespace ProjectCommon
 				{
 				case Types.Button:
 					block.SetAttribute( "button", item.Button.ToString() );
+                    block.SetAttribute("strength", item.strength.ToString());
 					break;
 				case Types.Axis:
 					block.SetAttribute( "axis", item.Axis.ToString() );
 					block.SetAttribute( "axisfilter", item.AxisFilter.ToString() );
+                    block.SetAttribute("strength", item.strength.ToString());
 					break;
 				case Types.POV:
 					block.SetAttribute( "POV", item.POV.ToString() );
 					block.SetAttribute( "POVDirection", item.POVDirection.ToString() );
+                    block.SetAttribute("strength", item.strength.ToString());
 					break;
 				case Types.Slider:
 					block.SetAttribute( "slider", item.Slider.ToString() );
 					block.SetAttribute( "sliderAxis", item.SliderAxis.ToString() );
 					block.SetAttribute( "axisfilter", item.AxisFilter.ToString() );
+                    block.SetAttribute("strength", item.strength.ToString());
 					break;
 				}
 			}
@@ -587,6 +751,13 @@ namespace ProjectCommon
 						value.sliderAxis = (JoystickSliderAxes)Enum.Parse( typeof( JoystickSliderAxes ), slideraxis );
 
 				}
+                {
+                    var strength = block.GetAttribute("strength");
+                    if (!string.IsNullOrEmpty("strength"))
+                    {
+                        value.strength = float.Parse(strength);
+                    }
+                }
 				return value;
 			}
 
@@ -595,13 +766,13 @@ namespace ProjectCommon
 				if( Unbound )
 					return string.Format( "{0} - Unbound", Parent.ControlKey );
 				if( type == Types.Axis )
-					return string.Format( "{0} - Axis: {1}({2})", Parent.ControlKey, Axis, AxisFilter );
+					return string.Format( "{0} - Axis: {1} S:{2} (Filter:{3} S:{4} Strength: {3})", Parent.ControlKey, Axis, Axis_Strength , AxisFilter, Axisfilter_Strength );//strengths added
 				if( type == Types.Button )
 					return string.Format( "{0} - Button: {1}", Parent.ControlKey, Button );
 				if( type == Types.POV )
-					return string.Format( "{0} - POV: {1}({2})", Parent.ControlKey, POV, POVDirection );
+                    return string.Format("{0} - POV: {1}({2}, Strength {3} )", Parent.ControlKey, POV, POVDirection, Axis_Strength);
 				if( type == Types.Slider )
-					return string.Format( "{0} - Slider: {1} Axis: {2}({3})", Parent.ControlKey, Slider, SliderAxis, AxisFilter );
+                    return string.Format("{0} - Slider: {1} Axis: {2}({3}, Strength: {4})", Parent.ControlKey, Slider, SliderAxis, AxisFilter, SliderAxis_Strength);
 				return "Error";
 			}
 		}

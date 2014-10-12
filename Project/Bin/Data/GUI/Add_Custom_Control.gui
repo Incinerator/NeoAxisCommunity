@@ -65,7 +65,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 		{
 			position = ScaleByResolution 0 0
 			name = pageMouseOptions
-			text = Mouse Options
+			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 180 0
@@ -147,20 +147,12 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			position = ScaleByResolution 0 0
 			name = pageJoystickOptions
 			text = Joystick Options
-			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 170 0
 				position = ScaleByResolution 20 40
 				size = Parent 0.9602932 0.939539
 				name = tabJoystickControlOptions
-				pageButton "GUI\\Controls\\DefaultButton.gui"
-				{
-					position = ScaleByResolution -18.75 -100
-					size = ScaleByResolution 170 30
-					visible = False
-					enable = False
-				}
 				page0 Control
 				{
 					position = ScaleByResolution -18.75 -3.814697E-06
@@ -266,6 +258,27 @@ control "GUI\\Controls\\DefaultWindow.gui"
 						size = ScaleByResolution 520 210
 						name = lstJoyButtonChoices
 					}
+				}
+				control "GUI\\Controls\\DefaultButton.gui"
+				{
+					position = ScaleByResolution 10 -5.000008
+					size = ScaleByResolution 170 40
+					name = btnSliderOptions
+					text = Slider Options
+				}
+				control "GUI\\Controls\\DefaultButton.gui"
+				{
+					position = ScaleByResolution 180 -5.000008
+					size = ScaleByResolution 170 40
+					name = btnAxisOptions
+					text = Axis Options
+				}
+				control "GUI\\Controls\\DefaultButton.gui"
+				{
+					position = ScaleByResolution 350 -5
+					size = ScaleByResolution 170 40
+					name = btnButtonOptions
+					text = Button Options
 				}
 			}
 		}
