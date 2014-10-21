@@ -5,19 +5,19 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	position = Parent -0.01504517 -0.009175584
 	horizontalAlign = Center
 	verticalAlign = Center
-	size = ScaleByResolution 870.6875 703.9063
+	size = ScaleByResolution 870.6875 748.9063
 	text = Add New Custom Bindings
 	mouseCover = True
 	control "GUI\\Controls\\DefaultButton.gui"
 	{
-		position = ScaleByResolution 18.75 645
+		position = ScaleByResolution 18.75 687.5001
 		size = ScaleByResolution 278.5313 46.40005
 		name = buttonOK
 		text = OK
 	}
 	control "GUI\\Controls\\DefaultButton.gui"
 	{
-		position = ScaleByResolution 568.75 645
+		position = ScaleByResolution 568.75 687.5001
 		size = ScaleByResolution 289 46.40008
 		name = buttonCancel
 		text = Cancel
@@ -65,7 +65,6 @@ control "GUI\\Controls\\DefaultWindow.gui"
 		{
 			position = ScaleByResolution 0 0
 			name = pageMouseOptions
-			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 180 0
@@ -147,6 +146,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			position = ScaleByResolution 0 0
 			name = pageJoystickOptions
 			text = Joystick Options
+			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 170 0
@@ -349,15 +349,18 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	}
 	control "GUI\\Controls\\DefaultButton.gui"
 	{
-		position = ScaleByResolution 308.75 645
+		position = ScaleByResolution 308.75 687.5001
 		size = ScaleByResolution 248.5313 46.40005
 		name = buttonReset
 		text = Reset
 	}
 	control TextBox
 	{
-		position = ScaleByResolution 28.75 605
-		size = Parent 0.9418249 0.04137878
+		textHorizontalAlign = Left
+		textVerticalAlign = Top
+		wordWrap = True
+		position = ScaleByResolution 18.75 607.5
+		size = Parent 0.9533101 0.09479006
 		name = lblMessage
 		text = "< Nothing Selected >"
 	}
