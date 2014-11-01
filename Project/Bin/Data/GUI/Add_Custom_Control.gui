@@ -59,12 +59,13 @@ control "GUI\\Controls\\DefaultWindow.gui"
 	{
 		pageButtonsOffset = ScaleByResolution 170 0
 		position = ScaleByResolution 8.75 240
-		size = Parent 0.9687831 0.4800478
+		size = Parent 0.9687831 0.4900624
 		name = MainOptionsTabControl
 		page0 Control
 		{
 			position = ScaleByResolution 0 0
 			name = pageMouseOptions
+			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 180 0
@@ -80,8 +81,8 @@ control "GUI\\Controls\\DefaultWindow.gui"
 				}
 				page0 Control
 				{
-					position = ScaleByResolution 0 19.99999
-					size = Parent 0.9972729 0.9875532
+					position = ScaleByResolution 0 27.50001
+					size = Parent 1.016609 0.871136
 					name = pageMouseButtonOptions
 					text = Button Options
 					control "GUI\\Controls\\DefaultComboBox.gui"
@@ -136,8 +137,8 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			}
 			control "GUI\\Controls\\DefaultListBox.gui"
 			{
-				position = ScaleByResolution 40 60.00002
-				size = ScaleByResolution 467.5 209.9999
+				position = ScaleByResolution 10 37.50001
+				size = ScaleByResolution 527.5 232.4999
 				name = lstKeyboardButtonChoices
 			}
 		}
@@ -146,11 +147,10 @@ control "GUI\\Controls\\DefaultWindow.gui"
 			position = ScaleByResolution 0 0
 			name = pageJoystickOptions
 			text = Joystick Options
-			visible = False
 			control TabControl
 			{
 				pageButtonsOffset = ScaleByResolution 170 0
-				position = ScaleByResolution 20 40
+				position = ScaleByResolution 20 37.50002
 				size = Parent 0.9602932 0.939539
 				name = tabJoystickControlOptions
 				page0 Control
@@ -159,6 +159,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 					size = ScaleByResolution 828.75 350
 					name = pageSliderOptions
 					text = Slider Options
+					visible = False
 					control TextBox
 					{
 						position = ScaleByResolution 150 39.99998
@@ -206,7 +207,7 @@ control "GUI\\Controls\\DefaultWindow.gui"
 				page1 Control
 				{
 					position = ScaleByResolution 0 30.00002
-					size = ScaleByResolution 847.5 370
+					size = ScaleByResolution 517.5 247.5
 					name = pageAxisOptions
 					text = Axis Options
 					visible = False
@@ -244,18 +245,17 @@ control "GUI\\Controls\\DefaultWindow.gui"
 					position = ScaleByResolution 0 0
 					name = pageJoystickButtonOptions
 					text = Button Options
-					visible = False
 					control TextBox
 					{
-						position = ScaleByResolution -10 60
+						position = ScaleByResolution 0 50
 						size = Parent 0.6397281 0.05775774
 						name = TextAxisChoices
 						text = Button Choices
 					}
 					control "GUI\\Controls\\DefaultListBox.gui"
 					{
-						position = ScaleByResolution 0 80.00002
-						size = ScaleByResolution 520 210
+						position = ScaleByResolution 0 70
+						size = ScaleByResolution 520 200
 						name = lstJoyButtonChoices
 					}
 				}

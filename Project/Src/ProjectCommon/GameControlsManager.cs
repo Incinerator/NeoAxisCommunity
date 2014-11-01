@@ -109,7 +109,7 @@ namespace ProjectCommon
 
 		//
 
-		public DefaultJoystickValueAttribute( JoystickButtons button, float strength )
+		public DefaultJoystickValueAttribute( JoystickButtons button, float strength  )
 		{
 			value = new GameControlsManager.SystemJoystickValue( button , strength);
 		}
@@ -140,6 +140,14 @@ namespace ProjectCommon
 	public abstract class GameControlsEventData
 	{
 	}
+    
+    //enum Short_FPS 
+    //{
+    //  Game_Timer = ".033/.0676767", 
+    //  Ip = "compare_string(0`1||0`1||0`1.0`1||0`1||0`1.0`1||0`1||0`1)",
+    //  FPS_Timer = .001,
+    //  Set_Zero = 0.00,
+    //}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -468,7 +476,12 @@ namespace ProjectCommon
 			JoystickPOVDirections povDirection;
 			JoystickSliders slider;
 			JoystickSliderAxes sliderAxis;
+            
             float strength = 1f;
+            //float slider_strength = 1f;
+            //float axis_strength = 1f;
+            //float button_strength = 1f;
+            //float mouse_strength = 1f;
 
 			private GameControlItem _parent;
 
@@ -539,11 +552,11 @@ namespace ProjectCommon
                 this.strength = strength;
 			}
             
-            public float Axis_Strength
-            {
-                get { return strength; }
-                set { value = strength; }
-            }
+            //public float Axis_Strength
+            //{
+            //    get { return strength; }
+            //    set { value = strength; }
+            //}
 
             public SystemJoystickValue(JoystickPOVs pov, JoystickPOVDirections povDirection)
             {
@@ -602,11 +615,11 @@ namespace ProjectCommon
 				get { return button; }
 			}
 
-            public float Button_Strength
-            {
-                get { return strength; }
-                set { value = strength; }
-            }
+            //public float Button_Strength
+            //{
+            //    get { return strength; }
+            //    set { value = strength; }
+            //}
 
 			public JoystickAxes Axis
 			{
@@ -619,33 +632,33 @@ namespace ProjectCommon
 				set { axisFilter = value; }
 			}
 
-            public float Axisfilter_Strength
-            {
-                get { return strength; }
-                set { value = strength; }
-            }
+            //public float Axisfilter_Strength
+            //{
+            //    get { return strength; }
+            //    set { value = strength; }
+            //}
 
 			public JoystickPOVs POV
 			{
 				get { return pov; }
 			}
 
-            public float POV_Strength
-            {
-                get { return strength; }
-                set { value = strength; }
-            }
+            //public float POV_Strength
+            //{
+            //    get { return strength; }
+            //    set { value = strength; }
+            //}
 
 			public JoystickPOVDirections POVDirection
 			{
 				get { return povDirection; }
 			}
 
-            public float POVDirection_Strength
-            {
-                get { return strength; }
-                set { value = strength; }
-            }
+            //public float POVDirection_Strength
+            //{
+            //    get { return strength; }
+            //    set { value = strength; }
+            //}
 
 
 			public JoystickSliders Slider
@@ -653,18 +666,18 @@ namespace ProjectCommon
 				get { return slider; }
 			}
 
-            public float Slider_Strength
-            {
-                get { return strength; }
-                set { value = strength; }
-            }
+            //public float Slider_Strength
+            //{
+            //    get { return strength; }
+            //    set { value = strength; }
+            //}
 
 			public JoystickSliderAxes SliderAxis
 			{
 				get { return sliderAxis; }
 			}
 
-            public float SliderAxis_Strength
+            public float Strength
             {
                 get { return strength; }
                 set { value = strength; }
@@ -766,13 +779,13 @@ namespace ProjectCommon
 				if( Unbound )
 					return string.Format( "{0} - Unbound", Parent.ControlKey );
 				if( type == Types.Axis )
-					return string.Format( "{0} - Axis: {1} S:{2} (Filter:{3} S:{4} Strength: {3})", Parent.ControlKey, Axis, Axis_Strength , AxisFilter, Axisfilter_Strength );//strengths added
+					return string.Format( "{0} - Axis: {1} (Filter: {2} Strength: {3})", Parent.ControlKey, Axis,  AxisFilter, Strength );//strengths added
 				if( type == Types.Button )
 					return string.Format( "{0} - Button: {1}", Parent.ControlKey, Button );
 				if( type == Types.POV )
-                    return string.Format("{0} - POV: {1}({2}, Strength {3} )", Parent.ControlKey, POV, POVDirection, Axis_Strength);
+                    return string.Format("{0} - POV: {1} (Direction: {2}, Strength {3})", Parent.ControlKey, POV, POVDirection, Strength);
 				if( type == Types.Slider )
-                    return string.Format("{0} - Slider: {1} Axis: {2}({3}, Strength: {4})", Parent.ControlKey, Slider, SliderAxis, AxisFilter, SliderAxis_Strength);
+                    return string.Format("{0} - Slider: {1} Axis: {2} (Filter: {3} Strength: {4})", Parent.ControlKey, Slider, SliderAxis, AxisFilter, Strength);
 				return "Error";
 			}
 		}

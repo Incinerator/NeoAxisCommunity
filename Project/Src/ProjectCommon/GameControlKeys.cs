@@ -11,7 +11,7 @@ namespace ProjectCommon
 	{
 		///////////////////////////////////////////
 		//Moving
-
+         
 		[DefaultKeyboardMouseValue( EKeys.W )]
 		[DefaultKeyboardMouseValue( EKeys.Up )]
 		[DefaultJoystickValue( JoystickAxes.Y, JoystickAxisFilters.GreaterZero, 1 )]

@@ -14,9 +14,7 @@ using Engine.SoundSystem;
 using ProjectCommon;
 using ProjectEntities;
 
-///<summary>
-/// Incin -- This Source is intended for accessing any and all devices that can be used for input to the game engine , phones , TV remotes...
-///</summary>
+
 namespace Game
 {
 	/// <summary>
@@ -29,18 +27,18 @@ namespace Game
 		{
 			//System,
 			//GetServices,
-			//System InputDevices 
+			//System InputDevices
+            Nothing_Selected = 0,
 			Keyboard, //what type of keyboard? phone? keyboard? or default values
 			Mouse, //name by name of device or default values
 			Joystick, //named by name of device or default values
 			Joystick_Xbox360, //name by name of device or default values
 			Joystick_WII,
 			Joystick_Playstation,
+			RemoteControl, //A controleer for TV.. bluetoothed?
 			Custom, //add customized Controls.. any custom Controls designed
 			//Custom_Audio, //named by device or device defaults example (zoom device to control guitar inputs)
-			RemoteControl, //A controleer for TV.. bluetoothed?
-
-			//All_Devices // Index ... No added devices? wtf
+			//All_Devices // Index ... No added devices?
 		}
 
 		static int lastPageIndex;
@@ -1071,7 +1069,24 @@ namespace Game
 			int index = Array.IndexOf(pageControlsButtons, sender);
 			MainOptionsTabControl.SelectedIndex = index;
 		}
-		
+        
+        private Control messageBox;
+        private void OKOnlyButton_Click(object sender)
+        {
+            messageBox.SetShouldDetach();
+        }
+       
+
+        void CreateMessageBox(string message)
+        {
+            messageBox = ControlDeclarationManager.Instance.CreateControl(@"GUI\Confirm.gui");
+            Controls.Add(messageBox);
+            messageBox.Controls["MessageBox"].Text = message;
+            messageBox.MouseCover = true;
+            ((Button)messageBox.Controls["Cancel"]).Visible = false;
+            ((Button)messageBox.Controls["Clear"]).Visible = false;
+            ((Button)messageBox.Controls["OK"]).Click += OKOnlyButton_Click;
+        }
 		///<summary>
 		/// ___ InCin filtering by combo boxes and listboxes --- all me
 		///void CreateAdd_Custom_Control_Dialogue()
@@ -1083,7 +1098,7 @@ namespace Game
 		{
             //Enums for selected dropdowns to save back and compare 
             Devices devicetype_selected;// = (Devices)cmbDeviceType.SelectedItem;
-            GameControlKeys control_selected;// = (Control)lstCommand.SelectedItem;
+            GameControlKeys command_selected;// = (Control)lstCommand.SelectedItem;
             // group Keyboard
             EKeys lstKeyboardButtonChoices_selected;// = (EKeys)lstKeyboardButtonChoices.SelectedItem;
 			// group Mouse
@@ -1099,6 +1114,7 @@ namespace Game
             //buttons
             JoystickButtons lstJoyButtonChoices_selected;// = (JoystickButtons)lstJoyButtonChoices.SelectedItem;
             float Strength_selected = 1.0f; //always max strength
+            float old_strength = 0;
 
 			Control Add_Custom_Control = ControlDeclarationManager.Instance.CreateControl(@"GUI\Add_Custom_Control.gui");
 			Add_Custom_Control.MouseCover = true;
@@ -1110,7 +1126,7 @@ namespace Game
 
 			ComboBox cmbDeviceType;
 			cmbDeviceType = (ComboBox)Add_Custom_Control.Controls["cmbDeviceType"];
-			cmbDeviceType.Items.Add("< Nothing Selected >");
+			//cmbDeviceType.Items.Add("Nothing_Selected"); //using enum Nothing_Selected
 			foreach (var value in Enum.GetValues(typeof(Devices)))
 			{
 				//if(!(value.ToString().Contains(Devices.GetServices.ToString())) && !(value.ToString().Contains(Devices.All_Devices.ToString()))) //exclude for internal use
@@ -1121,7 +1137,7 @@ namespace Game
 			cmbDeviceType.SelectedIndex = 0;
 			ComboBox cmbDevice;
 			cmbDevice = (ComboBox)Add_Custom_Control.Controls["cmbDevice"];
-			cmbDevice.Items.Add("< Nothing Selected >");
+			cmbDevice.Items.Add("Nothing_Selected");
 			cmbDevice.Items.Add("Keyboard"); //unhandled object as device
 			cmbDevice.Items.Add("Mouse");   //unhandled object as a device
 			if (InputDeviceManager.Instance != null)
@@ -1130,13 +1146,14 @@ namespace Game
 					cmbDevice.Items.Add(devicename); //handled objects
 				//filter 
 			}
+            cmbDevice.SelectedIndex = 0;
 
 			Control cntrlCommands = (Control)Add_Custom_Control.Controls["cntrlCommands"];
 			cntrlCommands.Visible = false;
 			//Commands Available
 			ListBox lstCommand;
 			lstCommand = (ListBox)Add_Custom_Control.Controls["cntrlCommands"].Controls["lstCommand"];
-			lstCommand.Items.Add("< Nothing Selected >");
+			lstCommand.Items.Add("Nothing_Selected");
 			lstCommand.SelectedIndex = 0;
 			foreach (var value in Enum.GetValues(typeof(GameControlKeys)))
 			{
@@ -1150,27 +1167,41 @@ namespace Game
 			MainOptionsTabControl.SelectedIndexChange += MainOptionsTabControl_SelectedIndexChange;
 			MainOptionsTabControl.Visible = true;
 
-			ScrollBar scrlSelectedStrength;
-			scrlSelectedStrength = (ScrollBar)MainOptionsTabControl.Controls["scrlSelectedStrength"];
 
-            scrlSelectedStrength.ValueChange += delegate(ScrollBar sender)
-            {
-                Strength_selected = sender.Value;
-            };
 
+            MainOptionsTabControl.Visible = false; //hide all subcontrols for now
+            
 			pageControlsButtons[0] = (Button)Add_Custom_Control.Controls["MainOptionsTabControl"].Controls["btnMouseOptions"];
 			pageControlsButtons[1] = (Button)Add_Custom_Control.Controls["MainOptionsTabControl"].Controls["btnKeyboardOptions"];
 			pageControlsButtons[2] = (Button)Add_Custom_Control.Controls["MainOptionsTabControl"].Controls["btnJoystickOptions"];
 			foreach (Button pageButton in pageControlsButtons)
 			{
 				pageButton.Click += new Button.ClickDelegate( pageControlsButton_Click );
-                if (pageControlsButtons[0] != null)
-                {
-                    pageButton.Active = true;
-                }
 			}
 
-			TextBox lblMessage = (TextBox)Add_Custom_Control.Controls["lblMessage"];
+            pageControlsButtons[0].PerformClick();
+
+			TextBox lblMessage = (TextBox)Add_Custom_Control.Controls["lblMessage"]; // holds message of selected items
+            lblMessage.Text = "Nothing_Selected";
+
+            			ScrollBar scrlSelectedStrength;
+			scrlSelectedStrength = (ScrollBar)MainOptionsTabControl.Controls["scrlSelectedStrength"];
+
+            //incin -- not updating the strength atm, gotta figure this out..
+            scrlSelectedStrength.ValueChange += delegate(ScrollBar sender)
+            {
+                while (sender.Value != Strength_selected)
+                {
+                    Strength_selected = sender.Value;
+                }
+
+                if (message.Contains(" Strength: ") && message != null)
+                {
+                    message.Replace(" Strength: " + old_strength, " Strength: " + scrlSelectedStrength.Value.ToString());
+                    lblMessage.Text = message;
+                }
+                old_strength = Strength_selected;
+            };
 
 			#endregion MainControls
 			#region pageMouseoptions
@@ -1186,7 +1217,7 @@ namespace Game
 
 			ComboBox cmbMouseButtonChoices;
 			cmbMouseButtonChoices = (ComboBox)MouseTabControl.Controls["pageMouseButtonOptions"].Controls["cmbMouseButtonChoices"];
-			cmbMouseButtonChoices.Items.Add("< Nothing Selected >");
+			cmbMouseButtonChoices.Items.Add("Nothing_Selected");
 			foreach (var value in Enum.GetValues(typeof(EMouseButtons)))
 			{
 				cmbMouseButtonChoices.Items.Add(value);
@@ -1196,7 +1227,7 @@ namespace Game
 			//MainOptionsTabControl.MouseTabControl.pageMouseScrollOptions.cmbMouseScrollChoices
 			ComboBox cmbMouseScrollChoices;
 			cmbMouseScrollChoices = (ComboBox)MouseTabControl.Controls["pageMouseScrollOptions"].Controls["cmbMouseScrollChoices"];
-			cmbMouseScrollChoices.Items.Add("< Nothing Selected >");
+			cmbMouseScrollChoices.Items.Add("Nothing_Selected");
 			foreach (var value in Enum.GetValues(typeof(MouseScroll)))
 			{
 				cmbMouseScrollChoices.Items.Add(value);
@@ -1211,7 +1242,7 @@ namespace Game
 
 			ListBox lstKeyboardButtonChoices;
 			lstKeyboardButtonChoices = (ListBox)pageKeyboardOptions.Controls["lstKeyboardButtonChoices"];
-			lstKeyboardButtonChoices.Items.Add("< Nothing Selected >");
+			lstKeyboardButtonChoices.Items.Add("Nothing_Selected");
 			foreach (var value in Enum.GetValues(typeof(EKeys)))
 			{
 				lstKeyboardButtonChoices.Items.Add(value);
@@ -1226,11 +1257,14 @@ namespace Game
 			#region pageJoystickOptions
 				Control pageJoystickOptions;
 				pageJoystickOptions = (Control)Add_Custom_Control.Controls["MainOptionsTabControl"].Controls["pageJoystickOptions"];//.Controls["tabJoystickControlOptions"];
-				tabJoystickControlOptions = (TabControl)pageJoystickOptions.Controls["tabJoystickControlOptions"];
+			
+                tabJoystickControlOptions = (TabControl)pageJoystickOptions.Controls["tabJoystickControlOptions"];
                 tabJoystickControlOptions.SelectedIndexChange += tabJoystickControlOptions_SelectedIndexChange;
+
                 pagejoystickButtons[0] = (Button)tabJoystickControlOptions.Controls["btnSliderOptions"];
                 pagejoystickButtons[1] = (Button)tabJoystickControlOptions.Controls["btnAxisOptions"];
                 pagejoystickButtons[2] = (Button)tabJoystickControlOptions.Controls["btnButtonOptions"];
+
                 foreach (Button pageButton in pagejoystickButtons)
                 {
                     pageButton.Click += new Button.ClickDelegate(joystickPageTabButtons_Click);
@@ -1242,7 +1276,7 @@ namespace Game
 						ComboBox cmbSliderChoices;
 						
 						cmbSliderChoices = (ComboBox)pageSliderOptions.Controls["cmbSliderChoices"];
-						cmbSliderChoices.Items.Add("< Nothing Selected >");
+						cmbSliderChoices.Items.Add("Nothing_Selected");
 						foreach (var value in Enum.GetValues(typeof(JoystickSliders)))
 						{
 							cmbSliderChoices.Items.Add(value);
@@ -1251,7 +1285,7 @@ namespace Game
 
 						ComboBox cmbSliderAxisChoices;
 						cmbSliderAxisChoices = (ComboBox)pageSliderOptions.Controls["cmbSliderAxisChoices"];
-                        cmbSliderAxisChoices.Items.Add("< Nothing Selected >");
+                        cmbSliderAxisChoices.Items.Add("Nothing_Selected");
 						foreach (var value in Enum.GetValues(typeof(JoystickSliderAxes)))
 						{
 							cmbSliderAxisChoices.Items.Add(value);
@@ -1260,7 +1294,7 @@ namespace Game
 
 						ComboBox cmbSliderAxisFilterChoices;
 						cmbSliderAxisFilterChoices = (ComboBox)pageSliderOptions.Controls["cmbSliderAxisFilterChoices"];
-						cmbSliderAxisFilterChoices.Items.Add("< Nothing Selected >");
+						cmbSliderAxisFilterChoices.Items.Add("Nothing_Selected");
 						foreach (var value in Enum.GetValues(typeof(JoystickAxisFilters)))
 						{
 							cmbSliderAxisFilterChoices.Items.Add(value);
@@ -1272,7 +1306,7 @@ namespace Game
 					Control pageAxisOptions = tabJoystickControlOptions.Controls["pageAxisOptions"];
 					ComboBox cmbAxisChoices;
 					cmbAxisChoices = (ComboBox)pageAxisOptions.Controls["cmbAxisChoices"];
-					cmbAxisChoices.Items.Add("< Nothing Selected >");
+					cmbAxisChoices.Items.Add("Nothing_Selected");
 					foreach (var value in Enum.GetValues(typeof(JoystickSliderAxes)))
 					{
 						cmbAxisChoices.Items.Add(value);
@@ -1282,7 +1316,7 @@ namespace Game
 
 					ComboBox cmbAxisFilterChoices;
 					cmbAxisFilterChoices = (ComboBox)pageAxisOptions.Controls["cmbAxisFilterChoices"];
-					cmbAxisFilterChoices.Items.Add("< Nothing Selected >");
+					cmbAxisFilterChoices.Items.Add("Nothing_Selected");
 					foreach (var value in Enum.GetValues(typeof(JoystickAxisFilters )))
 					{
 						cmbAxisFilterChoices.Items.Add(value);
@@ -1301,14 +1335,14 @@ namespace Game
 			#endregion pageJoystickOptions
 
 			//___ InCin filtering by combo boxes and listboxes --- all me
-			// setting all indexes at 0 -- tracks "< Nothing Selected >"
+			// setting all indexes at 0 -- tracks "Nothing_Selected"
 			#region IndexChanged
 			//if(page visible == enabled){
 
 			cmbMouseButtonChoices.SelectedIndexChange += delegate(ComboBox sender)
 			{
 				message = null;
-				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0) //< Nothing Selected >
+				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0) //Nothing_Selected
 					return;
 
 				if (sender.SelectedIndex == 0)
@@ -1316,7 +1350,7 @@ namespace Game
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
 					message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
 					message += " Command: " + lstCommand.SelectedItem.ToString();
-					message +=" MouseButton: < Nothing Selected >";
+					message +=" MouseButton: Nothing_Selected";
 					message += " Strength: " + scrlSelectedStrength.Value.ToString();
 				}
 				else
@@ -1333,7 +1367,7 @@ namespace Game
 			cmbMouseScrollChoices.SelectedIndexChange += delegate(ComboBox sender)
 			{
 				message = null;
-				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0)// < Nothing Selected >
+				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0)// Nothing_Selected
 					return;
 
 				if (sender.SelectedIndex == 0)
@@ -1341,7 +1375,7 @@ namespace Game
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
 					message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
 					message += " Command: " + lstCommand.SelectedItem.ToString();
-					message += " MouseScroll: < Nothing Selected >";
+					message += " MouseScroll: Nothing_Selected";
 					message += " Strength: " + scrlSelectedStrength.Value.ToString();
                     lstKeyboardButtonChoices.Visible = false;
 				}
@@ -1364,13 +1398,13 @@ namespace Game
 				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0)
 					return;
 
-				if (sender.SelectedIndex == 0) // < Nothing Selected >
+				if (sender.SelectedIndex == 0) // Nothing_Selected
 				{
-					//< Nothing Selected >
+					//Nothing_Selected
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
 					message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
 					message += " Command: " + lstCommand.SelectedItem.ToString();
-					message += " KeyboardButton: < Nothing Selected >";
+					message += " KeyboardButton: Nothing_Selected";
 					message += " Strength: " + scrlSelectedStrength.Value.ToString(); 
 				}
 				else
@@ -1390,7 +1424,7 @@ namespace Game
 			{
 				message = null;
 		        //MainOptionsTabControl.Visible = false;
-                if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0)  // < Nothing Selected >
+                if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0)  // Nothing_Selected
 				{
 					return;
 				}
@@ -1400,22 +1434,23 @@ namespace Game
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
 					message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
 					message += " Command: " + lstCommand.SelectedItem.ToString();
-					message += " Slider: < Nothing Selected >";
-					message += " Axis: < Nothing Selected >";
-					message += " AxisFilter: < Nothing Selected >";
+					message += " Slider: Nothing_Selected";
+					message += " Axis: Nothing_Selected";
+					message += " AxisFilter: Nothing_Selected";
 					message += " Strength: " + scrlSelectedStrength.Value.ToString();
 					//cmbSliderChoices.Visible = false;
 
 				}
-				else
+				else //if( sender.SelectedIndex != 0)
 				{
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
 					message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
 					message += " Command: " + lstCommand.SelectedItem.ToString();
 					message += " Slider: " + sender.SelectedItem.ToString(); //sender
-					message += " Axis: < Nothing Selected >";
-					message += " AxisFilter: < Nothing Selected >";
-					message += " Strength: " + scrlSelectedStrength.Value.ToString();
+					message += " Axis: Nothing_Selected";
+					message += " AxisFilter: Nothing_Selected";
+                    //event update 
+					message += " Strength: " + scrlSelectedStrength.Value.ToString(); //recursive scroll change
                     //cmbSliderAxisChoices.Visible = true;
 				}
 				lblMessage.Text = message;	
@@ -1424,7 +1459,7 @@ namespace Game
 			cmbSliderAxisChoices.SelectedIndexChange += delegate(ComboBox sender)
 			{
 				message = null;
-				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0  || cmbSliderChoices.SelectedIndex == 0) // < Nothing Selected >
+				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0  || cmbSliderChoices.SelectedIndex == 0) // Nothing_Selected
 					return;
 
 				if (sender.SelectedIndex == 0)
@@ -1433,8 +1468,8 @@ namespace Game
 					message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
 					message += " Command: " + lstCommand.SelectedItem.ToString();
 					message += " Slider: " + cmbSliderChoices.SelectedItem.ToString();
-					message += " Axis: < Nothing Selected >";
-					message += " AxisFilter: < Nothing Selected >";
+					message += " Axis: Nothing_Selected";
+					message += " AxisFilter: Nothing_Selected";
 					message += " Strength: " + scrlSelectedStrength.Value.ToString();
                     cmbSliderAxisFilterChoices.Visible = false;
 				}
@@ -1445,7 +1480,7 @@ namespace Game
 					message +=" Command: " + lstCommand.SelectedItem.ToString();
 					message += " Slider: " + cmbSliderChoices.SelectedItem.ToString();
 					message += " Axis: " + sender.SelectedItem.ToString();
-					message += " AxisFilter: < Nothing Selected >";
+					message += " AxisFilter: Nothing_Selected";
 					message += " Strength: " + scrlSelectedStrength.Value.ToString();
                     cmbSliderAxisFilterChoices.Visible = true;
 				}
@@ -1455,7 +1490,7 @@ namespace Game
 			cmbSliderAxisFilterChoices.SelectedIndexChange += delegate(ComboBox sender)
 			{
 				message = null;
-				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0 || cmbSliderChoices.SelectedIndex == 0 || cmbSliderAxisChoices.SelectedIndex == 0)// < Nothing Selected >
+				if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0 || cmbSliderChoices.SelectedIndex == 0 || cmbSliderAxisChoices.SelectedIndex == 0)// Nothing_Selected
 					return;
 
 				if (sender.SelectedIndex == 0)
@@ -1465,7 +1500,7 @@ namespace Game
 					message += " Command: " + lstCommand.SelectedItem.ToString();
 					message += " Slider: " + cmbSliderChoices.SelectedItem.ToString();
 					message += " Axis: " + cmbSliderAxisChoices.SelectedItem.ToString();
-					message += " AxisFilter: < Nothing Selected >";
+					message += " AxisFilter: Nothing_Selected";
 					message += " Strength: " + scrlSelectedStrength.Value.ToString();
 				}
 				else 
@@ -1485,7 +1520,7 @@ namespace Game
             cmbAxisChoices.SelectedIndexChange += delegate(ComboBox sender)
             {
                 message = null;
-                if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0)// < Nothing Selected >
+                if (cmbDeviceType.SelectedIndex == 0 || lstCommand.SelectedIndex == 0)// Nothing_Selected
                 {
                     cntrlCommands.Visible = false;
                     //MainOptionsTabControl.Visible = false;
@@ -1497,8 +1532,8 @@ namespace Game
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
                     message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
                     message += " Command: " + lstCommand.SelectedItem.ToString();
-                    message += " Axis: < Nothing Selected >";
-                    message += " AxisFilter: < Nothing Selected >";
+                    message += " Axis: Nothing_Selected";
+                    message += " AxisFilter: Nothing_Selected";
                     message += " Strength: " + scrlSelectedStrength.Value.ToString();
                 }
                 else
@@ -1507,7 +1542,7 @@ namespace Game
                     message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
                     message += " Command: " + lstCommand.SelectedItem.ToString();
                     message += " Axis: " + sender.SelectedItem.ToString();
-                    message += " AxisFilter: < Nothing Selected >";
+                    message += " AxisFilter: Nothing_Selected";
                     message += " Strength: " + scrlSelectedStrength.Value.ToString();
 
                 }
@@ -1530,7 +1565,7 @@ namespace Game
                     message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
                     message += " Command: " + lstCommand.SelectedItem.ToString();
                     message += " Axis: " + cmbAxisChoices.SelectedItem.ToString();
-                    message += " AxisFilter: < Nothing Selected >";
+                    message += " AxisFilter: Nothing_Selected";
                     message += " Strength: " + scrlSelectedStrength.Value.ToString();
                 }
                 else
@@ -1560,7 +1595,7 @@ namespace Game
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
                     message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
                     message += " Command: " + lstCommand.SelectedItem.ToString();
-                    message += " JoystickButton: < Nothing Selected >";
+                    message += " JoystickButton: Nothing_Selected";
                     message += " Strength: " + scrlSelectedStrength.Value.ToString();
 
                 }
@@ -1587,19 +1622,19 @@ namespace Game
                 {
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
                     message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
-                    message += " Command: " + "< Nothing Selected >";
-                    message += " Bind: < Nothing Selected >";
-                    message += "Strength: " + scrlSelectedStrength.Value.ToString();
-                    //MainOptionsTabControl.Visible = false;
+                    message += " Command: " + "Nothing_Selected";
+                    message += " Bind: Nothing_Selected";
+                    message += " Strength: " + scrlSelectedStrength.Value.ToString();
+                    MainOptionsTabControl.Visible = false;
                 }
                 else
                 {
                     //message = "Device: " + cmbDevice.SelectedItem.ToString();
                     message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
                     message += " Command: " + lstCommand.SelectedItem.ToString();
-                    message += " Bind: < Nothing Selected >";
-                    message += "Strength: " + scrlSelectedStrength.Value.ToString();
-                    //MainOptionsTabControl.Visible = true;
+                    message += " Bind: Nothing_Selected";
+                    message += " Strength: " + scrlSelectedStrength.Value.ToString();
+                    MainOptionsTabControl.Visible = true;
                 }
                 lblMessage.Text = message;
             };
@@ -1615,11 +1650,16 @@ namespace Game
             {
                 message = null;
                 if (sender.SelectedIndex == -1)
+                {
+                    cntrlCommands.Visible = false;
+                    MainOptionsTabControl.Visible = false;
                     return;
+                }
                 if (sender.SelectedIndex != 0)
                 {
-                    Devices devicetype = (Devices)sender.SelectedItem;
+                    Devices devicetype = devicetype_selected = (Devices)sender.SelectedItem;
                     cntrlCommands.Visible = true;
+                    MainOptionsTabControl.Visible = false;
                     switch (devicetype)
                     {
                         case Devices.Mouse:
@@ -1699,20 +1739,22 @@ namespace Game
                     }
                     message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
                     message += " Command: <Nothing Selected >";
-                    message += " Bind: < Nothing Selected >";
-                    message += "Strength: " + scrlSelectedStrength.Value.ToString();
+                    message += " Bind: Nothing_Selected";
+                    message += " Strength: " + scrlSelectedStrength.Value.ToString();
 
                     if (lstCommand.SelectedIndex != 0)
                     {
                         message = "DeviceType: " + cmbDeviceType.SelectedItem.ToString();
                         message += " Command: " + lstCommand.SelectedItem.ToString();
-                        message += " Bind: < Nothing Selected >";
-                        message += "Strength: " + scrlSelectedStrength.Value.ToString();
+                        message += " Bind: Nothing_Selected";
+                        message += " Strength: " + scrlSelectedStrength.Value.ToString();
                     }
                 }
                 else
                 {
-                    message = " < Nothing selected >";
+                    message = " Nothing_Selected";
+                    cntrlCommands.Visible = false;
+                    MainOptionsTabControl.Visible = false;
                     pageControlsButtons[0].Enable = true;
                     pageControlsButtons[1].Enable = true;
                     pageControlsButtons[2].Enable = true;
@@ -1743,18 +1785,33 @@ namespace Game
 
             ((Button)Add_Custom_Control.Controls["buttonOK"]).Click += delegate(Button sender)
             {
-                devicetype_selected = (Devices)cmbDeviceType.SelectedItem;
-                control_selected = (GameControlKeys)lstCommand.SelectedItem;
-
-                if (devicetype_selected == null || control_selected == null)
+                if (cmbDeviceType.SelectedIndex == 0)
                 {
+                    CreateMessageBox("No Device selected, select a device first!");
                     return;
                 }
+                else //(cmbDeviceType.SelectedIndex != 0)
+                    devicetype_selected = (Devices)cmbDeviceType.SelectedItem;
+
+
+                if (lstCommand.SelectedIndex == 0)
+                {
+                    CreateMessageBox("No Command binding selected, select a Command first!");
+                    return;
+                }
+                else // if (lstCommand.SelectedIndex != 0)
+                    command_selected = (GameControlKeys)lstCommand.SelectedItem;
+
 
                 //if (pageControlsButtons[0].Enable == true || pageControlsButtons[1].Enable == true || pageControlsButtons[2].Enable == true)
 
                 switch (devicetype_selected) //devicetype
                 {
+                    case Devices.Nothing_Selected:
+                        {
+                            CreateMessageBox("No Device selected, select a device first!");
+                            return;
+                        }
                     case Devices.Keyboard:
                         {
                             // group Keyboard 
@@ -1768,12 +1825,12 @@ namespace Game
                     case Devices.Mouse:
                         {
                             // group Mouse
-                            if(cmbMouseButtonChoices.SelectedIndex == 0)
+                            if (cmbMouseButtonChoices.SelectedIndex == 0)
                                 ;//return;
                             else
                                 cmbMouseButtonChoices_selected = (EMouseButtons)cmbMouseButtonChoices.SelectedItem;
-                            
-                            if(cmbMouseScrollChoices.SelectedIndex == 0)
+
+                            if (cmbMouseScrollChoices.SelectedIndex == 0)
                                 ;//return;
                             else
                                 cmbMouseScrollChoices_selected = (MouseScroll)cmbMouseScrollChoices.SelectedItem;
@@ -1792,23 +1849,23 @@ namespace Game
                                 ;//return;
                             else
                                 cmbSliderChoices_selected = (JoystickSliders)cmbSliderChoices.SelectedItem;
-                            
+
                             if (cmbSliderAxisChoices.SelectedIndex == 0)
                                 ;//return;
                             else
                                 cmbSliderAxisChoices_selected = (JoystickSliderAxes)cmbSliderAxisChoices.SelectedItem;
-                           
+
                             if (cmbSliderAxisFilterChoices.SelectedIndex == 0)
                                 ;//return;
                             else
                                 cmbSliderAxisFilterChoices_selected = (JoystickAxisFilters)cmbSliderAxisFilterChoices.SelectedItem;
 
-                            
+
                             //axis filter
                             if (cmbAxisChoices.SelectedIndex == 0)
                                 ;//return;
                             else
-                                cmbAxisChoices_selected  = (JoystickSliderAxes)cmbAxisChoices.SelectedItem;
+                                cmbAxisChoices_selected = (JoystickSliderAxes)cmbAxisChoices.SelectedItem;
 
                             if (cmbAxisFilterChoices.SelectedIndex == 0)
                                 ;//return;
@@ -1844,7 +1901,7 @@ namespace Game
                 lstCommand.SelectedIndex = 0; //should be lstCommand
                 cmbMouseButtonChoices.SelectedIndex = 0;
                 cmbMouseScrollChoices.SelectedIndex = 0;
-                lstKeyboardButtonChoices.SelectedIndex = 0; //< Nothing Selected >
+                lstKeyboardButtonChoices.SelectedIndex = 0; //Nothing_Selected
                 cmbSliderChoices.SelectedIndex = 0;
                 cmbSliderAxisChoices.SelectedIndex = 0;
                 cmbSliderAxisFilterChoices.SelectedIndex = 0;
@@ -1852,9 +1909,9 @@ namespace Game
                 cmbAxisFilterChoices.SelectedIndex = 0;
                 lstJoyButtonChoices.SelectedIndex = 0; //<Nothing Selected>
                 cntrlCommands.Visible = false;
+                scrlSelectedStrength.Value = 1f;
                 MainOptionsTabControl.Visible = false;
-
-                message = " < Nothing selected >";
+                message = " Nothing_Selected";
                 lblMessage.Text = message;
             };
 
