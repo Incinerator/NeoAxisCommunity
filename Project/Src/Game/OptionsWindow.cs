@@ -1842,10 +1842,14 @@ namespace Game
 					case Devices.Mouse:
 						{
 							// group Mouse
-							if (cmbMouseButtonChoices.SelectedIndex == 0)
-								;//return;
-							else
-								cmbMouseButtonChoices_selected = (EMouseButtons)cmbMouseButtonChoices.SelectedItem;
+                            if (cmbMouseButtonChoices.SelectedIndex != 0)
+                                cmbMouseButtonChoices_selected = (EMouseButtons)cmbMouseButtonChoices.SelectedItem;
+                            else
+                            {
+                                cmbMouseButtonChoices.SelectedIndex = 0;
+                                cmbMouseButtonChoices_selected = (EMouseButtons)0;
+
+                            }
 
                             if (cmbMouseScrollChoices.SelectedIndex != 0)
                                 cmbMouseScrollChoices_selected = (MouseScroll)cmbMouseScrollChoices.SelectedItem;
