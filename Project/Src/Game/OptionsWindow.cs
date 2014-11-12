@@ -878,6 +878,7 @@ namespace Game
 			EngineApp.Instance.VideoMode = size;
 		}
 
+
 		void UpdateBindedInputControlsListBox()
 		{
 			Control pageControls = window.Controls[ "TabControl" ].Controls[ "Controls" ];
@@ -1207,11 +1208,12 @@ namespace Game
 				{
 					Strength_selected = sender.Value;
 				}
-
-				if (message.Contains(" Strength: ") && message != null)
-				{
-					message.Replace(" Strength: " + old_strength, " Strength: " + scrlSelectedStrength.Value.ToString());
-					lblMessage.Text = message;
+				if(message != null){
+					if (message.Contains(" Strength: "))
+					{
+						message.Replace(" Strength: " + old_strength, " Strength: " + scrlSelectedStrength.Value.ToString());
+						lblMessage.Text = message;
+					}
 				}
 				old_strength = Strength_selected;
 			};
@@ -1828,13 +1830,13 @@ namespace Game
 					case Devices.Keyboard:
 						{
 							// group Keyboard 
-                            if (lstKeyboardButtonChoices.SelectedIndex != 0)
-                                lstKeyboardButtonChoices_selected = (EKeys)lstKeyboardButtonChoices.SelectedItem;
-                            else 
-                            {
-                                lstKeyboardButtonChoices.SelectedIndex = 0;
-                                lstKeyboardButtonChoices_selected = (EKeys)0;
-                            }
+							if (lstKeyboardButtonChoices.SelectedIndex != 0)
+								lstKeyboardButtonChoices_selected = (EKeys)lstKeyboardButtonChoices.SelectedItem;
+							else 
+							{
+								lstKeyboardButtonChoices.SelectedIndex = 0;
+								lstKeyboardButtonChoices_selected = (EKeys)0;
+							}
 
 
 							break;
@@ -1842,22 +1844,22 @@ namespace Game
 					case Devices.Mouse:
 						{
 							// group Mouse
-                            if (cmbMouseButtonChoices.SelectedIndex != 0)
-                                cmbMouseButtonChoices_selected = (EMouseButtons)cmbMouseButtonChoices.SelectedItem;
-                            else
-                            {
-                                cmbMouseButtonChoices.SelectedIndex = 0;
-                                cmbMouseButtonChoices_selected = (EMouseButtons)0;
+							if (cmbMouseButtonChoices.SelectedIndex != 0)
+								cmbMouseButtonChoices_selected = (EMouseButtons)cmbMouseButtonChoices.SelectedItem;
+							else
+							{
+								cmbMouseButtonChoices.SelectedIndex = 0;
+								cmbMouseButtonChoices_selected = (EMouseButtons)0;
 
-                            }
+							}
 
-                            if (cmbMouseScrollChoices.SelectedIndex != 0)
-                                cmbMouseScrollChoices_selected = (MouseScroll)cmbMouseScrollChoices.SelectedItem;
-                            else
-                            {
-                                cmbMouseScrollChoices.SelectedIndex = 0;
-                                cmbMouseScrollChoices_selected = (MouseScroll)0;
-                            }
+							if (cmbMouseScrollChoices.SelectedIndex != 0)
+								cmbMouseScrollChoices_selected = (MouseScroll)cmbMouseScrollChoices.SelectedItem;
+							else
+							{
+								cmbMouseScrollChoices.SelectedIndex = 0;
+								cmbMouseScrollChoices_selected = (MouseScroll)0;
+							}
 							break;
 						}
 
@@ -1906,19 +1908,19 @@ namespace Game
 								cmbAxisFilterChoices_selected = (JoystickAxisFilters)cmbAxisFilterChoices.SelectedItem;
 							else 
 							{
-                                cmbAxisFilterChoices.SelectedIndex = 0;
-                                cmbAxisFilterChoices_selected = (JoystickAxisFilters)0;
+								cmbAxisFilterChoices.SelectedIndex = 0;
+								cmbAxisFilterChoices_selected = (JoystickAxisFilters)0;
 							}
 
 
 							//buttons
-                            if (lstJoyButtonChoices.SelectedIndex == 0)
-                                lstJoyButtonChoices_selected = (JoystickButtons)lstJoyButtonChoices.SelectedItem;
-                            else
-                            {
-                                lstJoyButtonChoices.SelectedIndex = 0;
-                                lstJoyButtonChoices_selected = (JoystickButtons)0;
-                            }
+							if (lstJoyButtonChoices.SelectedIndex == 0)
+								lstJoyButtonChoices_selected = (JoystickButtons)lstJoyButtonChoices.SelectedItem;
+							else
+							{
+								lstJoyButtonChoices.SelectedIndex = 0;
+								lstJoyButtonChoices_selected = (JoystickButtons)0;
+							}
 							break;
 						}
 
@@ -1932,6 +1934,7 @@ namespace Game
 					//    }
 				}
 				//save bind
+				
 				Add_Custom_Control.SetShouldDetach(); 
 			};
 			#endregion ButtonOK
